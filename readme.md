@@ -10,7 +10,7 @@ newlines at end of files because its nice
 
 ## setup
 todo - package config
-packages - scikit-image (skimage)
+packages - scikit-image (skimage), ffmpeg
 python sample_run.py
 
 python >=3.7
