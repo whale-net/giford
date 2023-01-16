@@ -1,6 +1,7 @@
 from __future__ import annotations  # py>=3.7 - make factory return type hints work
 
 import os
+import copy
 
 from numpy import ndarray
 from skimage.io import imread, imsave
@@ -52,6 +53,9 @@ class Image:
             raise FileExistsError(f"file already exists [{file_path}]")
 
         imsave(file_path, self.image_data)
+
+    def clone(self):
+        return copy.deepcopy(self)
 
     @property
     def image_data(self) -> ndarray:

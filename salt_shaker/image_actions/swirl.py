@@ -14,7 +14,7 @@ class BasicSwirl(ImageAction):
         processed_images: list[Image] = []
         for img in image_input:
             img.image_data = transform.swirl(img.image_data)
-            processed_images.append(img)
+            processed_images.append(img.clone())
 
         return ImageAction._unlistify_output(processed_images)
 
@@ -39,7 +39,7 @@ class VariableSwirl(ImageAction):
         for img in image_input:
             for i in range(0, depth):
                 img = basic_swirl.process(img)
-            processed_images.append(img)
+            processed_images.append(img.clone())
 
         return ImageAction._unlistify_output(processed_images)
 
@@ -65,7 +65,7 @@ class VaryingVariableSwirl(ImageAction):
         for img in image_input:
             for i in range(0, depth):
                 img = variable_swirl.process(img, i)
-                processed_images.append(img)
+                processed_images.append(img.clone())
 
         # _unlistify doesn't do much here, i guess if we have 1 img 1 depth
         return ImageAction._unlistify_output(processed_images)
