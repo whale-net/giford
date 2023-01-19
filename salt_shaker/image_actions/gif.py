@@ -26,28 +26,24 @@ class Gifify(ImageAction):
         # make it unique
         temp_str = str(uuid.uuid4())[0:8]
 
-        #ffmpeg -f image2 -framerate 1 -i local_test_data/gnomechild.png -loop -1 local_test_output/test_gnome.gif
-        # this gif command works:
         #ffmpeg -f image2 -framerate 1 -i ./local_test_output/gif_test/gnomechild_varying_variable_swirl_depth_%02d.png -loop -1 local_test_output/test_gnome.gif -y
-        out, _  = (
+        (
             ffmpeg
-            # todo, cstring pattern?
-            .input('./local_test_output/gif_test/gnomechild_varying_variable_swirl_depth_%02d.png', framerate=12, format='image2')
-            #.output(f'./local_test_output/test_mp4_{temp_str}.mp4')
-            # vframes
-            .output(f'./local_test_output/gifify_{temp_str}.gif', loop=-1)
+            .input('./local_test_output/gif_test/gnomechild_varying_variable_swirl_depth_%02d.png', framerate=4, format='image2')
+            # loop -1=>no loop, 1=> loop 1 time, 2=> loop 2 times, nothing->what you want
+            .output(f'./local_test_output/gifify_{temp_str}.gif')#, loop=-1)
             .overwrite_output()
             .run()
             # read video to local variable
             #.run(capture_stdout=True)
         )
 
-            # todo later
-            # video = (
-            #         np
-            #         .frombuffer(out, np.uint8)
-            #         .reshape([-1, height, width, 3])
-            #     )
+        # todo later
+        # video = (
+        #         np
+        #         .frombuffer(out, np.uint8)
+        #         .reshape([-1, height, width, 3])
+        #     )
 
         #processed_images.append(img.clone())
 
