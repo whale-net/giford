@@ -26,9 +26,10 @@ class Gifify(ImageAction):
         # make it unique
         temp_str = str(uuid.uuid4())[0:8]
 
-            #ffmpeg -f image2 -framerate 1 -i local_test_data/gnomechild.png -loop -1 local_test_output/test_gnome.gif
-        #out, _  = (
-        (
+        #ffmpeg -f image2 -framerate 1 -i local_test_data/gnomechild.png -loop -1 local_test_output/test_gnome.gif
+        # this gif command works:
+        #ffmpeg -f image2 -framerate 1 -i ./local_test_output/gif_test/gnomechild_varying_variable_swirl_depth_%02d.png -loop -1 local_test_output/test_gnome.gif -y
+        out, _  = (
             ffmpeg
             # todo, cstring pattern?
             .input('./local_test_output/gif_test/gnomechild_varying_variable_swirl_depth_%02d.png', framerate=12)
