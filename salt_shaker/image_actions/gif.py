@@ -32,10 +32,10 @@ class Gifify(ImageAction):
         out, _  = (
             ffmpeg
             # todo, cstring pattern?
-            .input('./local_test_output/gif_test/gnomechild_varying_variable_swirl_depth_%02d.png', framerate=12)
+            .input('./local_test_output/gif_test/gnomechild_varying_variable_swirl_depth_%02d.png', framerate=12, format='image2')
             #.output(f'./local_test_output/test_mp4_{temp_str}.mp4')
             # vframes
-            .output(f'./local_test_output/gifify_{temp_str}.gif', format='image2', loop=-1, frames=24, vframes=1)
+            .output(f'./local_test_output/gifify_{temp_str}.gif', loop=-1)
             .overwrite_output()
             .run()
             # read video to local variable
