@@ -13,8 +13,8 @@ class BasicSwirl(ImageAction):
 
         processed_images: list[Image] = []
         for img in image_input:
-            img.image_data = transform.swirl(img.image_data)
-            processed_images.append(img.clone())
+            img_nd_arr = transform.swirl(img.image_data.as_3d_ndarray())
+            processed_images.append(Image.create_from_ndarray(img_nd_arr))
 
         return ImageAction._unlistify_output(processed_images)
 
