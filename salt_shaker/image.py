@@ -107,9 +107,9 @@ class ImageData:
         if img_nd_arr.dtype == np.dtype(np.uint8):
             pass
         elif img_nd_arr.dtype in [np.dtype(np.float32), np.dtype(np.float64)]:
-            # check if image is scaled, and scale it if so
+            # check if image is scaled [0, 1] and scale it to [0, 255]
             if img_nd_arr.max() <= 1.0:
-                img_nd_arr = img_nd_arr * 255
+                img_nd_arr = img_nd_arr * 256
             img_nd_arr = img_nd_arr.astype(np.uint8, copy=False)
         else:
             raise Exception(f'invalid dtype {img_nd_arr.dtype}')
