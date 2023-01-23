@@ -1,4 +1,4 @@
-from datetime import datetime
+import os
 from salt_shaker.image import Image
 from salt_shaker.image_batch import ImageBatch
 from salt_shaker.image_actions.swirl import (
@@ -6,57 +6,88 @@ from salt_shaker.image_actions.swirl import (
     VariableSwirl,
     VaryingVariableSwirl,
 )
+from salt_shaker.image_actions.gif import Gifify
+
+INPUT_DIR = "./sample_data/"
+GIF_DATA_INPUT_DIR = os.path.join(INPUT_DIR, "gif_data")
+OUTPUT_DIR = "./sample_output/"
+
+VARYING_DEPTH = 25
 
 
-def basic_rewrite(orange_image):
-    orange_image.write_to_file("./sample_output/orange_simple_rewrite.png")
+def basic_rewrite(input_image):
+    input_image.write_to_file(os.path.join(OUTPUT_DIR, "orange_simple_rewrite.png"))
 
 
-def basic_swirl(orange_image):
-    basic_swirl = BasicSwirl()
+def basic_swirl(input_image):
+    bs = BasicSwirl()
     batch = ImageBatch()
-    batch.add_image(orange_image)
+    batch.add_image(input_image)
 
-    output_batch = basic_swirl.process(batch)
+    output_batch = bs.process(batch)
+    output_batch.images[0].write_to_file(
+        os.path.join(OUTPUT_DIR, "orange_basic_swirl.png")
+    )
 
-    # filetime = datetime.now().strftime("%Y%m%d-%H%M%S")
-    output_batch.images[0].write_to_file(f"./sample_output/orange_basic_swirl.png")
 
-
-def variable_swirl(orange_image):
-    variable_swirl = VariableSwirl()
+def variable_swirl(input_image):
+    vs = VariableSwirl()
     batch = ImageBatch()
-    batch.add_image(orange_image)
+    batch.add_image(input_image)
 
-    depth_5_batch = variable_swirl.process(batch, 5)
+    depth_5_batch = vs.process(batch, 5)
     depth_5_batch.images[0].write_to_file(
-        f"./sample_output/orange_variable_swirl_depth_5.png"
+        os.path.join(OUTPUT_DIR, "orange_variable_swirl_depth_5.png")
     )
-    depth_10_batch = variable_swirl.process(batch, 10)
+    depth_10_batch = vs.process(batch, 10)
     depth_10_batch.images[0].write_to_file(
-        f"./sample_output/orange_variable_swirl_depth_10.png"
+        os.path.join(OUTPUT_DIR, "orange_variable_swirl_depth_10.png")
     )
 
 
-def varying_variable_swirl(orange_image):
+def varying_variable_swirl(input_image):
     # this will take a while
-    varying_variable_swirl = VaryingVariableSwirl()
+    vvs = VaryingVariableSwirl()
     batch = ImageBatch()
-    batch.add_image(orange_image)
+    batch.add_image(input_image)
 
-    output_batch = varying_variable_swirl.process(batch, 25)
+    output_batch = vvs.process(batch, VARYING_DEPTH)
     for i, img in enumerate(output_batch.images):
-        if not (i % 5 == 0):
-            continue
-        img.write_to_file(
-            f"./sample_output/orange_varying_variable_swirl_depth_{i}.png"
+        if i % 5 == 0:
+            img.write_to_file(
+                os.path.join(OUTPUT_DIR, f"orange_varying_variable_swirl_depth_{i}.png")
+            )
+
+        # write data to input dir for gif demo
+        try:
+            img.write_to_file(
+                os.path.join(GIF_DATA_INPUT_DIR, f"swirl_depth_{i}.png"),
+                overwrite=False,
+            )
+        except FileExistsError:
+            pass
+
+
+def gif():
+    g = Gifify()
+    batch = ImageBatch()
+    for i in range(VARYING_DEPTH):
+        batch.add_image(
+            Image.create_from_file(
+                os.path.join(GIF_DATA_INPUT_DIR, f"swirl_depth_{i}.png")
+            )
         )
+    output_gif = g.process(batch)
+
+    with open(os.path.join(OUTPUT_DIR, "orange_swirl.gif"), "wb") as f:
+        f.write(output_gif)
 
 
 if __name__ == "__main__":
-    orange_image = Image.create_from_file("./sample_data/orange.png")
+    orange = Image.create_from_file(os.path.join(INPUT_DIR, "orange.png"))
 
-    basic_rewrite(orange_image)
-    basic_swirl(orange_image)
-    variable_swirl(orange_image)
-    varying_variable_swirl(orange_image)
+    basic_rewrite(orange)
+    basic_swirl(orange)
+    variable_swirl(orange)
+    # varying_variable_swirl(orange)
+    gif()
