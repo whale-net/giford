@@ -8,3 +8,7 @@
 local_test.py
 local_test_data/*
 local_test_output/*
+
+# ignore pycharm stuff for now
+.idea
+.idea/*
