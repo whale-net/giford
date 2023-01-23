@@ -15,7 +15,7 @@ class Gifify(ExportImageAction):
     def __init__(self):
         super().__init__()
 
-    def process(self, input_batch: ImageBatch) -> ImageBatch:
+    def process(self, input_batch: ImageBatch) -> bytes:
         """
         takes list of images and returns a gif
         """
