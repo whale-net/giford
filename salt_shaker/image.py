@@ -80,21 +80,26 @@ class ImageData:
     wrapper for ndarray of size h x w x d (d=depth=always 4)
     """
 
+    # ndarray.shape index
+    __SHAPE_HEIGHT_IDX = 0
+    __SHAPE_WIDTH_IDX = 1
+    __SHAPE_DEPTH_IDX = 2
+
+    @property
+    def image_data_arr(self) -> np.ndarray:
+        return self._image_data
     @property
     def height(self) -> int:
-        return self._height
+        return self.image_data_arr.shape[ImageData.__SHAPE_HEIGHT_IDX]
 
     @property
     def width(self) -> int:
-        return self._width
+        return self.image_data_arr.shape[ImageData.__SHAPE_WIDTH_IDX]
 
     @property
     def depth(self) -> int:
-        return self._depth
+        return self.image_data_arr.shape[ImageData.__SHAPE_DEPTH_IDX]
 
-    @property
-    def image_data(self) -> np.ndarray:
-        return self._image_data
 
     def __init__(self, img_nd_arr: np.ndarray):
         if not isinstance(img_nd_arr, np.ndarray):
@@ -114,18 +119,26 @@ class ImageData:
         else:
             raise Exception(f"invalid dtype {img_nd_arr.dtype}")
 
-        self._height, self._width, self._depth = img_nd_arr.shape
+        self._image_data = img_nd_arr
 
-        if self._depth != 4:
+        if self.depth != 4:
             # todo transform d=1->4 and d=3->4. then error on depth not in [1, 3, 4]
             raise Exception(
                 "image_arr depth is not 4, this can be fixed, but i cba now"
             )
 
-        self._image_data = img_nd_arr
+
 
     def as_3d_ndarray(self) -> np.ndarray:
-        return self.image_data
+        # array is already 3d ndarray
+        return self.image_data_arr
 
     def as_1d_ndarray(self) -> np.ndarray:
-        return self.image_data.ravel()
+        return self.image_data_arr.ravel()
+
+    def is_same_shape(self, other_img_data: ImageData, is_check_depth: bool = False) -> bool:
+        if not isinstance(other_img_data, ImageData):
+            return False
+        return self.height == other_img_data.height \
+            and self.width == other_img_data.width \
+            and (not is_check_depth or self.depth == other_img_data.depth)

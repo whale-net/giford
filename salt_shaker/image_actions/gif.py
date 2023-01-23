@@ -7,6 +7,7 @@ from skimage import transform
 
 from salt_shaker.image import Image
 from salt_shaker.image_actions.image_action import ImageAction
+from salt_shaker.util.image import is_all_img_same_shape
 
 
 class Gifify(ImageAction):
@@ -22,6 +23,10 @@ class Gifify(ImageAction):
         # c string style (i think) -> fill 0 5depth
         # img_path = os.path.abspath(f'./local_test_data/gif_test/gnomechild_varying_variable_swirl_depth_%02d.png')
         # img_path = os.path.abspath(f'./local_test_data/gif_test/*.png')
+
+        if not is_all_img_same_shape(image_input):
+            raise Exception("not all images are same size in input")
+
 
         # make it unique
         temp_str = str(uuid.uuid4())[0:8]
