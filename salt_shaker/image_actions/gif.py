@@ -30,35 +30,54 @@ class Gifify(ImageAction):
         for img in input_batch.images:
             rdv.add_frame(img.image_data)
 
+        # python scoping allows me to get away with this
+        height = img.image_data.height
+        width = img.image_data.width
+
         vid_ndarr = rdv.as_ndarray()
 
         # TODO - look at https://github.com/kkroening/ffmpeg-python/blob/master/examples/README.md#tensorflow-streaming
             # and make this buffered
 
-        print('hello')
+        # working video output
+        # out, _ = (
+        #     ffmpeg.input(
+        #         "pipe:",
+        #         video_size='120x120',
+        #         format='rawvideo',
+        #         pix_fmt='rgba'
+        #     )
+        #     .output(
+        #         # rgb8 is correct, rgba is 4x more data so need to store differently
+        #         # rgb8 is not correct, that's monochrome. rgba is 32 bit + alpha
+        #         "pipe:", format="rawvideo", pix_fmt="rgba"#pix_fmt="rgba"
+        #     ).overwrite_output()  # outputs 25 frames of 120x120x120x4
+        #     .run(capture_stdout=True, input=vid_ndarr.astype(np.uint8).tobytes())
+        # )
 
         out, _ = (
             ffmpeg.input(
                 "pipe:",
-                video_size='120x120',
+                s=f'{height},{width}',
                 format='rawvideo',
-                pix_fmt='rgba'
+                pix_fmt='rgba',
+                framerate=5
             )
+            # .filter(
+            #
+            # )
             .output(
-                # rgb8 is correct, rgba is 4x more data so need to store differently
-                # rgb8 is not correct, that's monochrome. rgba is 32 bit + alpha
-                "pipe:", format="rawvideo", pix_fmt="rgba"#pix_fmt="rgba"
-            ).overwrite_output()  # outputs 25 frames of 120x120x120x4
+                'pipe:', format='gif'
+            )
             .run(capture_stdout=True, input=vid_ndarr.astype(np.uint8).tobytes())
         )
 
-        # temp_str = str(uuid.uuid4())[0:8]
-        # os.write(f'./local_test_output/{temp_str}.raw')
 
-        output_batch = ImageBatch()
-        output_batch.add_image(Image.create_from_bytes(out, height=120, width=120))
+        #output_batch = ImageBatch()
+        #output_batch.add_image(Image.create_from_bytes(out, height=120, width=120))
 
-        return output_batch
+
+        return out #output_batch
 
 
         # ffmpeg -f image2 -framerate 1 -i ./local_test_output/gif_test/gnomechild_varying_variable_swirl_depth_%02d.png -loop -1 local_test_output/test_gnome.gif -y
