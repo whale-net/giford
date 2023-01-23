@@ -26,7 +26,8 @@ class Gifify(ImageAction):
 
         if not is_all_img_same_shape(image_input):
             raise Exception("not all images are same size in input")
-
+        num_imgs = len(image_input)
+        first_img = image_input[0]
 
         # make it unique
         temp_str = str(uuid.uuid4())[0:8]

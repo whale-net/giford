@@ -88,6 +88,7 @@ class ImageData:
     @property
     def image_data_arr(self) -> np.ndarray:
         return self._image_data
+
     @property
     def height(self) -> int:
         return self.image_data_arr.shape[ImageData.__SHAPE_HEIGHT_IDX]
@@ -100,7 +101,6 @@ class ImageData:
     def depth(self) -> int:
         return self.image_data_arr.shape[ImageData.__SHAPE_DEPTH_IDX]
 
-
     def __init__(self, img_nd_arr: np.ndarray):
         if not isinstance(img_nd_arr, np.ndarray):
             raise Exception("image_arr not ndarray")
@@ -108,16 +108,20 @@ class ImageData:
             raise Exception("image_arr has incorrect dimensions. expected h x w x 4")
 
         # TODO - decide how to handle different types. explicit failure or implict cast?
+        # NOTE - using uint8 kind of works, except when we cast a bunch of times we lose precision
+        # Can we depend on the programmer to use the correct types?
+        # or should we be lazy and just let it be until a different type is requested?
         # if img_nd_arr.dtype != np.dtype(np.uint8):
-        if img_nd_arr.dtype == np.dtype(np.uint8):
-            pass
-        elif img_nd_arr.dtype in [np.dtype(np.float32), np.dtype(np.float64)]:
-            # check if image is scaled [0, 1] and scale it to [0, 255]
-            if img_nd_arr.max() <= 1.0:
-                img_nd_arr = img_nd_arr * 256
-            img_nd_arr = img_nd_arr.astype(np.uint8, copy=False)
-        else:
-            raise Exception(f"invalid dtype {img_nd_arr.dtype}")
+        # if img_nd_arr.dtype == np.dtype(np.uint8):
+        #     pass
+        # elif img_nd_arr.dtype in [np.dtype(np.float32), np.dtype(np.float64)]:
+        #     # check if image is scaled [0, 1] and scale it to [0, 255]
+        #     if img_nd_arr.max() <= 1.0:
+        #         img_nd_arr = img_nd_arr * 256
+        #     img_nd_arr = img_nd_arr.astype(np.uint8, copy=False)
+        # else:
+        #     raise Exception(f"invalid dtype {img_nd_arr.dtype}")
+        #
 
         self._image_data = img_nd_arr
 
@@ -127,8 +131,6 @@ class ImageData:
                 "image_arr depth is not 4, this can be fixed, but i cba now"
             )
 
-
-
     def as_3d_ndarray(self) -> np.ndarray:
         # array is already 3d ndarray
         return self.image_data_arr
@@ -136,9 +138,13 @@ class ImageData:
     def as_1d_ndarray(self) -> np.ndarray:
         return self.image_data_arr.ravel()
 
-    def is_same_shape(self, other_img_data: ImageData, is_check_depth: bool = False) -> bool:
+    def is_same_shape(
+        self, other_img_data: ImageData, is_check_depth: bool = False
+    ) -> bool:
         if not isinstance(other_img_data, ImageData):
             return False
-        return self.height == other_img_data.height \
-            and self.width == other_img_data.width \
+        return (
+            self.height == other_img_data.height
+            and self.width == other_img_data.width
             and (not is_check_depth or self.depth == other_img_data.depth)
+        )
