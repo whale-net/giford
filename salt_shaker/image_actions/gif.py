@@ -7,26 +7,36 @@ from skimage import transform
 
 from salt_shaker.image import Image
 from salt_shaker.image_actions.image_action import ImageAction
+from salt_shaker.raw_data import RawDataVideo
 from salt_shaker.image_batch import ImageBatch
-from salt_shaker.util.image import is_all_img_same_shape
 
 
 class Gifify(ImageAction):
     def __init__(self):
         super().__init__()
 
-    def process(self, image_input: ImageBatch) -> ImageBatch:
-        # processed_images: list[Image] = []
-        # for img in image_input:
-        # for i in range(0, 24):
+    def process(self, input_batch: ImageBatch) -> ImageBatch:
+        """
+        takes list of images and returns a gif
+        """
         # c string style (i think) -> fill 0 5depth
         # img_path = os.path.abspath(f'./local_test_data/gif_test/gnomechild_varying_variable_swirl_depth_%02d.png')
         # img_path = os.path.abspath(f'./local_test_data/gif_test/*.png')
 
-        if not is_all_img_same_shape(image_input):
+        # validate shape and create raw_video
+        if not input_batch.is_all_img_same_shape():
             raise Exception("not all images are same size in input")
-        num_imgs = len(image_input)
-        first_img = image_input[0]
+        rdv = RawDataVideo()
+        for img in input_batch.images:
+            rdv.add_frame(img.image_data)
+
+        vid_ndarr = rdv.as_ndarray()
+
+        # TODO - look at https://github.com/kkroening/ffmpeg-python/blob/master/examples/README.md#tensorflow-streaming
+            # and make this buffered
+
+
+
 
         # make it unique
         temp_str = str(uuid.uuid4())[0:8]
