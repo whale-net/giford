@@ -86,6 +86,7 @@ class RawDataFrame:
             and (not is_check_depth or self.depth == other_raw_data.depth)
         )
 
+
 class RawDataVideo:
     """
     acts as raw video
@@ -123,5 +124,9 @@ class RawDataVideo:
         # unpack list of iterators as parameters so chain can combine them correctly
         chained_iter = itertools.chain(*flat_frame_iters)
 
-        video_arr: np.ndarray = np.fromiter(chained_iter, first_frame.data_arr.dtype, first_frame.data_arr.size * num_frames)
+        video_arr: np.ndarray = np.fromiter(
+            chained_iter,
+            first_frame.data_arr.dtype,
+            first_frame.data_arr.size * num_frames,
+        )
         return video_arr

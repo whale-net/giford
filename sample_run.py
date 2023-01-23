@@ -29,7 +29,9 @@ def variable_swirl(orange_image):
     batch.add_image(orange_image)
 
     depth_5_batch = variable_swirl.process(batch, 5)
-    depth_5_batch.images[0].write_to_file(f"./sample_output/orange_variable_swirl_depth_5.png")
+    depth_5_batch.images[0].write_to_file(
+        f"./sample_output/orange_variable_swirl_depth_5.png"
+    )
     depth_10_batch = variable_swirl.process(batch, 10)
     depth_10_batch.images[0].write_to_file(
         f"./sample_output/orange_variable_swirl_depth_10.png"

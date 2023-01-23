@@ -49,7 +49,6 @@ class Image:
         img_nd_arr = np.reshape(img_nd_arr, (height, width, depth))
         return Image.create_from_ndarray(img_nd_arr)
 
-
     def __init__(self, img_data: RawDataFrame, _created_from_factory: bool = False):
         if not _created_from_factory:
             raise Exception(

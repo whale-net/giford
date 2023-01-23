@@ -20,7 +20,7 @@ class ImageBatch:
         self.images.append(img.clone())
 
     def add_batch(self, batch: ImageBatch):
-        #self.images += batch.images
+        # self.images += batch.images
         # need to add_img, so we clone properly
         for img in batch.images:
             self.add_image(img)
@@ -35,7 +35,7 @@ class ImageBatch:
         base_img = self.images[0]
         for compare_img in self.images[1:]:
             if not base_img.image_data.is_same_shape(
-                    compare_img.image_data, is_check_depth
+                compare_img.image_data, is_check_depth
             ):
                 return False
 
