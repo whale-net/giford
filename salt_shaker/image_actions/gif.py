@@ -7,6 +7,7 @@ from skimage import transform
 
 from salt_shaker.image import Image
 from salt_shaker.image_actions.image_action import ImageAction
+from salt_shaker.image_batch import ImageBatch
 from salt_shaker.util.image import is_all_img_same_shape
 
 
@@ -14,9 +15,7 @@ class Gifify(ImageAction):
     def __init__(self):
         super().__init__()
 
-    def process(self, image_input: Image | list[Image]) -> Image | list[Image]:
-        image_input = ImageAction._listify_input(image_input)
-
+    def process(self, image_input: ImageBatch) -> ImageBatch:
         # processed_images: list[Image] = []
         # for img in image_input:
         # for i in range(0, 24):
