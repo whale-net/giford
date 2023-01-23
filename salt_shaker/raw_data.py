@@ -102,9 +102,10 @@ class RawDataVideo:
         # TODO - somehow validate all frames are same size. that'll break it
         self.frames.append(raw_data_frame)
 
-    def as_ndarray(self):
+    def as_ndarray(self) -> np.ndarray:
         """
         convert raw_data_frames to array of raw data arrays
+        # TODO currently 1d
         """
         num_frames = len(self.frames)
         if num_frames == 0:
@@ -123,3 +124,4 @@ class RawDataVideo:
         chained_iter = itertools.chain(*flat_frame_iters)
 
         video_arr: np.ndarray = np.fromiter(chained_iter, first_frame.data_arr.dtype, first_frame.data_arr.size * num_frames)
+        return video_arr

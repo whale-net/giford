@@ -42,6 +42,14 @@ class Image:
         # todo URL support?
         raise NotImplementedError()
 
+    @staticmethod
+    def create_from_bytes(bytes, height, width, depth=4) -> Image:
+        # TODO byte datatype type hint
+        img_nd_arr = np.frombuffer(bytes, dtype=np.uint8)
+        img_nd_arr = np.reshape(img_nd_arr, (height, width, depth))
+        return Image.create_from_ndarray(img_nd_arr)
+
+
     def __init__(self, img_data: RawDataFrame, _created_from_factory: bool = False):
         if not _created_from_factory:
             raise Exception(
