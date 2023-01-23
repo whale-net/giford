@@ -103,7 +103,7 @@ class ImageData:
             raise Exception("image_arr has incorrect dimensions. expected h x w x 4")
 
         # TODO - decide how to handle different types. explicit failure or implict cast?
-        #if img_nd_arr.dtype != np.dtype(np.uint8):
+        # if img_nd_arr.dtype != np.dtype(np.uint8):
         if img_nd_arr.dtype == np.dtype(np.uint8):
             pass
         elif img_nd_arr.dtype in [np.dtype(np.float32), np.dtype(np.float64)]:
@@ -112,15 +112,15 @@ class ImageData:
                 img_nd_arr = img_nd_arr * 256
             img_nd_arr = img_nd_arr.astype(np.uint8, copy=False)
         else:
-            raise Exception(f'invalid dtype {img_nd_arr.dtype}')
-
-
+            raise Exception(f"invalid dtype {img_nd_arr.dtype}")
 
         self._height, self._width, self._depth = img_nd_arr.shape
 
         if self._depth != 4:
             # todo transform d=1->4 and d=3->4. then error on depth not in [1, 3, 4]
-            raise Exception("image_arr depth is not 4, this can be fixed, but i cba now")
+            raise Exception(
+                "image_arr depth is not 4, this can be fixed, but i cba now"
+            )
 
         self._image_data = img_nd_arr
 
@@ -129,5 +129,3 @@ class ImageData:
 
     def as_1d_ndarray(self) -> np.ndarray:
         return self.image_data.ravel()
-
-
