@@ -32,18 +32,23 @@ class Gifify(ImageAction):
             file_path = f'{temp_dir}/temp_gif.gif'
             out, _ = (
                 ffmpeg
-                .input('./local_test_output/gif_test/gnomechild_varying_variable_swirl_depth_%02d.png', framerate=4, format='image2')
+               .input('./local_test_output/gif_test/gnomechild_varying_variable_swirl_depth_%02d.png', framerate=4, format='image2')
                 # loop -1=>no loop, 1=> loop 1 time, 2=> loop 2 times, nothing->what you want
                 #.output(f'./local_test_output/gifify_{temp_str}.gif')#, loop=-1)
-                .output(file_path)
-                .run()
+                #.output(file_path)
+                #.run()
                 # do I need rawvideo format? pixfmt? just copying it for now
                 #.output('pipe:', format='rawvideo', pix_fmt='rgb24')
-                #.overwrite_output()
+                # rgb8 works, but is big array, rgb24 does not work
+                #.output('pipe:', format='gif', pix_fmt='rgb8')#, pix_fmt='rgb24')
+                .output('pipe:', format='rawvideo', pix_fmt='rgba') # outputs 25 frames of 120x120x120x4
+                .overwrite_output()
                 # read video to local variable
-                #.run(capture_stdout=True)
+                .run(capture_stdout=True)
             )
             
+            # TODO - writing to temp path right now, likely not ideal.
+            # need to learn more about what the scikit image structure is and see how to build something that is compatible between the two
             import shutil
             shutil.copyfile(file_path, './local_test_output/gif_pre_wrapper.gif')
             
