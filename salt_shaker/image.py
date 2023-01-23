@@ -3,7 +3,7 @@ from __future__ import annotations  # py>=3.7 - make factory return type hints w
 import os
 import copy
 
-from numpy import ndarray
+import numpy as np
 from skimage.io import imread, imsave
 
 
@@ -26,9 +26,9 @@ class Image:
         return Image.create_from_ndarray(nd_arr)
 
     @staticmethod
-    def create_from_ndarray(nd_arr: ndarray) -> Image:
+    def create_from_ndarray(nd_arr: np.ndarray) -> Image:
         # hopefully this saves head scratching
-        if not isinstance(nd_arr, ndarray):
+        if not isinstance(nd_arr, np.ndarray):
             raise Exception("nd_arr not type ndarray")
 
         img_data = ImageData(img_nd_arr=nd_arr)
@@ -93,18 +93,30 @@ class ImageData:
         return self._depth
 
     @property
-    def image_data(self) -> ndarray:
+    def image_data(self) -> np.ndarray:
         return self._image_data
 
-    def __init__(self, img_nd_arr: ndarray):
-        if not isinstance(img_nd_arr, ndarray):
+    def __init__(self, img_nd_arr: np.ndarray):
+        if not isinstance(img_nd_arr, np.ndarray):
             raise Exception("image_arr not ndarray")
         if img_nd_arr.ndim != 3:
             raise Exception("image_arr has incorrect dimensions. expected h x w x 4")
-        # todo validate image_arr.dtype = uint8
+
+        # TODO - decide how to handle different types. explicit failure or implict cast?
+        #if img_nd_arr.dtype != np.dtype(np.uint8):
+        if img_nd_arr.dtype == np.dtype(np.uint8):
+            pass
+        elif img_nd_arr.dtype in [np.dtype(np.float32), np.dtype(np.float64)]:
+            # check if image is scaled, and scale it if so
+            if img_nd_arr.max() <= 1.0:
+                img_nd_arr = img_nd_arr * 255
+            img_nd_arr = img_nd_arr.astype(np.uint8, copy=False)
+        else:
+            raise Exception(f'invalid dtype {img_nd_arr.dtype}')
+
+
 
         self._height, self._width, self._depth = img_nd_arr.shape
-        #self._depth = 4
 
         if self._depth != 4:
             # todo transform d=1->4 and d=3->4. then error on depth not in [1, 3, 4]
@@ -112,10 +124,10 @@ class ImageData:
 
         self._image_data = img_nd_arr
 
-    def as_3d_ndarray(self) -> ndarray:
+    def as_3d_ndarray(self) -> np.ndarray:
         return self.image_data
 
-    def as_1d_ndarray(self) -> ndarray:
+    def as_1d_ndarray(self) -> np.ndarray:
         return self.image_data.ravel()
 
 
