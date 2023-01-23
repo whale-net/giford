@@ -6,12 +6,12 @@ import uuid
 from skimage import transform
 
 from salt_shaker.image import Image
-from salt_shaker.image_actions.image_action import ImageAction
+from salt_shaker.image_actions.image_action import ExportImageAction
 from salt_shaker.raw_data import RawDataVideo
 from salt_shaker.image_batch import ImageBatch
 
 
-class Gifify(ImageAction):
+class Gifify(ExportImageAction):
     def __init__(self):
         super().__init__()
 
@@ -54,7 +54,7 @@ class Gifify(ImageAction):
         out, _ = (
             ffmpeg.input(
                 "pipe:",
-                s=f"{height},{width}",
+                s=f"{width}x{height}",
                 format="rawvideo",
                 pix_fmt="rgba",
                 framerate=5,

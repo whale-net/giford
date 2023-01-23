@@ -1,29 +1,52 @@
-from abc import ABC, abstractmethod
+from typing import Any
 
-from salt_shaker.image import Image
+from salt_shaker.action import Action
 from salt_shaker.image_batch import ImageBatch
 
 
-class ImageAction(ABC):
+class ImageAction(Action):
+    """
+    really no reason for this class
+    just kind of feels like a good idea for better inheritance tree shape
+    """
+
     def __init__(self):
         pass
 
-    @abstractmethod
-    # TODO - make inherited process implementations valid?
+    def process(self, *args, **kwargs) -> Any:
+        """
+        takes in image(s), produces image(s)
+        """
+        pass
+
+
+class ChainImageAction(ImageAction):
+    def __init__(self):
+        pass
+
     def process(self, input_batch: ImageBatch) -> ImageBatch:
         """
         takes in image(s), produces image(s)
         """
         pass
 
-    # @staticmethod
-    # def _listify_input(image_input: Image | list[Image]) -> list[Image]:
-    #     # convert variable input into list for ez process
-    #     if not isinstance(image_input, list):
-    #         image_input = [image_input]
-    #     return image_input
-    #
-    # @staticmethod
-    # def _unlistify_output(image_input: list[Image]) -> Image | list[Image]:
-    #     # unconvert list into variable output for ez process
-    #     return image_input[0] if len(image_input) == 1 else image_input
+
+class ExportImageAction(ImageAction):
+    def __init__(self):
+        pass
+
+    def process(self, input_batch: ImageBatch) -> Any:
+        """
+        takes in image(s), produces anything
+        """
+
+
+class ImportImageAction(ImageAction):
+    def __init__(self):
+        pass
+
+    def process(self, *args, **kwargs) -> ImageBatch:
+        """
+        takes in anything, produces image(s)
+        """
+        pass

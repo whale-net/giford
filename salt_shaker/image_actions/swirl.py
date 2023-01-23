@@ -1,11 +1,11 @@
 from skimage import transform
 
 from salt_shaker.image import Image
-from salt_shaker.image_actions.image_action import ImageAction
+from salt_shaker.image_actions.image_action import ChainImageAction
 from salt_shaker.image_batch import ImageBatch
 
 
-class BasicSwirl(ImageAction):
+class BasicSwirl(ChainImageAction):
     def __init__(self):
         super().__init__()
 
@@ -18,7 +18,7 @@ class BasicSwirl(ImageAction):
         return output_batch
 
 
-class VariableSwirl(ImageAction):
+class VariableSwirl(ChainImageAction):
     def __init__(self):
         super().__init__()
 
@@ -43,7 +43,7 @@ class VariableSwirl(ImageAction):
         return output_batch
 
 
-class VaryingVariableSwirl(ImageAction):
+class VaryingVariableSwirl(ChainImageAction):
     def __init__(self):
         super().__init__()
 
