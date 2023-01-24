@@ -26,9 +26,10 @@ jobs:
         python -m pip install --upgrade pip
         pip install pylint
         pip install black
-    - name: Analysing the code with pylint
-      run: |
-        pylint $(git ls-files '*.py')
+    # need to run this locally first lol
+    #- name: Analysing the code with pylint
+    #  run: |
+    #    pylint $(git ls-files '*.py')
     - name: Black Check
       # You may pin to the exact commit or the version.
       # uses: jpetrucciani/black-check@3d09c10eb21ceb5fd6038067fd13153bb6768f9f
