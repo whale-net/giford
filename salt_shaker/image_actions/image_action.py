@@ -2,7 +2,7 @@ from typing import Any, TYPE_CHECKING
 
 from salt_shaker.action import Action
 
-#if TYPE_CHECKING:
+# if TYPE_CHECKING:
 from salt_shaker.frame_batch import FrameBatch
 from salt_shaker.image import Image
 

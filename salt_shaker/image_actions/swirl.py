@@ -5,6 +5,7 @@ from salt_shaker.image_actions.image_action import ChainImageAction
 from salt_shaker.frame_batch import FrameBatch
 from salt_shaker.raw_data import RawDataFrame
 
+
 class BasicSwirl(ChainImageAction):
     def __init__(self):
         super().__init__()
