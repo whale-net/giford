@@ -1,21 +1,17 @@
-import os
-import tempfile
 import ffmpeg
 import numpy as np
-import uuid
-from skimage import transform
 
-from salt_shaker.image import Image
 from salt_shaker.image_actions.image_action import ExportImageAction
 from salt_shaker.raw_data import RawDataVideo
-from salt_shaker.image_batch import ImageBatch
-
+from salt_shaker.frame_batch import FrameBatch
+from salt_shaker.image import Image
+from salt_shaker.image_formats import ImageFormat
 
 class Gifify(ExportImageAction):
     def __init__(self):
         super().__init__()
 
-    def process(self, input_batch: ImageBatch) -> bytes:
+    def process(self, input_batch: FrameBatch) -> Image:
         """
         takes list of images and returns a gif
         """
@@ -23,12 +19,10 @@ class Gifify(ExportImageAction):
         if not input_batch.is_all_img_same_shape():
             raise Exception("not all images are same size in input")
         rdv = RawDataVideo()
-        for img in input_batch.images:
-            rdv.add_frame(img.image_data)
+        rdv.add_batch(input_batch)
 
-        # python scoping allows me to get away with this
-        height = img.image_data.height
-        width = img.image_data.width
+        height = rdv.frames[0].height
+        width = rdv.frames[0].width
 
         vid_ndarr = rdv.as_ndarray()
 
@@ -69,4 +63,4 @@ class Gifify(ExportImageAction):
 
         # output_batch = ImageBatch()
         # output_batch.add_image(Image.create_from_bytes(out, height=120, width=120))
-        return out  # output_batch
+        return Image.create_from_bytes(out, fmt=ImageFormat.GIF)

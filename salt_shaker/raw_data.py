@@ -1,7 +1,10 @@
 from __future__ import annotations  # py>=3.7
 
+import copy
+
 import numpy as np
 import itertools
+from salt_shaker.frame_batch import FrameBatch
 
 # TODO remove ImageData references
 class RawDataFrame:
@@ -86,6 +89,9 @@ class RawDataFrame:
             and (not is_check_depth or self.depth == other_raw_data.depth)
         )
 
+    def clone(self):
+        return copy.deepcopy(self)
+
 
 class RawDataVideo:
     """
@@ -102,6 +108,10 @@ class RawDataVideo:
     def add_frame(self, raw_data_frame: RawDataFrame):
         # TODO - somehow validate all frames are same size. that'll break it
         self.frames.append(raw_data_frame)
+
+    def add_batch(self, batch: FrameBatch):
+        for frame in batch.frames:
+            self.add_frame(frame)
 
     def as_ndarray(self) -> np.ndarray:
         """
