@@ -1,4 +1,4 @@
-name: Pylint
+name: Blacklint
 
 on:
   push:
@@ -24,12 +24,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pylint
         pip install black
-    # need to run this locally first lol
-    #- name: Analysing the code with pylint
-    #  run: |
-    #    pylint $(git ls-files '*.py')
     - name: Black Check
       # You may pin to the exact commit or the version.
       # uses: jpetrucciani/black-check@3d09c10eb21ceb5fd6038067fd13153bb6768f9f
@@ -38,4 +33,4 @@ jobs:
         # File or directory to run black on
         path: ./salt_shaker/
         # Optional Black flags (refer to `black --help`)
-        #black_flags: # optional, default is 
+        #black_flags: # optional, default is
