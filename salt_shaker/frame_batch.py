@@ -2,6 +2,7 @@ from __future__ import annotations  # py>=3.7
 
 # this prevents circular imports, going to bandaid whenever needed because this is dumb
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from salt_shaker.image import Image
     from salt_shaker.raw_data import RawDataFrame
@@ -33,7 +34,7 @@ class FrameBatch:
         for frame in batch.frames:
             self.add_frame(frame)
 
-    def is_all_img_same_shape(self, is_check_depth: bool = False) -> bool:
+    def is_all_frame_same_shape(self, is_check_depth: bool = False) -> bool:
         """
         returns true if all images are the same size
         """
@@ -42,9 +43,7 @@ class FrameBatch:
 
         base_frame = self.frames[0]
         for compare_frame in self.frames[1:]:
-            if not base_frame.is_same_shape(
-                compare_frame, is_check_depth
-            ):
+            if not base_frame.is_same_shape(compare_frame, is_check_depth):
                 return False
 
         return True

@@ -52,8 +52,8 @@ class Image:
     @staticmethod
     def create_from_bytes(byte_data: bytes, fmt: ImageFormat = None) -> Image:
         # TODO byte datatype type hint
-       # img_nd_arr = np.frombuffer(byte_data, dtype=np.uint8)
-#        img_nd_arr = np.reshape(img_nd_arr, (height, width, depth))
+        # img_nd_arr = np.frombuffer(byte_data, dtype=np.uint8)
+        #        img_nd_arr = np.reshape(img_nd_arr, (height, width, depth))
         return Image(fmt=fmt, byte_data=byte_data, _created_from_factory=True)
 
     @staticmethod
@@ -64,7 +64,9 @@ class Image:
     @property
     def raw_frame(self) -> RawDataFrame:
         if self.format != ImageFormat.RGBA:
-            raise Exception(f'unable to set image data, unsupported format {self.format}')
+            raise Exception(
+                f"unable to set image data, unsupported format {self.format}"
+            )
         if self._raw_frame is None:
             raise Exception("image data is None")
 
@@ -73,7 +75,9 @@ class Image:
     @raw_frame.setter
     def raw_frame(self, value: RawDataFrame):
         if self.format != ImageFormat.RGBA:
-            raise Exception(f'unable to set image data, unsupported format {self.format}')
+            raise Exception(
+                f"unable to set image data, unsupported format {self.format}"
+            )
         self._raw_frame = value
 
     @property
@@ -85,16 +89,19 @@ class Image:
         if self.format == ImageFormat.GIF:
             return self._byte_data
         else:
-            raise Exception(f'unspoorted byte data format{self.format}')
+            raise Exception(f"unspoorted byte data format{self.format}")
 
     @property
     def format(self) -> ImageFormat:
         return self._format
 
-    def __init__(self, fmt: ImageFormat
-                 , raw_frame: RawDataFrame=None
-                 , byte_data: bytes =None
-                 , _created_from_factory: bool = False):
+    def __init__(
+        self,
+        fmt: ImageFormat,
+        raw_frame: RawDataFrame = None,
+        byte_data: bytes = None,
+        _created_from_factory: bool = False,
+    ):
         if not _created_from_factory:
             raise Exception(
                 "please use a factory method like Image.create_from_ndarray()"
@@ -107,8 +114,8 @@ class Image:
 
         # kind of recreating factory pattern, but it cleans up __init__
         # todo - revisit how we create images
-            # factory method is effectively re-implemented through the constructor breakout on format
-            # may need to come after deciding how to determine formats and their properties
+        # factory method is effectively re-implemented through the constructor breakout on format
+        # may need to come after deciding how to determine formats and their properties
         if self.format == ImageFormat.RGBA:
             self.__create_from_rgba(raw_frame)
         elif self.format == ImageFormat.GIF:
@@ -135,12 +142,12 @@ class Image:
             raise FileExistsError(f"file already exists [{file_path}]")
 
         if self.format == ImageFormat.GIF:
-            with open(file_path, 'wb') as fd:
+            with open(file_path, "wb") as fd:
                 fd.write(self.img_byte_data)
         elif self.format == ImageFormat.RGBA:
             imsave(file_path, self.raw_frame.as_3d_ndarray())
         else:
-            raise NotImplementedError(f'[{self.format}] write not supported')
+            raise NotImplementedError(f"[{self.format}] write not supported")
 
     def clone(self):
         return copy.deepcopy(self)
