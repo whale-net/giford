@@ -1,4 +1,4 @@
-from typing import Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING, Union
 
 from salt_shaker.action import Action
 
@@ -16,7 +16,7 @@ class ImageAction(Action):
     def __init__(self):
         pass
 
-    def process(self, *args, **kwargs) -> Any:
+    def process(self, *args, **kwargs) -> Union[Image, FrameBatch]:
         """
         takes in image(s), produces image(s)
         """
@@ -25,7 +25,7 @@ class ImageAction(Action):
 
 class ChainImageAction(ImageAction):
     def __init__(self):
-        pass
+        super().__init__()
 
     def process(self, input_batch: FrameBatch, *args, **kwargs) -> FrameBatch:
         """
@@ -36,7 +36,7 @@ class ChainImageAction(ImageAction):
 
 class ExportImageAction(ImageAction):
     def __init__(self):
-        pass
+        super().__init__()
 
     def process(self, input_batch: FrameBatch, *args, **kwargs) -> Image:
         """
@@ -46,7 +46,7 @@ class ExportImageAction(ImageAction):
 
 class ImportImageAction(ImageAction):
     def __init__(self):
-        pass
+        super().__init__()
 
     def process(self, input_image: Image, *args, **kwargs) -> FrameBatch:
         """

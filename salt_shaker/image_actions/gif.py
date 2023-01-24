@@ -9,13 +9,16 @@ from salt_shaker.image_formats import ImageFormat
 
 
 class Gifify(ExportImageAction):
-    def __init__(self):
+    def __init__(self, default_framerate: int = 5):
         super().__init__()
+        self._default_framerate = default_framerate
 
-    def process(self, input_batch: FrameBatch) -> Image:
+    def process(self, input_batch: FrameBatch, framerate: int = None) -> Image:
         """
         takes list of images and returns a gif
         """
+        if not framerate or framerate < 0:
+            framerate = self._default_framerate
 
         # validate shape and create raw_video
         if not input_batch.is_all_frame_same_shape():
