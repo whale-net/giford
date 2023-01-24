@@ -1,7 +1,10 @@
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 from salt_shaker.action import Action
-from salt_shaker.image_batch import ImageBatch
+
+#if TYPE_CHECKING:
+from salt_shaker.frame_batch import FrameBatch
+from salt_shaker.image import Image
 
 
 class ImageAction(Action):
@@ -24,7 +27,7 @@ class ChainImageAction(ImageAction):
     def __init__(self):
         pass
 
-    def process(self, input_batch: ImageBatch) -> ImageBatch:
+    def process(self, input_batch: FrameBatch, *args, **kwargs) -> FrameBatch:
         """
         takes in image(s), produces image(s)
         """
@@ -35,7 +38,7 @@ class ExportImageAction(ImageAction):
     def __init__(self):
         pass
 
-    def process(self, input_batch: ImageBatch) -> Any:
+    def process(self, input_batch: FrameBatch, *args, **kwargs) -> Image:
         """
         takes in image(s), produces anything
         """
@@ -45,7 +48,7 @@ class ImportImageAction(ImageAction):
     def __init__(self):
         pass
 
-    def process(self, *args, **kwargs) -> ImageBatch:
+    def process(self, input_image: Image, *args, **kwargs) -> FrameBatch:
         """
         takes in anything, produces image(s)
         """

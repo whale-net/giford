@@ -1,6 +1,6 @@
 import os
 from salt_shaker.image import Image
-from salt_shaker.image_batch import ImageBatch
+from salt_shaker.frame_batch import FrameBatch
 from salt_shaker.image_actions.swirl import (
     BasicSwirl,
     VariableSwirl,
@@ -21,26 +21,26 @@ def basic_rewrite(input_image):
 
 def basic_swirl(input_image):
     bs = BasicSwirl()
-    batch = ImageBatch()
+    batch = FrameBatch()
     batch.add_image(input_image)
 
     output_batch = bs.process(batch)
-    output_batch.images[0].write_to_file(
+    Image.create_from_raw_data_frame(output_batch.frames[0]).write_to_file(
         os.path.join(OUTPUT_DIR, "orange_basic_swirl.png")
     )
 
 
 def variable_swirl(input_image):
     vs = VariableSwirl()
-    batch = ImageBatch()
+    batch = FrameBatch()
     batch.add_image(input_image)
 
     depth_5_batch = vs.process(batch, 5)
-    depth_5_batch.images[0].write_to_file(
+    Image.create_from_raw_data_frame(depth_5_batch.frames[0]).write_to_file(
         os.path.join(OUTPUT_DIR, "orange_variable_swirl_depth_5.png")
     )
     depth_10_batch = vs.process(batch, 10)
-    depth_10_batch.images[0].write_to_file(
+    Image.create_from_raw_data_frame(depth_10_batch.frames[0]).write_to_file(
         os.path.join(OUTPUT_DIR, "orange_variable_swirl_depth_10.png")
     )
 
@@ -48,11 +48,12 @@ def variable_swirl(input_image):
 def varying_variable_swirl(input_image):
     # this will take a while
     vvs = VaryingVariableSwirl()
-    batch = ImageBatch()
+    batch = FrameBatch()
     batch.add_image(input_image)
 
     output_batch = vvs.process(batch, VARYING_DEPTH)
-    for i, img in enumerate(output_batch.images):
+    for i, frame in enumerate(output_batch.frames):
+        img = Image.create_from_raw_data_frame(frame)
         if i % 5 == 0:
             img.write_to_file(
                 os.path.join(OUTPUT_DIR, f"orange_varying_variable_swirl_depth_{i}.png")
@@ -70,7 +71,7 @@ def varying_variable_swirl(input_image):
 
 def gif():
     g = Gifify()
-    batch = ImageBatch()
+    batch = FrameBatch()
     for i in range(VARYING_DEPTH):
         batch.add_image(
             Image.create_from_file(
@@ -79,8 +80,9 @@ def gif():
         )
     output_gif = g.process(batch)
 
-    with open(os.path.join(OUTPUT_DIR, "orange_swirl.gif"), "wb") as f:
-        f.write(output_gif)
+    # with open(os.path.join(OUTPUT_DIR, "orange_swirl.gif"), "wb") as f:
+    #     f.write(output_gif)
+    output_gif.write_to_file(os.path.join(OUTPUT_DIR, "orange_swirl.gif"))
 
 
 if __name__ == "__main__":
