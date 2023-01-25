@@ -7,6 +7,7 @@ from salt_shaker.image_actions.swirl import (
     VaryingVariableSwirl,
 )
 from salt_shaker.image_actions.gif import Gifify
+from salt_shaker.image_actions.translate import Translate
 
 INPUT_DIR = "./sample_data/"
 GIF_DATA_INPUT_DIR = os.path.join(INPUT_DIR, "gif_data")
@@ -84,6 +85,51 @@ def gif():
     #     f.write(output_gif)
     output_gif.write_to_file(os.path.join(OUTPUT_DIR, "orange_swirl.gif"))
 
+def translate_basic(input_image):
+    t = Translate()
+    batch = FrameBatch()
+    batch.add_image(input_image)
+    output_batch = \
+        t.process(batch, horizontal_shift_px=100)\
+        .add_batch(t.process(batch, horizontal_shift_px=-100))\
+        .add_batch(t.process(batch, vertical_shift_px=100))\
+        .add_batch(t.process(batch, vertical_shift_px=-100))
+
+    img_hp = Image.create_from_raw_data_frame(output_batch.frames[0])
+    img_hp.write_to_file(os.path.join(OUTPUT_DIR, 'orange_translate_h+100.png'))
+
+    img_hn = Image.create_from_raw_data_frame(output_batch.frames[1])
+    img_hn.write_to_file(os.path.join(OUTPUT_DIR, 'orange_translate_h-100.png'))
+
+    img_vp = Image.create_from_raw_data_frame(output_batch.frames[2])
+    img_vp.write_to_file(os.path.join(OUTPUT_DIR, 'orange_translate_v+100.png'))
+
+    img_vn = Image.create_from_raw_data_frame(output_batch.frames[3])
+    img_vn.write_to_file(os.path.join(OUTPUT_DIR, 'orange_translate_v-100.png'))
+
+def translate_complex(input_image):
+    t = Translate()
+    batch = FrameBatch()
+    batch.add_image(input_image)
+    output_batch = \
+        t.process(batch, horizontal_shift_px=100, vertical_shift_px=100)\
+        .add_batch(t.process(batch, horizontal_shift_px=-100, vertical_shift_px=100))\
+        .add_batch(t.process(batch, horizontal_shift_px=100, vertical_shift_px=-100))\
+        .add_batch(t.process(batch, horizontal_shift_px=-100, vertical_shift_px=-100))
+
+    img_hp_vp = Image.create_from_raw_data_frame(output_batch.frames[0])
+    img_hp_vp.write_to_file(os.path.join(OUTPUT_DIR, 'orange_translate_h+100_v+100.png'))
+
+    img_hn_vp = Image.create_from_raw_data_frame(output_batch.frames[1])
+    img_hn_vp.write_to_file(os.path.join(OUTPUT_DIR, 'orange_translate_h-100_v+100.png'))
+
+    img_hp_vn = Image.create_from_raw_data_frame(output_batch.frames[2])
+    img_hp_vn.write_to_file(os.path.join(OUTPUT_DIR, 'orange_translate_h+100_v-100.png'))
+
+    img_hn_vn = Image.create_from_raw_data_frame(output_batch.frames[3])
+    img_hn_vn.write_to_file(os.path.join(OUTPUT_DIR, 'orange_translate_h-100_v-100.png'))
+
+
 
 if __name__ == "__main__":
     orange = Image.create_from_file(os.path.join(INPUT_DIR, "orange.png"))
@@ -91,5 +137,7 @@ if __name__ == "__main__":
     basic_rewrite(orange)
     basic_swirl(orange)
     variable_swirl(orange)
-    # varying_variable_swirl(orange)
+    varying_variable_swirl(orange)
     gif()
+    translate_basic(orange)
+    translate_complex(orange)
