@@ -1,3 +1,4 @@
+import ffmpeg
 from skimage import transform
 import numpy as np
 
@@ -8,8 +9,6 @@ from salt_shaker.raw_data import RawDataFrame
 
 class Translate(ChainImageAction):
 
-    _empty_frame = np.zeros((4,))
-
     def __init__(self):
         super().__init__()
 
@@ -18,7 +17,9 @@ class Translate(ChainImageAction):
         translate image up down left right
         """
         # todo type checking and errors
-
+        # todo support background color per pixel on shift
+        # todo some optimizations around which rows run when
+        # todo, look at more mathy numpy to see if there is a more better implementation
         if horizontal_shift_px == 0 and vertical_shift_px == 0:
             # todo clone
             return input_batch
@@ -29,34 +30,49 @@ class Translate(ChainImageAction):
 
             # handle horizontal shifts
             if horizontal_shift_px != 0:
-                # create empty array
-                arr_builder_iter = (Translate._empty_frame for _ in range(abs(horizontal_shift_px)))
-                arr_dtype = np.dtype((frame.data_arr[1].dtype, 4))
-                empty_frame_vertical_arr = np.fromiter(arr_builder_iter, arr_dtype)
+                # we have data like [px0, px1, px2, px3, px4]
+                # shift h+2 -> [empty, empty, px0, px1, px2]
+                # shift h-2 -> [px2, px3, px4, empty, empty]
 
+                # build array used to shift pixels
+                empty_frame_h_shift_arr = np.array(list(frame.get_empty_pixel() for _ in range(abs(horizontal_shift_px))))
+                # for each row in the frame, shift pixels with empty data
                 for h_idx in range(frame.height):
-                    a = empty_frame_vertical_arr
-                    b = frame.data_arr[h_idx]
-
                     intermediate_arr = frame.data_arr[h_idx]
                     if horizontal_shift_px > 0:
-                        # shorten array
                         intermediate_arr = intermediate_arr[:frame.width-horizontal_shift_px]
-                        # build it back up
-                        intermediate_arr = np.concatenate((empty_frame_vertical_arr, intermediate_arr), axis=0)
+                        intermediate_arr = np.concatenate((empty_frame_h_shift_arr, intermediate_arr), axis=0)
                     else:
-                        # shorten array
                         intermediate_arr = intermediate_arr[abs(horizontal_shift_px):]
-                        # build it back up
-                        intermediate_arr = np.concatenate((intermediate_arr, empty_frame_vertical_arr), axis=0)
+                        intermediate_arr = np.concatenate((intermediate_arr, empty_frame_h_shift_arr), axis=0)
 
                     frame.data_arr[h_idx] = intermediate_arr
 
-                    # combine arrays and pickup only pixels we want
+            # handle vertical shift
+            if vertical_shift_px != 0:
+                # we have data like [row0, row1, row2, row3, row4]
+                # shift v+2 -> [empty, empty, row0, row1, row2]
+                # shift v-2 -> [row2, row3, row4, empty, empty]
+
+                # create all the empty rows that we need to shift
+                # i swear this is the best way to do this for this current implementation method
+                empty_frame_pixel_rows = np.array(
+                    list(
+                        # note: the parens are needed here, turns it into a generator which will yield a list
+                        # this makes the outer list function build a list of lists
+                        (list(frame.get_empty_pixel() for _ in range(frame.width))
+                        for _ in range(abs(vertical_shift_px)))
+                    )
+                )
+
+                if vertical_shift_px > 0:
+                    frame.data_arr = frame.data_arr[:frame.height-vertical_shift_px]
+                    frame.data_arr = np.concatenate((empty_frame_pixel_rows, frame.data_arr), axis=0)
+                else:
+                    frame.data_arr = frame.data_arr[abs(vertical_shift_px):]
+                    frame.data_arr = np.concatenate((frame.data_arr, empty_frame_pixel_rows), axis=0)
 
 
-
-            # img_nd_arr = transform.swirl(frame.as_3d_ndarray())
             output_batch.add_frame(frame)
 
 
