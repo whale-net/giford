@@ -28,7 +28,6 @@ class RawDataFrame:
         # i suppose that if you want a clone i can make as_3d_ndarray do that
         self._image_data = value
 
-
     @property
     def height(self) -> int:
         return self.data_arr.shape[RawDataFrame.__SHAPE_HEIGHT_IDX]
@@ -73,8 +72,6 @@ class RawDataFrame:
         #
 
         self._image_data = nd_arr
-
-
 
         if self.depth != 4:
             # todo transform d=1->4 and d=3->4. then error on depth not in [1, 3, 4]

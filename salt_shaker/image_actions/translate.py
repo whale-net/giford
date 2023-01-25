@@ -8,11 +8,12 @@ from salt_shaker.raw_data import RawDataFrame
 
 
 class Translate(ChainImageAction):
-
     def __init__(self):
         super().__init__()
 
-    def process(self, input_batch: FrameBatch, horizontal_shift_px=0, vertical_shift_px=0) -> FrameBatch:
+    def process(
+        self, input_batch: FrameBatch, horizontal_shift_px=0, vertical_shift_px=0
+    ) -> FrameBatch:
         """
         translate image up down left right
         """
@@ -35,16 +36,26 @@ class Translate(ChainImageAction):
                 # shift h-2 -> [px2, px3, px4, empty, empty]
 
                 # build array used to shift pixels
-                empty_frame_h_shift_arr = np.array(list(frame.get_empty_pixel() for _ in range(abs(horizontal_shift_px))))
+                empty_frame_h_shift_arr = np.array(
+                    list(
+                        frame.get_empty_pixel() for _ in range(abs(horizontal_shift_px))
+                    )
+                )
                 # for each row in the frame, shift pixels with empty data
                 for h_idx in range(frame.height):
                     intermediate_arr = frame.data_arr[h_idx]
                     if horizontal_shift_px > 0:
-                        intermediate_arr = intermediate_arr[:frame.width-horizontal_shift_px]
-                        intermediate_arr = np.concatenate((empty_frame_h_shift_arr, intermediate_arr), axis=0)
+                        intermediate_arr = intermediate_arr[
+                            : frame.width - horizontal_shift_px
+                        ]
+                        intermediate_arr = np.concatenate(
+                            (empty_frame_h_shift_arr, intermediate_arr), axis=0
+                        )
                     else:
-                        intermediate_arr = intermediate_arr[abs(horizontal_shift_px):]
-                        intermediate_arr = np.concatenate((intermediate_arr, empty_frame_h_shift_arr), axis=0)
+                        intermediate_arr = intermediate_arr[abs(horizontal_shift_px) :]
+                        intermediate_arr = np.concatenate(
+                            (intermediate_arr, empty_frame_h_shift_arr), axis=0
+                        )
 
                     frame.data_arr[h_idx] = intermediate_arr
 
@@ -60,20 +71,24 @@ class Translate(ChainImageAction):
                     list(
                         # note: the parens are needed here, turns it into a generator which will yield a list
                         # this makes the outer list function build a list of lists
-                        (list(frame.get_empty_pixel() for _ in range(frame.width))
-                        for _ in range(abs(vertical_shift_px)))
+                        (
+                            list(frame.get_empty_pixel() for _ in range(frame.width))
+                            for _ in range(abs(vertical_shift_px))
+                        )
                     )
                 )
 
                 if vertical_shift_px > 0:
-                    frame.data_arr = frame.data_arr[:frame.height-vertical_shift_px]
-                    frame.data_arr = np.concatenate((empty_frame_pixel_rows, frame.data_arr), axis=0)
+                    frame.data_arr = frame.data_arr[: frame.height - vertical_shift_px]
+                    frame.data_arr = np.concatenate(
+                        (empty_frame_pixel_rows, frame.data_arr), axis=0
+                    )
                 else:
-                    frame.data_arr = frame.data_arr[abs(vertical_shift_px):]
-                    frame.data_arr = np.concatenate((frame.data_arr, empty_frame_pixel_rows), axis=0)
-
+                    frame.data_arr = frame.data_arr[abs(vertical_shift_px) :]
+                    frame.data_arr = np.concatenate(
+                        (frame.data_arr, empty_frame_pixel_rows), axis=0
+                    )
 
             output_batch.add_frame(frame)
-
 
         return output_batch
