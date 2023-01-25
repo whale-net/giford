@@ -24,15 +24,24 @@ class FrameBatch:
     def add_frame(self, frame: RawDataFrame):
         self.frames.append(frame.clone())
 
+        # allow chaining these functions together
+        return self
+
     def add_image(self, img: Image):
         # TODO - cloning here is safe but expensive, can this be improved?
         self.add_frame(img.raw_frame)
+
+        # allow chaining these functions together
+        return self
 
     def add_batch(self, batch: FrameBatch):
         # self.images += batch.images
         # need to add_img, so we clone properly
         for frame in batch.frames:
             self.add_frame(frame)
+
+        # allow chaining these functions together
+        return self
 
     def is_all_frame_same_shape(self, is_check_depth: bool = False) -> bool:
         """
