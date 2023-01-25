@@ -106,7 +106,7 @@ class RawDataFrame:
         return copy.deepcopy(self)
 
     def get_empty_pixel(self):
-        return np.zeros((self.depth,))
+        return np.zeros((self.depth,)).astype(self.data_arr.dtype)
 
 
 class RawDataVideo:
