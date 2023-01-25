@@ -22,8 +22,7 @@ class Translate(ChainImageAction):
         # todo some optimizations around which rows run when
         # todo, look at more mathy numpy to see if there is a more better implementation
         if horizontal_shift_px == 0 and vertical_shift_px == 0:
-            # todo clone
-            return input_batch
+            return input_batch.clone()
 
         output_batch = FrameBatch()
         for frame in input_batch.frames:

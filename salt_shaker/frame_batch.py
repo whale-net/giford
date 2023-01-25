@@ -1,5 +1,6 @@
 from __future__ import annotations  # py>=3.7
 
+import copy
 # this prevents circular imports, going to bandaid whenever needed because this is dumb
 from typing import TYPE_CHECKING
 
@@ -56,3 +57,6 @@ class FrameBatch:
                 return False
 
         return True
+
+    def clone(self):
+        return copy.deepcopy(self)
