@@ -21,6 +21,14 @@ class RawDataFrame:
     def data_arr(self) -> np.ndarray:
         return self._image_data
 
+    @data_arr.setter
+    def data_arr(self, value: np.ndarray):
+        # i dont really like the idea of this being accessible
+        # but by exposing the data_arr in the first place i open myself up to this
+        # i suppose that if you want a clone i can make as_3d_ndarray do that
+        self._image_data = value
+
+
     @property
     def height(self) -> int:
         return self.data_arr.shape[RawDataFrame.__SHAPE_HEIGHT_IDX]
@@ -38,6 +46,7 @@ class RawDataFrame:
         """
         iterator for data in array
         """
+        # todo this is a really weird property that should be reconsidered
         for val in self.data_arr.flat:
             yield val
 
@@ -65,6 +74,8 @@ class RawDataFrame:
 
         self._image_data = nd_arr
 
+
+
         if self.depth != 4:
             # todo transform d=1->4 and d=3->4. then error on depth not in [1, 3, 4]
             raise Exception(
@@ -72,10 +83,12 @@ class RawDataFrame:
             )
 
     def as_3d_ndarray(self) -> np.ndarray:
+        # modifying will modify array in this data frame
         # array is already 3d ndarray
         return self.data_arr
 
     def as_1d_ndarray(self) -> np.ndarray:
+        # modifying will modify array in this data frame
         return self.data_arr.ravel()
 
     def is_same_shape(
@@ -91,6 +104,9 @@ class RawDataFrame:
 
     def clone(self):
         return copy.deepcopy(self)
+
+    def get_empty_pixel(self):
+        return np.zeros((self.depth,))
 
 
 class RawDataVideo:
