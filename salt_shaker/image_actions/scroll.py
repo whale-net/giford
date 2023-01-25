@@ -21,12 +21,14 @@ class BasicScroll(ChainImageAction):
         t = Translate()
         for frame in input_batch.frames:
             # 30 frames for now
-            scroll_base = int(frame.width / 30)
+            num_frames = 30
+            # TODO floor division - //
+            scroll_base = int(frame.width / num_frames)
 
-            for i in range(scroll_base):
-                output_batch.add_batch(t.process(input_batch, horizontal_shift_px=-int((30-i)*scroll_base)))
+            for i in range(num_frames):
+                output_batch.add_batch(t.process(input_batch, horizontal_shift_px=-int((num_frames-i)*scroll_base)))
             output_batch.add_batch(t.process(input_batch, horizontal_shift_px=0))
-            for i in range(scroll_base):
+            for i in range(num_frames):
                 output_batch.add_batch(t.process(input_batch, horizontal_shift_px=int(i*scroll_base)))
 
         return output_batch
