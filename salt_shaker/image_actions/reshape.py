@@ -6,6 +6,7 @@ from salt_shaker.image_actions.translate import Translate
 from salt_shaker.frame_batch import FrameBatch
 from salt_shaker.raw_data import RawDataFrame
 
+
 class ReshapeMethod(enum.Enum):
     RESCALE = 1
     RESIZE = 2
@@ -16,6 +17,7 @@ class Reshape(ChainImageAction):
     """
     turns 120x120 into 60x60 or 240x240
     """
+
     def __init__(self):
         super().__init__()
 
@@ -42,28 +44,32 @@ class Reshape(ChainImageAction):
                     frame = Reshape._resize(frame, scale_factor, enable_anti_aliasing)
                 case ReshapeMethod.DOWNSCALE:
                     frame = Reshape._downscale(frame)
-                case _: # default case
-                    raise Exception(f'unsupported reshape method [{reshape_method}]')
+                case _:  # default case
+                    raise Exception(f"unsupported reshape method [{reshape_method}]")
 
             if frame is None:
-                raise Exception('developer error, didn''t set frame')
+                raise Exception("developer error, didn" "t set frame")
 
             output_batch.add_frame(frame)
 
         return output_batch
 
     @staticmethod
-    def _rescale(frame: RawDataFrame, scale_factor: float, enable_anti_aliasing: bool) -> RawDataFrame:
+    def _rescale(
+        frame: RawDataFrame, scale_factor: float, enable_anti_aliasing: bool
+    ) -> RawDataFrame:
         nd_arr = transform.rescale(
             image=frame.get_data_arr(),
             scale=scale_factor,
             anti_aliasing=enable_anti_aliasing,
-            channel_axis=RawDataFrame.SHAPE_DEPTH_IDX
+            channel_axis=RawDataFrame.SHAPE_DEPTH_IDX,
         )
         return RawDataFrame(nd_arr)
 
     @staticmethod
-    def _resize(frame: RawDataFrame, scale_factor: float, enable_anti_aliasing: bool) -> RawDataFrame:
+    def _resize(
+        frame: RawDataFrame, scale_factor: float, enable_anti_aliasing: bool
+    ) -> RawDataFrame:
         size_divisor = 1 / scale_factor
         nd_arr = transform.resize(
             image=frame.get_data_arr(),

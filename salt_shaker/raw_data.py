@@ -5,6 +5,7 @@ import numpy as np
 import itertools
 from salt_shaker.frame_batch import FrameBatch
 
+
 class RawDataFrame:
     """
     wrapper for ndarray of size h x w x d (d=depth=always 4)
@@ -19,15 +20,21 @@ class RawDataFrame:
 
     @property
     def height(self) -> int:
-        return self.get_data_arr(is_return_reference=True).shape[RawDataFrame.SHAPE_HEIGHT_IDX]
+        return self.get_data_arr(is_return_reference=True).shape[
+            RawDataFrame.SHAPE_HEIGHT_IDX
+        ]
 
     @property
     def width(self) -> int:
-        return self.get_data_arr(is_return_reference=True).shape[RawDataFrame.SHAPE_WIDTH_IDX]
+        return self.get_data_arr(is_return_reference=True).shape[
+            RawDataFrame.SHAPE_WIDTH_IDX
+        ]
 
     @property
     def depth(self) -> int:
-        return self.get_data_arr(is_return_reference=True).shape[RawDataFrame.SHAPE_DEPTH_IDX]
+        return self.get_data_arr(is_return_reference=True).shape[
+            RawDataFrame.SHAPE_DEPTH_IDX
+        ]
 
     @property
     def data_size(self) -> int:
@@ -37,7 +44,7 @@ class RawDataFrame:
         """
         return self._data_arr.size
 
-    def flat_data(self, target_dtype: np.dtype=None):
+    def flat_data(self, target_dtype: np.dtype = None):
         """
         iterator for data in array
         """
@@ -46,12 +53,14 @@ class RawDataFrame:
         # maybe can make 1ds, concat all at once and then reshape
         data_arr = self.get_data_arr()
         if target_dtype is not None:
-            data_arr = RawDataFrame.convert_data_arr(data_arr, target_dtype=target_dtype)
+            data_arr = RawDataFrame.convert_data_arr(
+                data_arr, target_dtype=target_dtype
+            )
 
         for val in data_arr.flat:
             yield val
 
-    def get_data_arr(self, is_return_reference: bool= False) -> np.ndarray:
+    def get_data_arr(self, is_return_reference: bool = False) -> np.ndarray:
         """
         return underlying data array
         :param is_return_reference: if true return underlying array (dangerous)
@@ -150,7 +159,7 @@ class RawDataFrame:
                 return data_arr
 
             case _:
-                raise Exception(f'unsupported target_dtype: [{target_dtype}]')
+                raise Exception(f"unsupported target_dtype: [{target_dtype}]")
 
 
 class RawDataVideo:
@@ -173,7 +182,7 @@ class RawDataVideo:
         for frame in batch.frames:
             self.add_frame(frame)
 
-    def as_ndarray(self, target_dtype: np.dtype=None) -> np.ndarray:
+    def as_ndarray(self, target_dtype: np.dtype = None) -> np.ndarray:
         """
         convert raw_data_frames to array of raw data arrays
         # TODO currently 1d
@@ -196,10 +205,9 @@ class RawDataVideo:
 
         video_arr: np.ndarray = np.fromiter(
             chained_iter,
-            #first_frame.get_data_arr().dtype,
+            # first_frame.get_data_arr().dtype,
             target_dtype,
             first_frame.data_size * num_frames,
         )
-
 
         return video_arr
