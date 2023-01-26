@@ -25,8 +25,9 @@ class Translate(ChainImageAction):
             return input_batch.clone()
 
         output_batch = FrameBatch()
-        for frame in input_batch.frames:
-            frame = frame.clone()
+        for frame in input_batch.cloned_frames():
+            # data_arr references the img data in the cloned frame
+            data_arr = frame.get_data_arr(is_return_reference=True)
 
             # handle horizontal shifts
             if horizontal_shift_px != 0:
@@ -34,33 +35,15 @@ class Translate(ChainImageAction):
                 # shift h+2 -> [empty, empty, px0, px1, px2]
                 # shift h-2 -> [px2, px3, px4, empty, empty]
 
-                # build array used to shift pixels
-                empty_frame_h_shift_arr = np.array(
-                    list(
-                        frame.get_empty_pixel() for _ in range(abs(horizontal_shift_px))
-                    )
-                )
-                # for each row in the frame, shift pixels with empty data
+                # todo - is there way to do this outside of for loop?
+                # use np.roll to move data and then zero it with empty pixels
                 for h_idx in range(frame.height):
-                    intermediate_arr = frame.get_data_arr(is_return_reference=True)[
-                        h_idx
-                    ]
+                    tmp_arr = np.roll(data_arr[h_idx], horizontal_shift_px*frame.depth)
                     if horizontal_shift_px > 0:
-                        intermediate_arr = intermediate_arr[
-                            : frame.width - horizontal_shift_px
-                        ]
-                        intermediate_arr = np.concatenate(
-                            (empty_frame_h_shift_arr, intermediate_arr), axis=0
-                        )
+                        tmp_arr[:horizontal_shift_px] = frame.get_empty_pixel()
                     else:
-                        intermediate_arr = intermediate_arr[abs(horizontal_shift_px) :]
-                        intermediate_arr = np.concatenate(
-                            (intermediate_arr, empty_frame_h_shift_arr), axis=0
-                        )
-
-                    frame.get_data_arr(is_return_reference=True)[
-                        h_idx
-                    ] = intermediate_arr
+                        tmp_arr[horizontal_shift_px:] = frame.get_empty_pixel()
+                    data_arr[h_idx] = tmp_arr
 
             # handle vertical shift
             if vertical_shift_px != 0:
