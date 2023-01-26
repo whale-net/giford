@@ -17,7 +17,7 @@ class BasicScroll(ChainImageAction):
         output_batch = FrameBatch()
 
         # todo empty frames around beginning and end
-            # todo empty frame util somehwere. maybe rawdataframe
+        # todo empty frame util somehwere. maybe rawdataframe
         t = Translate()
         for frame in input_batch.frames:
             # 30 frames for now
@@ -26,9 +26,16 @@ class BasicScroll(ChainImageAction):
             scroll_base = int(frame.width / num_frames)
 
             for i in range(num_frames):
-                output_batch.add_batch(t.process(input_batch, horizontal_shift_px=-int((num_frames-i)*scroll_base)))
+                output_batch.add_batch(
+                    t.process(
+                        input_batch,
+                        horizontal_shift_px=-int((num_frames - i) * scroll_base),
+                    )
+                )
             output_batch.add_batch(t.process(input_batch, horizontal_shift_px=0))
             for i in range(num_frames):
-                output_batch.add_batch(t.process(input_batch, horizontal_shift_px=int(i*scroll_base)))
+                output_batch.add_batch(
+                    t.process(input_batch, horizontal_shift_px=int(i * scroll_base))
+                )
 
         return output_batch

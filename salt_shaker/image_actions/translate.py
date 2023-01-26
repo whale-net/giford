@@ -66,6 +66,7 @@ class Translate(ChainImageAction):
 
                 # create all the empty rows that we need to shift
                 # i swear this is the best way to do this for this current implementation method
+                # TODO - just use reshape. lmao
                 empty_frame_pixel_rows = np.array(
                     list(
                         # note: the parens are needed here, turns it into a generator which will yield a list

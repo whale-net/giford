@@ -1,6 +1,7 @@
 from __future__ import annotations  # py>=3.7
 
 import copy
+
 # this prevents circular imports, going to bandaid whenever needed because this is dumb
 from typing import TYPE_CHECKING
 
@@ -60,3 +61,12 @@ class FrameBatch:
 
     def clone(self):
         return copy.deepcopy(self)
+
+    def cloned_frames(self):
+        """
+        returns cloned copy of all frames in batch
+
+        useful for implementing image actions
+        """
+        for frame in self.frames:
+            yield frame.clone()

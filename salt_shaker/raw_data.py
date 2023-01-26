@@ -13,9 +13,9 @@ class RawDataFrame:
     """
 
     # ndarray.shape index
-    __SHAPE_HEIGHT_IDX = 0
-    __SHAPE_WIDTH_IDX = 1
-    __SHAPE_DEPTH_IDX = 2
+    SHAPE_HEIGHT_IDX = 0
+    SHAPE_WIDTH_IDX = 1
+    SHAPE_DEPTH_IDX = 2
 
     @property
     def data_arr(self) -> np.ndarray:
@@ -30,15 +30,15 @@ class RawDataFrame:
 
     @property
     def height(self) -> int:
-        return self.data_arr.shape[RawDataFrame.__SHAPE_HEIGHT_IDX]
+        return self.data_arr.shape[RawDataFrame.SHAPE_HEIGHT_IDX]
 
     @property
     def width(self) -> int:
-        return self.data_arr.shape[RawDataFrame.__SHAPE_WIDTH_IDX]
+        return self.data_arr.shape[RawDataFrame.SHAPE_WIDTH_IDX]
 
     @property
     def depth(self) -> int:
-        return self.data_arr.shape[RawDataFrame.__SHAPE_DEPTH_IDX]
+        return self.data_arr.shape[RawDataFrame.SHAPE_DEPTH_IDX]
 
     @property
     def flat_data(self):
