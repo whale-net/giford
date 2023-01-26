@@ -29,7 +29,7 @@ class Gifify(ExportImageAction):
         height = rdv.frames[0].height
         width = rdv.frames[0].width
 
-        rdv_byte_pipe_input = rdv.as_ndarray().astype(np.uint8).tobytes()
+        rdv_byte_pipe_input = rdv.as_ndarray(target_dtype=np.uint8).tobytes()
 
         # TODO - look at https://github.com/kkroening/ffmpeg-python/blob/master/examples/README.md#tensorflow-streaming
         # and make this buffered

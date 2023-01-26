@@ -42,7 +42,7 @@ class Translate(ChainImageAction):
                 )
                 # for each row in the frame, shift pixels with empty data
                 for h_idx in range(frame.height):
-                    intermediate_arr = frame.data_arr[h_idx]
+                    intermediate_arr = frame.get_data_arr(is_return_reference=True)[h_idx]
                     if horizontal_shift_px > 0:
                         intermediate_arr = intermediate_arr[
                             : frame.width - horizontal_shift_px
@@ -56,7 +56,7 @@ class Translate(ChainImageAction):
                             (intermediate_arr, empty_frame_h_shift_arr), axis=0
                         )
 
-                    frame.data_arr[h_idx] = intermediate_arr
+                    frame.get_data_arr(is_return_reference=True)[h_idx] = intermediate_arr
 
             # handle vertical shift
             if vertical_shift_px != 0:
@@ -79,15 +79,15 @@ class Translate(ChainImageAction):
                 )
 
                 if vertical_shift_px > 0:
-                    frame.data_arr = frame.data_arr[: frame.height - vertical_shift_px]
-                    frame.data_arr = np.concatenate(
-                        (empty_frame_pixel_rows, frame.data_arr), axis=0
-                    )
+                    data_arr = frame.get_data_arr(is_return_reference=True)[: frame.height - vertical_shift_px]
+                    frame.update_data_arr(np.concatenate(
+                        (empty_frame_pixel_rows, data_arr), axis=0
+                    ))
                 else:
-                    frame.data_arr = frame.data_arr[abs(vertical_shift_px) :]
-                    frame.data_arr = np.concatenate(
-                        (frame.data_arr, empty_frame_pixel_rows), axis=0
-                    )
+                    data_arr = frame.get_data_arr(is_return_reference=True)[abs(vertical_shift_px):]
+                    frame.update_data_arr(np.concatenate(
+                        (data_arr, empty_frame_pixel_rows), axis=0
+                    ))
 
             output_batch.add_frame(frame)
 

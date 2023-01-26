@@ -134,10 +134,10 @@ def translate_complex(input_image):
 if __name__ == "__main__":
     orange = Image.create_from_file(os.path.join(INPUT_DIR, "orange.png"))
 
-    basic_rewrite(orange)
-    basic_swirl(orange)
-    variable_swirl(orange)
-    varying_variable_swirl(orange)
-    gif()
+    # basic_rewrite(orange)
+    # basic_swirl(orange)
+    # variable_swirl(orange)
+    # varying_variable_swirl(orange)
+    # gif()
     translate_basic(orange)
     translate_complex(orange)

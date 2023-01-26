@@ -55,7 +55,7 @@ class Reshape(ChainImageAction):
     @staticmethod
     def _rescale(frame: RawDataFrame, scale_factor: float, enable_anti_aliasing: bool) -> RawDataFrame:
         nd_arr = transform.rescale(
-            image=frame.data_arr,
+            image=frame.get_data_arr(),
             scale=scale_factor,
             anti_aliasing=enable_anti_aliasing,
             channel_axis=RawDataFrame.SHAPE_DEPTH_IDX
@@ -66,7 +66,7 @@ class Reshape(ChainImageAction):
     def _resize(frame: RawDataFrame, scale_factor: float, enable_anti_aliasing: bool) -> RawDataFrame:
         size_divisor = 1 / scale_factor
         nd_arr = transform.resize(
-            image=frame.data_arr,
+            image=frame.get_data_arr(),
             output_shape=(frame.height // size_divisor, frame.width // size_divisor),
             anti_aliasing=enable_anti_aliasing,
         )

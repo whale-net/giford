@@ -38,7 +38,7 @@ class FrameBatch:
 
     def add_batch(self, batch: FrameBatch):
         # self.images += batch.images
-        # need to add_img, so we clone properly
+        # need to add_img, so we is_clone properly
         for frame in batch.frames:
             self.add_frame(frame)
 
