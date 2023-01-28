@@ -80,22 +80,6 @@ class RawDataFrame:
         if nd_arr.dtype not in RawDataFrame.SUPPORTED_DATATYPES:
             raise Exception(f"unsupported datatype given {nd_arr.dtype}")
 
-        # TODO - decide how to handle different types. explicit failure or implict cast?
-        # NOTE - using uint8 kind of works, except when we cast a bunch of times we lose precision
-        # Can we depend on the programmer to use the correct types?
-        # or should we be lazy and just let it be until a different type is requested?
-        # if img_nd_arr.dtype != np.dtype(np.uint8):
-        # if img_nd_arr.dtype == np.dtype(np.uint8):
-        #     pass
-        # elif img_nd_arr.dtype in [np.dtype(np.float32), np.dtype(np.float64)]:
-        #     # check if image is scaled [0, 1] and scale it to [0, 255]
-        #     if img_nd_arr.max() <= 1.0:
-        #         img_nd_arr = img_nd_arr * 256
-        #     img_nd_arr = img_nd_arr.astype(np.uint8, copy=False)
-        # else:
-        #     raise Exception(f"invalid dtype {img_nd_arr.dtype}")
-        #
-
         self._data_arr = nd_arr
 
         if self.depth != 4:
