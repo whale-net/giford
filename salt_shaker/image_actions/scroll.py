@@ -70,7 +70,6 @@ class Scroll(ChainImageAction):
                 raise Exception('cannot scroll more than 1 time if wrap is false')
 
 
-
         # this is opposite what you'd think, but is correct
         if is_horizontal_direction_negative:
             h_direction_sign = 1
@@ -108,16 +107,26 @@ class Scroll(ChainImageAction):
             for i in range(num_frames_to_generate):
 
                 if is_horizontal_scroll:
-                    h_shift_px = h_direction_sign * frame.width + (
-                        h_direction_sign * i * h_scroll_step_size_px
-                    )
+                    if is_horizontal_direction_negative:
+                        h_shift_px = h_direction_sign * frame.width - (
+                                i * h_scroll_step_size_px
+                        )
+                    else:
+                        h_shift_px = h_direction_sign * frame.width + (
+                            i * h_scroll_step_size_px
+                        )
                 else:
                     h_shift_px = 0
 
                 if is_vertical_scroll:
-                    v_shift_px = v_direction_sign * frame.height + (
-                             v_direction_sign * i * v_scroll_step_size_px
-                         )
+                    if is_vertical_direction_negative:
+                        v_shift_px = v_direction_sign * frame.height - (
+                                i * v_scroll_step_size_px
+                        )
+                    else:
+                        v_shift_px = v_direction_sign * frame.height + (
+                                 i * v_scroll_step_size_px
+                             )
                 else:
                     v_shift_px = 0
 
