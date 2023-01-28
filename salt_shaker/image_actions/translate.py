@@ -19,7 +19,7 @@ class Translate(ChainImageAction):
         """
         # todo type checking and errors
         # todo support background color per pixel on shift
-        # todo some optimizations around which rows run when
+            # -> different function maybe to fill in left side
         # todo, look at more mathy numpy to see if there is a more better implementation
         if horizontal_shift_px == 0 and vertical_shift_px == 0:
             return input_batch.clone()
@@ -52,7 +52,6 @@ class Translate(ChainImageAction):
                 # shift v-2 -> [row2, row3, row4, empty, empty]
 
                 # need to specify axis, otherwise shifted for axis0 and axis1
-                # shift is in wrong direction too, so multiply by -1
 
                 # np.pad?
                 data_arr = np.roll(data_arr, vertical_shift_px, axis=0)
@@ -61,35 +60,6 @@ class Translate(ChainImageAction):
                     data_arr[:vertical_shift_px] = frame.get_empty_pixel()
                 else:
                     data_arr[vertical_shift_px:] = frame.get_empty_pixel()
-
-                # # create all the empty rows that we need to shift
-                # # i swear this is the best way to do this for this current implementation method
-                # # TODO - just use reshape. lmao
-                # empty_frame_pixel_rows = np.array(
-                #     list(
-                #         # note: the parens are needed here, turns it into a generator which will yield a list
-                #         # this makes the outer list function build a list of lists
-                #         (
-                #             list(frame.get_empty_pixel() for _ in range(frame.width))
-                #             for _ in range(abs(vertical_shift_px))
-                #         )
-                #     )
-                # )
-                #
-                # if vertical_shift_px > 0:
-                #     data_arr = frame.get_data_arr(is_return_reference=True)[
-                #         : frame.height - vertical_shift_px
-                #     ]
-                #     frame.update_data_arr(
-                #         np.concatenate((empty_frame_pixel_rows, data_arr), axis=0)
-                #     )
-                # else:
-                #     data_arr = frame.get_data_arr(is_return_reference=True)[
-                #         abs(vertical_shift_px) :
-                #     ]
-                #     frame.update_data_arr(
-                #         np.concatenate((data_arr, empty_frame_pixel_rows), axis=0)
-                #     )
 
             frame.update_data_arr(data_arr)
             output_batch.add_frame(frame)

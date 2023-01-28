@@ -45,7 +45,7 @@ class Gifify(ExportImageAction):
             s=f"{width}x{height}",
             format="rawvideo",
             pix_fmt="rgba",
-            framerate=5,
+            framerate=framerate,
         ).filter_multi_output("split")
 
         stream1 = split_input[0]
