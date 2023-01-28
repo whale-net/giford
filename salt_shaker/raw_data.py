@@ -1,77 +1,86 @@
 from __future__ import annotations  # py>=3.7
 
 import copy
-
 import numpy as np
 import itertools
 from salt_shaker.frame_batch import FrameBatch
 
-# TODO remove ImageData references
+
 class RawDataFrame:
     """
     wrapper for ndarray of size h x w x d (d=depth=always 4)
     """
 
     # ndarray.shape index
-    __SHAPE_HEIGHT_IDX = 0
-    __SHAPE_WIDTH_IDX = 1
-    __SHAPE_DEPTH_IDX = 2
+    SHAPE_HEIGHT_IDX = 0
+    SHAPE_WIDTH_IDX = 1
+    SHAPE_DEPTH_IDX = 2
 
-    @property
-    def data_arr(self) -> np.ndarray:
-        return self._image_data
-
-    @data_arr.setter
-    def data_arr(self, value: np.ndarray):
-        # i dont really like the idea of this being accessible
-        # but by exposing the data_arr in the first place i open myself up to this
-        # i suppose that if you want a clone i can make as_3d_ndarray do that
-        self._image_data = value
+    SUPPORTED_DATATYPES = (np.uint8, np.float32, np.float64)
 
     @property
     def height(self) -> int:
-        return self.data_arr.shape[RawDataFrame.__SHAPE_HEIGHT_IDX]
+        return self.get_data_arr(is_return_reference=True).shape[
+            RawDataFrame.SHAPE_HEIGHT_IDX
+        ]
 
     @property
     def width(self) -> int:
-        return self.data_arr.shape[RawDataFrame.__SHAPE_WIDTH_IDX]
+        return self.get_data_arr(is_return_reference=True).shape[
+            RawDataFrame.SHAPE_WIDTH_IDX
+        ]
 
     @property
     def depth(self) -> int:
-        return self.data_arr.shape[RawDataFrame.__SHAPE_DEPTH_IDX]
+        return self.get_data_arr(is_return_reference=True).shape[
+            RawDataFrame.SHAPE_DEPTH_IDX
+        ]
 
     @property
-    def flat_data(self):
+    def data_size(self) -> int:
+        """
+        returns size (number of pixels*depth)
+        :return: size of data_arr
+        """
+        return self._data_arr.size
+
+    def flat_data(self, target_dtype: np.dtype = None):
         """
         iterator for data in array
         """
         # todo this is a really weird property that should be reconsidered
-        for val in self.data_arr.flat:
+        # seems like it does make things easier, but how much easier? building this way seems bad
+        # maybe can make 1ds, concat all at once and then reshape
+        data_arr = self.get_data_arr()
+        if target_dtype is not None:
+            data_arr = RawDataFrame.convert_data_arr(
+                data_arr, target_dtype=target_dtype
+            )
+
+        for val in data_arr.flat:
             yield val
+
+    def get_data_arr(self, is_return_reference: bool = False) -> np.ndarray:
+        """
+        return underlying data array
+        :param is_return_reference: if true return underlying array (dangerous)
+        :return:
+        """
+        return self._data_arr if is_return_reference else copy.deepcopy(self._data_arr)
+
+    def update_data_arr(self, data_arr: np.ndarray):
+        # TODO type checking
+        self._data_arr = data_arr
 
     def __init__(self, nd_arr: np.ndarray):
         if not isinstance(nd_arr, np.ndarray):
             raise Exception("image_arr not ndarray")
         if nd_arr.ndim != 3:
             raise Exception("image_arr has incorrect dimensions. expected h x w x 4")
+        if nd_arr.dtype not in RawDataFrame.SUPPORTED_DATATYPES:
+            raise Exception(f"unsupported datatype given {nd_arr.dtype}")
 
-        # TODO - decide how to handle different types. explicit failure or implict cast?
-        # NOTE - using uint8 kind of works, except when we cast a bunch of times we lose precision
-        # Can we depend on the programmer to use the correct types?
-        # or should we be lazy and just let it be until a different type is requested?
-        # if img_nd_arr.dtype != np.dtype(np.uint8):
-        # if img_nd_arr.dtype == np.dtype(np.uint8):
-        #     pass
-        # elif img_nd_arr.dtype in [np.dtype(np.float32), np.dtype(np.float64)]:
-        #     # check if image is scaled [0, 1] and scale it to [0, 255]
-        #     if img_nd_arr.max() <= 1.0:
-        #         img_nd_arr = img_nd_arr * 256
-        #     img_nd_arr = img_nd_arr.astype(np.uint8, copy=False)
-        # else:
-        #     raise Exception(f"invalid dtype {img_nd_arr.dtype}")
-        #
-
-        self._image_data = nd_arr
+        self._data_arr = nd_arr
 
         if self.depth != 4:
             # todo transform d=1->4 and d=3->4. then error on depth not in [1, 3, 4]
@@ -82,11 +91,11 @@ class RawDataFrame:
     def as_3d_ndarray(self) -> np.ndarray:
         # modifying will modify array in this data frame
         # array is already 3d ndarray
-        return self.data_arr
+        return self.get_data_arr()
 
     def as_1d_ndarray(self) -> np.ndarray:
         # modifying will modify array in this data frame
-        return self.data_arr.ravel()
+        return self.get_data_arr().ravel()
 
     def is_same_shape(
         self, other_raw_data: RawDataFrame, is_check_depth: bool = False
@@ -103,7 +112,38 @@ class RawDataFrame:
         return copy.deepcopy(self)
 
     def get_empty_pixel(self):
-        return np.zeros((self.depth,)).astype(self.data_arr.dtype)
+        return np.zeros((self.depth,)).astype(self.get_data_arr().dtype)
+
+    @staticmethod
+    def convert_data_arr(data_arr: np.ndarray, target_dtype: np.dtype):
+        """
+        modify data_arr in place
+        :param data_arr: numpy array containing data
+        :param target_dtype: target numpy data type
+        :return:
+        """
+        current_dtype = data_arr.dtype
+        match target_dtype:
+            # TODO - better handling of conversion between compatible types (float32 and float64 for example)
+            case np.uint8:
+
+                if current_dtype in (np.float32, np.float64):
+                    # if max value is 1.0 then assume scaled [0, 1] and rescale
+                    if data_arr.max() <= 1.0:
+                        data_arr *= 255
+
+                # we want to modify array
+                return data_arr.astype(target_dtype)
+            case np.float:
+                data_arr.astype(target_dtype)
+
+                if current_dtype == np.uint8:
+                    data_arr /= 256
+
+                return data_arr
+
+            case _:
+                raise Exception(f"unsupported target_dtype: [{target_dtype}]")
 
 
 class RawDataVideo:
@@ -126,7 +166,7 @@ class RawDataVideo:
         for frame in batch.frames:
             self.add_frame(frame)
 
-    def as_ndarray(self) -> np.ndarray:
+    def as_ndarray(self, target_dtype: np.dtype = None) -> np.ndarray:
         """
         convert raw_data_frames to array of raw data arrays
         # TODO currently 1d
@@ -143,13 +183,15 @@ class RawDataVideo:
         ###
 
         # get iterators for each frame into a list
-        flat_frame_iters = [f.flat_data for f in self.frames]
+        flat_frame_iters = [f.flat_data(target_dtype=target_dtype) for f in self.frames]
         # unpack list of iterators as parameters so chain can combine them correctly
         chained_iter = itertools.chain(*flat_frame_iters)
 
         video_arr: np.ndarray = np.fromiter(
             chained_iter,
-            first_frame.data_arr.dtype,
-            first_frame.data_arr.size * num_frames,
+            # first_frame.get_data_arr().dtype,
+            target_dtype,
+            first_frame.data_size * num_frames,
         )
+
         return video_arr

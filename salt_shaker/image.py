@@ -59,7 +59,7 @@ class Image:
     @staticmethod
     def create_from_raw_data_frame(frame: RawDataFrame) -> Image:
         # all raw data frames are RGBA format
-        return Image.create_from_ndarray(frame.data_arr, fmt=ImageFormat.RGBA)
+        return Image.create_from_ndarray(frame.get_data_arr(), fmt=ImageFormat.RGBA)
 
     @property
     def raw_frame(self) -> RawDataFrame:
