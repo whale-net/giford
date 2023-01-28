@@ -47,9 +47,7 @@ class Scroll(ChainImageAction):
 
         if num_frames is None or num_frames <= 2:
             # num_frames must be >= 2 else it's just the image again
-            raise Exception(
-                f"num_frames must be >=2. num_frames=[{num_frames}]"
-            )
+            raise Exception(f"num_frames must be >=2. num_frames=[{num_frames}]")
 
         if is_horizontal_scroll and horizontal_scroll_multiplier <= 0.0:
             raise Exception(
@@ -74,7 +72,6 @@ class Scroll(ChainImageAction):
             if scroll_count != 1:
                 # if you need to scroll more than 1 time, duplicate the batch
                 raise Exception("cannot scroll more than 1 time if wrap is false")
-
 
         output_batch = FrameBatch()
 
