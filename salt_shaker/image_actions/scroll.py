@@ -10,7 +10,7 @@ class BasicScroll(ChainImageAction):
     def __init__(self):
         super().__init__()
 
-    def process(self, input_batch: FrameBatch) -> FrameBatch:
+    def process(self, input_batch: FrameBatch, num_frames: int = 60) -> FrameBatch:
         # todo custom args, maybe new action instead? meh on that idea
         # vertical shift, horizontal, reverse
         # no jitter, that is different action
@@ -20,22 +20,14 @@ class BasicScroll(ChainImageAction):
         # todo empty frame util somehwere. maybe rawdataframe
         t = Translate()
         for frame in input_batch.frames:
-            # 30 frames for now
-            num_frames = 30
-            # TODO floor division - //
-            scroll_base = int(frame.width / num_frames)
+            # want to scroll left to right
+            # so need to account for travelling 2x distance to get fully on/off
+            # TODO renae
+            scroll_base = 2 * frame.width // num_frames
 
             for i in range(num_frames):
                 output_batch.add_batch(
-                    t.process(
-                        input_batch,
-                        horizontal_shift_px=-int((num_frames - i) * scroll_base),
+                        t.process(input_batch, horizontal_shift_px=-frame.width + (i * scroll_base))
                     )
-                )
-            output_batch.add_batch(t.process(input_batch, horizontal_shift_px=0))
-            for i in range(num_frames):
-                output_batch.add_batch(
-                    t.process(input_batch, horizontal_shift_px=int(i * scroll_base))
-                )
 
         return output_batch
