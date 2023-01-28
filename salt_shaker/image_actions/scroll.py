@@ -22,7 +22,7 @@ class Scroll(ChainImageAction):
         is_vertical_scroll: bool = False,
         vertical_scroll_multiplier: float = 1.0,
         is_vertical_direction_negative: bool = False,
-
+        is_skip_clean_frame: bool = False,
     ) -> FrameBatch:
         """
         produces series of images to imitate scrolling
@@ -39,14 +39,16 @@ class Scroll(ChainImageAction):
         :param is_vertical_scroll: do vertical scroll
         :param vertical_scroll_multiplier: amount the image should move vertically during a single scroll
         :param is_vertical_direction_negative: reverse vertical scroll direction
+        :param is_skip_clean_frame: skip the last frame
         :return:
         """
         if not is_horizontal_scroll and not is_vertical_scroll:
             return input_batch.clone()
 
-        if num_frames is None or num_frames <= 0:
+        if num_frames is None or num_frames <= 2:
+            # num_frames must be >= 2 else it's just the image again
             raise Exception(
-                f"num_frames must be greater than 0. num_frames=[{num_frames}]"
+                f"num_frames must be >=2. num_frames=[{num_frames}]"
             )
 
         if is_horizontal_scroll and horizontal_scroll_multiplier <= 0.0:
@@ -62,25 +64,17 @@ class Scroll(ChainImageAction):
         # handle is_wrap_image input, changes a bit
         if not is_wrap_image:
             if is_horizontal_scroll and horizontal_scroll_multiplier != 1.0:
-                raise Exception('horizontal_scroll_multiplier must be 1.0 if wrap is false')
+                raise Exception(
+                    "horizontal_scroll_multiplier must be 1.0 if wrap is false"
+                )
             if is_vertical_scroll and vertical_scroll_multiplier != 1.0:
-                raise Exception('vertical_scroll_multiplier must be 1.0 if wrap is false')
+                raise Exception(
+                    "vertical_scroll_multiplier must be 1.0 if wrap is false"
+                )
             if scroll_count != 1:
                 # if you need to scroll more than 1 time, duplicate the batch
-                raise Exception('cannot scroll more than 1 time if wrap is false')
+                raise Exception("cannot scroll more than 1 time if wrap is false")
 
-
-        # this is opposite what you'd think, but is correct
-        if is_horizontal_direction_negative:
-            h_direction_sign = 1
-        else:
-            h_direction_sign = -1
-
-        # this is opposite what you'd think, but is correct
-        if is_vertical_direction_negative:
-            v_direction_sign = 1
-        else:
-            v_direction_sign = -1
 
         output_batch = FrameBatch()
 
@@ -93,11 +87,16 @@ class Scroll(ChainImageAction):
             # let [X] represent our image
             # let {[X]} represent the image being displayed
             # we need to do this: [X]{[ ]}[ ] -> [ ]{[X]}[ ] -> [ ]{[ ]}[X]
+            if is_skip_clean_frame:
+                step_divisor = num_frames
+            else:
+                step_divisor = num_frames - 1
+
             h_scroll_step_size_px = int(
-                    2 * horizontal_scroll_multiplier * frame.width // num_frames
+                2 * horizontal_scroll_multiplier * frame.width // step_divisor
             )
             v_scroll_step_size_px = int(
-                    2 * vertical_scroll_multiplier * frame.height // num_frames
+                2 * vertical_scroll_multiplier * frame.height // step_divisor
             )
 
             # scale number of frames by number of times we want to scroll
@@ -107,26 +106,22 @@ class Scroll(ChainImageAction):
             for i in range(num_frames_to_generate):
 
                 if is_horizontal_scroll:
-                    if is_horizontal_direction_negative:
-                        h_shift_px = h_direction_sign * frame.width - (
-                                i * h_scroll_step_size_px
-                        )
-                    else:
-                        h_shift_px = h_direction_sign * frame.width + (
-                            i * h_scroll_step_size_px
-                        )
+                    h_shift_px = Scroll._calculate_shift(
+                        is_horizontal_direction_negative,
+                        frame.width,
+                        i,
+                        h_scroll_step_size_px,
+                    )
                 else:
                     h_shift_px = 0
 
                 if is_vertical_scroll:
-                    if is_vertical_direction_negative:
-                        v_shift_px = v_direction_sign * frame.height - (
-                                i * v_scroll_step_size_px
-                        )
-                    else:
-                        v_shift_px = v_direction_sign * frame.height + (
-                                 i * v_scroll_step_size_px
-                             )
+                    v_shift_px = Scroll._calculate_shift(
+                        is_vertical_direction_negative,
+                        frame.height,
+                        i,
+                        v_scroll_step_size_px,
+                    )
                 else:
                     v_shift_px = 0
 
@@ -140,3 +135,23 @@ class Scroll(ChainImageAction):
                 )
 
         return output_batch
+
+    @staticmethod
+    def _calculate_shift(
+        is_direction_negative: int, size: int, increment: int, step_size: int
+    ) -> int:
+        """
+        produces shift amount
+
+        :param sign:
+        :param size:
+        :param increment:
+        :param step_size:
+        :return:
+        """
+        if is_direction_negative:
+            shift_px = size - (increment * step_size)
+        else:
+            shift_px = -size + (increment * step_size)
+
+        return shift_px
