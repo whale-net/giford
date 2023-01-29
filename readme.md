@@ -18,3 +18,8 @@ needed because:
 ```
 from __future__ import annotations
 ```
+
+install required modules
+```
+pip install -e .
+```

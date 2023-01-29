@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "salt-shaker"
+version = "0.2.0"
+dependencies = [
+    'numpy',
+    'scikit-image',
+    'ffmpeg-python',
+]
+
+[tool.setuptools.packages.find]
+where = ['.']
+include = ['salt_shaker*']
+exclude = ['tests*']
+namespaces = false  # true by default
