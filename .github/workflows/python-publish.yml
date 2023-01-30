@@ -37,6 +37,9 @@ jobs:
         pip install build
         pip install setuptools-scm
 
+    - name: test
+      run: python -m setuptools_scm
+
     - name: Build package
       run: python -m build --sdist --wheel --outdir dist/
 
