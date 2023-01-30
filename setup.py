@@ -5,7 +5,7 @@ from setuptools import setup
 
 
 
-if __name__ == '__main__'
+if __name__ == '__main__':
 
     readme_path = os.path.join(os.path.dirname(__file__), 'README.md')
     with open(readme_path, encoding="utf-8") as f:
