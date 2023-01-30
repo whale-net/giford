@@ -9,12 +9,17 @@
 name: Upload Python Package
 
 on:
+  # release to pypi and test pypi
   release:
     types: [published]
+  # release to just test pypi
+  push:
+    branches:
+      - 'main'
 # dev testing only pls
-#  pull_request:
-#    branches:
-#      - 'main'
+  pull_request:
+    branches:
+      - 'main'
 
 permissions:
   contents: read
@@ -56,16 +61,17 @@ jobs:
         name: test
         path: ./dist/
 
-    - name: fail action if not running on release
-      if: github.event_name != 'release'
-      run: |
-        echo 'you ran the release action on a non-release step, what are you doing????'
-        exit 1
+    - name: Publish package to test pypi
+      if: github.event_name == 'release' or (github.event_name == 'push' and
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN_TEST }}
+        repository_url: https://test.pypi.org/legacy/
 
     - name: Publish package
-      # last resort condition
       if: github.event_name == 'release'
-      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: __token__
         password: ${{ secrets.PYPI_API_TOKEN_PROD }}
