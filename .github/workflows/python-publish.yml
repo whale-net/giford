@@ -25,7 +25,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: checkout without tags
+      uses: actions/checkout@v3
+      #fetch-depth: 0 # this retrieves tags AND history, not good
+    - name: get tags ignored by checkout
+      run: git fetch --tags origin
+
+
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
