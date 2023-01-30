@@ -45,7 +45,9 @@ jobs:
 
     - name: fail action if not running on release
       if: github.event_name != 'release'
-      run: exit 1
+      run: |
+        echo 'you ran the release action on a non-release step, what are you doing????'
+        exit 1
 
 
     - name: Publish package
