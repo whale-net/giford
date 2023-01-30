@@ -31,4 +31,3 @@ namespaces = false  # true by default
 
 [tool.setuptools_scm]
 write_to = 'salt_shaker/_version.py'
-local_scheme = 'no_local'
