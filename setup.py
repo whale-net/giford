@@ -3,12 +3,6 @@ import os.path
 
 from setuptools import setup
 
-def get_version():
-    from setuptools_scm.version import get_local_dirty_tag
-    def clean_scheme(version):
-        return get_local_dirty_tag(version) if version.dirty else '+clean'
-
-    return {'local_scheme': clean_scheme}
 
 if __name__ == '__main__':
 
@@ -21,5 +15,4 @@ if __name__ == '__main__':
     setup(
         long_description=readme,
         long_description_content_type='text/markdown',
-        use_scm_version=get_version,
     )
