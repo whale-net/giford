@@ -2,14 +2,16 @@
 requires = ['setuptools', 'setuptools_scm[toml]>=6.2']
 build-backend = 'setuptools.build_meta'
 
+[metadata]
+long_description = "file: README.md"
+long_description_content_type = "text/markdown"
+
 [project]
 name = 'salt-shaker'
 authors = [{name = 'Alex Harding'}]
 # unsure if >3.10 is ok, but 3.10.7 works
 requires-python = '>=3.10'
 description = 'easy python image manipulation, especially gifs/emotes'
-long_description = "file: README.md"
-long_description_content_type = "text/markdown"
 #version = "0.2.0" using setuptools_scm
 dynamic = ['version']
 license = {file = 'LICENSE.txt'}
