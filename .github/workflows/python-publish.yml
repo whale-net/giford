@@ -62,7 +62,6 @@ jobs:
         path: ./dist/
 
     - name: Publish package to test pypi
-      if: github.event_name == 'release' or (github.event_name == 'push' and
       uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: __token__
