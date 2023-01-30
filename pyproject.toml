@@ -7,14 +7,16 @@ name = 'salt-shaker'
 authors = [{name = 'Alex Harding'}]
 # unsure if >3.10 is ok, but 3.10.7 works
 requires-python = '>=3.10'
-#description = 'easy python image manipulation, especially gifs/emotes'
+description = 'easy python image manipulation'
 #version = "0.2.0" using setuptools_scm
-dynamic = ['version', 'readme']
+dynamic = ['version']
 license = {file = 'LICENSE.txt'}
 dependencies = [
     'numpy',
     'scikit-image',
     'ffmpeg-python',
+    'setuptools',
+    'setuptools-scm'
 ]
 
 [project.urls]
