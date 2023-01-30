@@ -23,3 +23,11 @@ install required modules
 ```
 pip install -e .
 ```
+
+## building
+
+```
+pip install build
+pip install setuptools-scm
+python -m build
+```

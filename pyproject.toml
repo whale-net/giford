@@ -1,16 +1,17 @@
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ['setuptools', 'setuptools_scm[toml]>=6.2']
+build-backend = 'setuptools.build_meta'
 
 [project]
-name = "salt-shaker"
+name = 'salt-shaker'
 authors = [
     {name = 'Alex Harding'},
 ]
 # unsure if >3.10 is ok, but 3.10.7 works
-requires-python = ">=3.10"
+requires-python = '>=3.10'
 description = 'easy python image manipulation, focused on gif/emote creation'
-version = "0.2.0"
+#version = "0.2.0" using setuptools_scm
+dynamic = ['version']
 license = {file = 'LICENSE.txt'}
 dependencies = [
     'numpy',
@@ -27,3 +28,6 @@ where = ['.']
 include = ['salt_shaker*']
 exclude = ['tests*']
 namespaces = false  # true by default
+
+[tool.setuptools_scm]
+write_to = 'salt_shaker/_version.py'

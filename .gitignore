@@ -17,3 +17,6 @@ local_test_output/*
 build/*
 dist/*
 *.egg-info
+
+# setuptools-scm
+salt_shaker/_version.py
