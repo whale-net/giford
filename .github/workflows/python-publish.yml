@@ -1,0 +1,70 @@
+# This workflow will upload a Python Package using Twine when a release is created
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python#publishing-to-package-registries
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Upload Python Package
+
+on:
+  release:
+    types: [published]
+# dev testing only pls
+  pull_request:
+    branches:
+      - 'main'
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout without tags
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0 # this retrieves tags AND history, not good
+
+# but this doesn't work, so whatever, fetch-depth 0 it is, to revisit when fixed
+#    - name: get tags ignored by checkout
+#      run: git fetch --tags origin
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build
+        pip install setuptools-scm
+
+    - name: Build package
+      run: python -m build --sdist --wheel --outdir dist/
+
+    # these will get purged at some point, but may as well upload in case its ever useful
+    - name: Upload results as artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: test
+        path: ./dist/
+
+    - name: fail action if not running on release
+      if: github.event_name != 'release'
+      run: |
+        echo 'you ran the release action on a non-release step, what are you doing????'
+        exit 1
+
+    - name: Publish package
+      # last resort condition
+      if: github.event_name == 'release'
+      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
