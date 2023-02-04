@@ -3,11 +3,11 @@ requires = ['setuptools', 'setuptools_scm[toml]>=6.2']
 build-backend = 'setuptools.build_meta'
 
 [project]
-name = 'salt-shaker'
+name = 'giford'
 authors = [{name = 'Alex Harding'}]
 # unsure if >3.10 is ok, but 3.10.7 works
 requires-python = '>=3.10'
-description = 'easy python image manipulation'
+description = 'easy image and gif manipulation'
 #version = "0.2.0" using setuptools_scm
 dynamic = ['version']
 license = {file = 'LICENSE.txt'}
@@ -16,18 +16,19 @@ dependencies = [
     'scikit-image',
     'ffmpeg-python',
     'setuptools',
-    'setuptools-scm'
+    'setuptools-scm',
+    'black'
 ]
 
 [project.urls]
-homepage = 'https://github.com/whale-net/salt-shaker'
-repository = 'https://github.com/whale-net/salt-shaker.git'
+homepage = 'https://github.com/whale-net/giford'
+repository = 'https://github.com/whale-net/giford.git'
 
 [tool.setuptools.packages.find]
 where = ['.']
-include = ['salt_shaker*']
+include = ['giford*']
 exclude = ['tests*']
 namespaces = false  # true by default
 
 [tool.setuptools_scm]
-write_to = 'salt_shaker/_version.py'
+write_to = 'giford/_version.py'

@@ -6,8 +6,8 @@ import copy
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from salt_shaker.image import Image
-    from salt_shaker.raw_data import RawDataFrame
+    from giford.image import Image
+    from giford.raw_data import RawDataFrame
 
 
 class FrameBatch:

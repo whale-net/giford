@@ -19,4 +19,4 @@ dist/*
 *.egg-info
 
 # setuptools-scm
-salt_shaker/_version.py
+giford/_version.py

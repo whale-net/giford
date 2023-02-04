@@ -1,12 +1,13 @@
-# salt-shaker
+# giford
 
 ## about
-module that takes images and messes them up in various useful, and fun, ways
+modify images and create gifs with unified toolkit
 
 
 ## manifesto:
-lowercase because its friendly
-newlines at end of files because its nice
+lowercase because it's friendly
+
+newlines at end of files because it's nice
 
 ## setup
 todo - package config

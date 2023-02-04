@@ -6,8 +6,8 @@ import copy
 import numpy as np
 from skimage.io import imread, imsave
 
-from salt_shaker.raw_data import RawDataFrame
-from salt_shaker.image_formats import ImageFormat
+from giford.raw_data import RawDataFrame
+from giford.image_formats import ImageFormat
 
 
 class Image:

@@ -1,9 +1,9 @@
 from skimage import transform
 
-from salt_shaker.image_actions.image_action import ChainImageAction
-from salt_shaker.image_actions.translate import Translate
-from salt_shaker.frame_batch import FrameBatch
-from salt_shaker.raw_data import RawDataFrame
+from giford.image_actions.image_action import ChainImageAction
+from giford.image_actions.translate import Translate
+from giford.frame_batch import FrameBatch
+from giford.raw_data import RawDataFrame
 
 
 class Scroll(ChainImageAction):
@@ -101,7 +101,6 @@ class Scroll(ChainImageAction):
             # but will be tricky to use
             num_frames_to_generate = num_frames * scroll_count
             for i in range(num_frames_to_generate):
-
                 if is_horizontal_scroll:
                     h_shift_px = Scroll._calculate_shift(
                         is_horizontal_direction_negative,

@@ -1,10 +1,10 @@
 from typing import Any, TYPE_CHECKING, Union
 
-from salt_shaker.action import Action
+from giford.action import Action
 
 # if TYPE_CHECKING:
-from salt_shaker.frame_batch import FrameBatch
-from salt_shaker.image import Image
+from giford.frame_batch import FrameBatch
+from giford.image import Image
 
 
 class ImageAction(Action):

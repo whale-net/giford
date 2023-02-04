@@ -2,9 +2,9 @@ import ffmpeg
 from skimage import transform
 import numpy as np
 
-from salt_shaker.image_actions.image_action import ChainImageAction
-from salt_shaker.frame_batch import FrameBatch
-from salt_shaker.raw_data import RawDataFrame
+from giford.image_actions.image_action import ChainImageAction
+from giford.frame_batch import FrameBatch
+from giford.raw_data import RawDataFrame
 
 
 class Translate(ChainImageAction):
