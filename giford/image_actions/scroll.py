@@ -101,7 +101,6 @@ class Scroll(ChainImageAction):
             # but will be tricky to use
             num_frames_to_generate = num_frames * scroll_count
             for i in range(num_frames_to_generate):
-
                 if is_horizontal_scroll:
                     h_shift_px = Scroll._calculate_shift(
                         is_horizontal_direction_negative,

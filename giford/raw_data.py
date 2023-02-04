@@ -126,7 +126,6 @@ class RawDataFrame:
         match target_dtype:
             # TODO - better handling of conversion between compatible types (float32 and float64 for example)
             case np.uint8:
-
                 if current_dtype in (np.float32, np.float64):
                     # if max value is 1.0 then assume scaled [0, 1] and rescale
                     if data_arr.max() <= 1.0:
