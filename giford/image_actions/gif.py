@@ -1,11 +1,11 @@
 import ffmpeg
 import numpy as np
 
-from salt_shaker.image_actions.image_action import ExportImageAction
-from salt_shaker.raw_data import RawDataVideo
-from salt_shaker.frame_batch import FrameBatch
-from salt_shaker.image import Image
-from salt_shaker.image_formats import ImageFormat
+from giford.image_actions.image_action import ExportImageAction
+from giford.raw_data import RawDataVideo
+from giford.frame_batch import FrameBatch
+from giford.image import Image
+from giford.image_formats import ImageFormat
 
 
 class Gifify(ExportImageAction):

@@ -31,6 +31,6 @@ jobs:
       uses: jpetrucciani/black-check@22.12.0
       with:
         # File or directory to run black on
-        path: ./salt_shaker/
+        path: ./giford/
         # Optional Black flags (refer to `black --help`)
         #black_flags: # optional, default is

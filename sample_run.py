@@ -1,15 +1,15 @@
 import os
-from salt_shaker.image import Image
-from salt_shaker.frame_batch import FrameBatch
-from salt_shaker.image_actions.swirl import (
+from giford.image import Image
+from giford.frame_batch import FrameBatch
+from giford.image_actions.swirl import (
     BasicSwirl,
     VariableSwirl,
     VaryingVariableSwirl,
 )
-from salt_shaker.image_actions.gif import Gifify
-from salt_shaker.image_actions.translate import Translate
-from salt_shaker.image_actions.reshape import Reshape, ReshapeMethod
-from salt_shaker.image_actions.scroll import Scroll
+from giford.image_actions.gif import Gifify
+from giford.image_actions.translate import Translate
+from giford.image_actions.reshape import Reshape, ReshapeMethod
+from giford.image_actions.scroll import Scroll
 
 INPUT_DIR = "./sample_data/"
 GIF_DATA_INPUT_DIR = os.path.join(INPUT_DIR, "gif_data")

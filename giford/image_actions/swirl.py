@@ -1,9 +1,9 @@
 from skimage import transform
 
-from salt_shaker.image import Image
-from salt_shaker.image_actions.image_action import ChainImageAction
-from salt_shaker.frame_batch import FrameBatch
-from salt_shaker.raw_data import RawDataFrame
+from giford.image import Image
+from giford.image_actions.image_action import ChainImageAction
+from giford.frame_batch import FrameBatch
+from giford.raw_data import RawDataFrame
 
 
 class BasicSwirl(ChainImageAction):
