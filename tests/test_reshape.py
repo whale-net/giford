@@ -7,11 +7,16 @@ from giford.frame_batch import FrameBatch
 from giford.image_actions.reshape import Reshape, ReshapeMethod
 from tests.util import BASELINE_DIRECTORY, compare_file_hash
 
+
 # TODO ReshapeMethod.DOWNSCALE
 # TODO parametrize scale
-@pytest.mark.parametrize('reshape_method', [ReshapeMethod.RESCALE, ReshapeMethod.RESIZE])
+@pytest.mark.parametrize(
+    "reshape_method", [ReshapeMethod.RESCALE, ReshapeMethod.RESIZE]
+)
 def test_reshape(temp_output_png, orange_image, reshape_method: ReshapeMethod):
-    baseline = os.path.join(BASELINE_DIRECTORY, f'test_reshape_method_{reshape_method.name}.png')
+    baseline = os.path.join(
+        BASELINE_DIRECTORY, f"test_reshape_method_{reshape_method.name}.png"
+    )
 
     batch = FrameBatch()
     batch.add_image(orange_image)

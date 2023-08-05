@@ -53,7 +53,11 @@ class Reshape(ChainImageAction):
 
             # TODO make this way less weird
             # convert back to uint8 if rgba, otherwise PIL (called by scikit imsave) will fail
-            frame.update_data_arr(RawDataFrame.convert_data_arr(frame.get_data_arr(is_return_reference=True), target_dtype=np.uint8))
+            frame.update_data_arr(
+                RawDataFrame.convert_data_arr(
+                    frame.get_data_arr(is_return_reference=True), target_dtype=np.uint8
+                )
+            )
             output_batch.add_frame(frame)
 
         return output_batch

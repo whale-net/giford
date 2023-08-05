@@ -18,10 +18,11 @@ class BasicSwirl(ChainImageAction):
 
             # TODO make this way less weird
             # convert back to uint8 if rgba, otherwise PIL (called by scikit imsave) will fail
-            img_nd_arr = RawDataFrame.convert_data_arr(img_nd_arr, target_dtype=np.uint8)
-            
+            img_nd_arr = RawDataFrame.convert_data_arr(
+                img_nd_arr, target_dtype=np.uint8
+            )
+
             output_batch.add_frame(RawDataFrame(img_nd_arr))
-            
 
         return output_batch
 
