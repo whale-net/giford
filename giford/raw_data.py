@@ -67,9 +67,6 @@ class RawDataFrame:
         :return:
         """
         arr = self._data_arr if is_return_reference else copy.deepcopy(self._data_arr)
-        # test
-        if arr.dtype == np.float64:
-            arr = arr.astype(np.float32)
         return arr
 
     def update_data_arr(self, data_arr: np.ndarray):
