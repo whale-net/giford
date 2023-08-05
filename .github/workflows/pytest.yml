@@ -30,4 +30,4 @@ jobs:
 
     - name: Run pytest
       run: |
-        pytest -k test_read_write
+        pytest
