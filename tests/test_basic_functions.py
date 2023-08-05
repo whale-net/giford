@@ -2,15 +2,6 @@ from tests.util import compare_file_hash, TEST_INPUT_ORANGE_IMAGE_FILEPATH
 
 from giford.image import Image
 from giford.frame_batch import FrameBatch
-from giford.image_actions.swirl import (
-    BasicSwirl,
-    VariableSwirl,
-    VaryingVariableSwirl,
-)
-from giford.image_actions.gif import Gifify
-from giford.image_actions.translate import Translate
-from giford.image_actions.reshape import Reshape, ReshapeMethod
-from giford.image_actions.scroll import Scroll
 
 def test_read_write(temp_output_png: str, orange_image: Image):
     # simply reads and writes a file
