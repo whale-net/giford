@@ -5,6 +5,9 @@ from giford.image import Image
 from giford.frame_batch import FrameBatch
 from giford.image_actions.gif import Gifify
 
+TEST_INPUT_DATA_FOLDER = os.path.join(os.path.dirname(__file__), 'input_data')
+TEST_INPUT_ORANGE_IMAGE_FILEPATH = os.path.join(TEST_INPUT_DATA_FOLDER, 'orange.png')
+
 BASELINE_DIRECTORY = os.path.join(os.path.dirname(__file__), 'baseline_data')
 
 
@@ -36,7 +39,7 @@ def create_gif(batch: FrameBatch, framerate: int = 15) -> Image:
     g = Gifify()
     return g.process(batch, framerate=framerate)
 
-def compare_image_files(baseline_filepath: str, test_filepath: str) -> bool:
+def compare_file_hash(baseline_filepath: str, test_filepath: str) -> bool:
     
     assert baseline_filepath
     assert os.path.exists(baseline_filepath), 'baseline_filepath does not exist'

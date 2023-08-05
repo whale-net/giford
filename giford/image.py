@@ -8,6 +8,7 @@ from skimage.io import imread, imsave
 
 from giford.raw_data import RawDataFrame
 from giford.image_formats import ImageFormat
+from giford.frame_batch import FrameBatch
 
 
 class Image:
@@ -60,6 +61,16 @@ class Image:
     def create_from_raw_data_frame(frame: RawDataFrame) -> Image:
         # all raw data frames are RGBA format
         return Image.create_from_ndarray(frame.get_data_arr(), fmt=ImageFormat.RGBA)
+    
+    @staticmethod 
+    def create_from_frame_batch(frame_batch: FrameBatch):
+        # if batch has one frame, create image
+        batch_frame_count = len(frame_batch.frames)
+        if batch_frame_count == 0:
+            raise Exception('frame batch is empty')
+        if batch_frame_count > 1:
+            raise Exception(f'too many frames, can only process one {batch_frame_count}')
+        return Image.create_from_raw_data_frame(frame_batch.frames[0])
 
     @property
     def raw_frame(self) -> RawDataFrame:
