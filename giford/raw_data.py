@@ -66,7 +66,8 @@ class RawDataFrame:
         :param is_return_reference: if true return underlying array (dangerous)
         :return:
         """
-        return self._data_arr if is_return_reference else copy.deepcopy(self._data_arr)
+        arr = self._data_arr if is_return_reference else copy.deepcopy(self._data_arr)
+        return arr
 
     def update_data_arr(self, data_arr: np.ndarray):
         # TODO type checking

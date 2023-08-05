@@ -16,7 +16,7 @@ class FrameBatch:
     """
 
     @property
-    def frames(self):
+    def frames(self) -> list[RawDataFrame]:
         return self._frames
 
     def __init__(self):

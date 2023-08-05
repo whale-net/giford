@@ -17,8 +17,16 @@ dependencies = [
     'ffmpeg-python',
     'setuptools',
     'setuptools-scm',
+]
+
+[project.optional-dependencies]
+# TODO one day these should be split so dev doesn't require installing all of these
+dev = [
+    'pytest',
+    'pytest-xdist',
     'black'
 ]
+
 
 [project.urls]
 homepage = 'https://github.com/whale-net/giford'
