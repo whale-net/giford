@@ -23,6 +23,9 @@ from __future__ import annotations
 install required modules
 ```
 pip install -e .
+
+# if running development locally do this:
+pip install -e .[dev]
 ```
 
 ## building

@@ -20,6 +20,12 @@ dependencies = [
     'black'
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest"
+]
+
+
 [project.urls]
 homepage = 'https://github.com/whale-net/giford'
 repository = 'https://github.com/whale-net/giford.git'
