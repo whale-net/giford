@@ -17,13 +17,14 @@ dependencies = [
     'ffmpeg-python',
     'setuptools',
     'setuptools-scm',
-    'black'
 ]
 
 [project.optional-dependencies]
+# TODO one day these should be split so dev doesn't require installing all of these
 dev = [
     'pytest',
-    'pytest-xdist'
+    'pytest-xdist',
+    'black'
 ]
 
 
