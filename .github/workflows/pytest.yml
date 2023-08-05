@@ -36,4 +36,9 @@ jobs:
 
     - name: Run pytest
       run: |
-        pytest -n 10
+        coverage run --source giford -m pytest -n 10
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

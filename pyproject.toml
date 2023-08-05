@@ -24,7 +24,8 @@ dependencies = [
 dev = [
     'pytest',
     'pytest-xdist',
-    'black'
+    'black',
+    'pytest-cov'
 ]
 
 
