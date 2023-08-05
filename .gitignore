@@ -20,3 +20,6 @@ dist/*
 
 # setuptools-scm
 giford/_version.py
+
+# code coverage
+.coverage
