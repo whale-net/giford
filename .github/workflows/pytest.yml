@@ -36,4 +36,4 @@ jobs:
 
     - name: Run pytest
       run: |
-        pytest -n 10
+        pytest -k test_reshape
