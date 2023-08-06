@@ -68,8 +68,13 @@ class SingleImage(AbstractFrameWrapper):
             raise Exception("cannot load second time")
 
         # using PIL/pillow to load images
-        pimg = PillowImage.open(path)
+        # TODO - always convert to RGBA?
+        pimg = PillowImage.open(path) #.convert('RGBA')
 
+        # TODO 
+        # pimg.info will have an icc_profile, do we want this?
+
+        # TODO - consider passing formats into open instead
         if pimg.format not in SingleImage._FORMAT_NAME_MAP:
             raise Exception(f"provided format not supported [{pimg.format}]")
         self.format = SingleImage._FORMAT_NAME_MAP[pimg.format]

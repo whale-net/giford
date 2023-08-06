@@ -1,6 +1,8 @@
 import os
 import hashlib
 
+from PIL import Image as PillowImage
+
 from giford.frame_batch import FrameBatch
 from giford.frame_wrapper import SingleImage, SingleImageFormat
 
@@ -15,39 +17,25 @@ TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH = os.path.join(
 BASELINE_DIRECTORY = os.path.join(os.path.dirname(__file__), "baseline_data")
 
 
-def hash_file(filename):
-    """ "This function returns the SHA-1 hash
-    of the file passed into it
 
-    ripped from https://www.programiz.com/python-programming/examples/hash-file
-    """
-
-    # make a hash object
-    h = hashlib.sha1()
-
-    # open file for reading in binary mode
-    with open(filename, "rb") as file:
-        # loop till the end of the file
-        chunk = 0
-        while chunk != b"":
-            # read only 1024 bytes at a time
-            chunk = file.read(1024)
-            h.update(chunk)
-
-    # return the hex representation of digest
-    return h.hexdigest()
-
-
-def compare_file_hash(baseline_filepath: str, test_filepath: str) -> bool:
+def compare_image_files(baseline_filepath: str, test_filepath: str) -> bool:
     assert baseline_filepath
     assert os.path.exists(baseline_filepath), "baseline_filepath does not exist"
     assert test_filepath
     assert os.path.exists(test_filepath), "test_filepath does not exist"
 
-    baseline_hash = hash_file(baseline_filepath)
-    test_hash = hash_file(test_filepath)
+    # Using PIL/Pillow to compare 
+    # Ran into issue using file hash since pillow will somtimes compress images when saving
+    # which makes the hashes different
+    # Hopefully PIL/Pillow is tested enough that this is a reasonable operation
+    # NOTE: deleting info dict removes icc_profile, unsure if that matters
+    baseline_pimg = PillowImage.open(baseline_filepath)
+    baseline_pimg.info = {}
+    test_pimg = PillowImage.open(test_filepath)
+    test_pimg.info = {}
 
-    return baseline_hash == test_hash
+
+    return baseline_pimg == test_pimg
 
 
 def save_batch_and_compare(
@@ -68,4 +56,4 @@ def save_batch_and_compare(
 
     wrapper.save(test_filepath)
 
-    return compare_file_hash(baseline_filepath, test_filepath)
+    return compare_image_files(baseline_filepath, test_filepath)

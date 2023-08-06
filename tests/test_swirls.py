@@ -8,7 +8,7 @@ from tests.util import (
     BASELINE_DIRECTORY,
     TEST_INPUT_ORANGE_IMAGE_FILEPATH,
     save_batch_and_compare,
-    compare_file_hash,
+    compare_image_files,
 )
 
 
@@ -53,4 +53,4 @@ def test_varying_variable_swirl(temp_output_png: str, orange_image_batch: FrameB
 
             simg = SingleImage.create_from_frame(frame)
             simg.save(temp_output_png)
-            assert compare_file_hash(baseline, temp_output_png)
+            assert compare_image_files(baseline, temp_output_png)

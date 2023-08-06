@@ -5,7 +5,7 @@ import pytest
 from giford.frame_wrapper import MultiImage
 from giford.frame_batch import FrameBatch
 from tests.util import (
-    compare_file_hash,
+    compare_image_files,
     BASELINE_DIRECTORY,
     TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH,
 )
@@ -27,7 +27,7 @@ def test_multi_image_save(temp_output_gif: str, orange_swirl_batch: FrameBatch):
     mimg = MultiImage.create_from_frame_batch(orange_swirl_batch)
     mimg.save(temp_output_gif)
 
-    assert compare_file_hash(baseline, temp_output_gif)
+    assert compare_image_files(baseline, temp_output_gif)
 
 
 def test_multi_image_create_from_batch(
@@ -42,7 +42,7 @@ def test_multi_image_create_from_batch(
     mimg = MultiImage.create_from_frame_batch(orange_swirl_batch)
     mimg.save(temp_output_gif)
 
-    assert compare_file_hash(baseline, temp_output_gif)
+    assert compare_image_files(baseline, temp_output_gif)
 
 
 @pytest.mark.parametrize("framerate", [5, 15, 60])
@@ -57,4 +57,4 @@ def test_multi_image_gif_framerate(
     mimg = MultiImage.create_from_frame_batch(orange_swirl_batch)
     mimg.save(temp_output_gif)
 
-    assert compare_file_hash(baseline, temp_output_gif)
+    assert compare_image_files(baseline, temp_output_gif)

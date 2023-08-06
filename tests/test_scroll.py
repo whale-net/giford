@@ -4,7 +4,7 @@ import pytest
 
 from giford.frame_wrapper import MultiImage
 from giford.frame_batch import FrameBatch
-from tests.util import BASELINE_DIRECTORY, compare_file_hash
+from tests.util import BASELINE_DIRECTORY, compare_image_files
 
 from giford.image_actions.scroll import Scroll
 from giford.image_actions.reshape import Reshape, ReshapeMethod
@@ -46,4 +46,4 @@ def test_scroll(
     mimg = MultiImage.create_from_frame_batch(output_batch)
     mimg.save(temp_output_gif)
 
-    assert compare_file_hash(baseline, temp_output_gif)
+    assert compare_image_files(baseline, temp_output_gif)
