@@ -3,11 +3,16 @@
 ## about
 modify images and create gifs with unified toolkit
 
+### Concepts
+
+![giford_concepts](./giford_concepts.drawio.svg)
 
 ## manifesto:
 lowercase because it's friendly
 
 newlines at end of files because it's nice
+
+if you understand why an image manipulation library needs a manifesto, then you arent thinking little enough
 
 ## setup
 todo - package config
