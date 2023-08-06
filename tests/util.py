@@ -47,7 +47,7 @@ def compare_file_hash(baseline_filepath: str, test_filepath: str) -> bool:
     baseline_hash = hash_file(baseline_filepath)
     test_hash = hash_file(test_filepath)
 
-    return baseline_hash == test_hash, "file hashs do not match"
+    return baseline_hash == test_hash
 
 
 def save_batch_and_compare(
