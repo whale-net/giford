@@ -45,6 +45,7 @@ jobs:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
     - uses: actions/upload-artifact@v3
+      if: '!cancelled()'
       with:
         name: tests
         path: /tmp/pytest-of-runner/pytest-0/
