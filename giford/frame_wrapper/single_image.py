@@ -1,0 +1,96 @@
+import enum
+import os
+
+import numpy as np
+# aliasing to avoid confusion
+from PIL import Image as PillowImage
+
+from giford.frame_batch import FrameBatch
+from giford.raw_data import RawDataFrame
+from giford.frame_wrapper.abstract_frame_wrapper import AbstractFrameWrapper
+
+class SingleImageFormat(enum.Enum):
+    """
+    currently supported single image formats
+    using the same name as PIL/pillow.format
+    
+    should be easy to add more
+    """
+    UNKNOWN = 0
+    PNG = 1
+    # JPG = 2 # TODO
+
+class SingleImage(AbstractFrameWrapper):
+    """
+    represents a single, non-animated, image (png, jpg)
+
+    datatypes of underlying image data is handled by RawDataFrame
+    """
+
+    # replace with strenum in 3.11
+    _FORMAT_NAME_MAP = {fmt.name: fmt for fmt in SingleImageFormat}
+
+    def __init__(self):
+        super().__init__()
+
+        self.format: SingleImageFormat = SingleImageFormat.UNKNOWN
+
+
+    def _add_raw_data_frame(self, frame: RawDataFrame):
+        """
+        helper function to make sure rdf list never grows beyond one item
+        only meant to be called during initialization
+
+        :param frame: raw data frame to add to this image
+        """
+        if len(self.raw_data_frames) > 0:
+            raise Exception('unable to add frame to SingleImage')        
+        self.raw_data_frames.append(frame)
+
+    def load(self, path):
+
+        if not os.path.exists(path):
+            raise FileNotFoundError()
+        
+        # maybe there is a use case for loading over an existing file
+        # but for now im just going to assume it's done in error
+        if len(self.raw_data_frames) > 0:
+            raise Exception('cannot load second time')
+        
+        # using PIL/pillow to load images
+        pimg = PillowImage.open(path)
+        
+        if pimg.format not in SingleImage._FORMAT_NAME_MAP:
+            raise Exception(f'provided format not supported [{pimg.format}]')
+        self.format = SingleImage._FORMAT_NAME_MAP[pimg.format]
+            
+        # NOTE - trusting whatever type I get out of this
+        # 4 band PNG uint8 so far, really should just support whatever though
+        img_ndarr = np.asarray(pimg)
+        self._add_raw_data_frame(RawDataFrame(img_ndarr))
+        return
+
+    def save(self, path, target_format: SingleImageFormat = None, overwrite_existing: bool = True):
+        
+        if target_format == SingleImageFormat.UNKNOWN:
+            raise Exception('UNKNOWN cannot be saved')
+
+        # should rename to error_if_exists?
+        if not overwrite_existing and os.path.exists(path):
+            raise Exception(f'file at this path already exists [{path}]')
+        
+        if len(self.raw_data_frames) == 0:
+            raise Exception('no image data to write')
+        
+        if target_format is None:
+            target_format = self.format
+        
+        # using PIL/pillow to save images
+        # TODO WHAT FORMATS DOES THIS SUPPORT, how does it interpret datatype
+        # https://github.com/python-pillow/Pillow/blob/a5b025629023477ec62410ce77fd717c372d9fa2/src/PIL/Image.py#L3119
+        rdf = self.raw_data_frames[0]
+        pimg = PillowImage.fromarray(rdf.get_data_arr(is_return_reference=True))
+        pimg.save(path, format=target_format.name)
+
+    def create_from_frame_batch(self, batch: FrameBatch):
+        pass

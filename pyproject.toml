@@ -17,6 +17,7 @@ dependencies = [
     'ffmpeg-python',
     'setuptools',
     'setuptools-scm',
+    'Pillow'
 ]
 
 [project.optional-dependencies]

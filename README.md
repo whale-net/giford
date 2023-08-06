@@ -44,3 +44,7 @@ pip install build
 pip install setuptools-scm
 python -m build
 ```
+
+
+## sometimes things don't go right
+![whoops](./whoops_example.gif)
