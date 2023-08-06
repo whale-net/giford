@@ -35,9 +35,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e .[dev]
 
+    # 10 appears to be slow, trying less
+    # github runners have 2 cores, so 4 threads should be less thrashing
     - name: Run pytest
       run: |
-        coverage run -m pytest -n 10
+        coverage run -m pytest -n 4
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
