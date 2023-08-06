@@ -1,5 +1,5 @@
-from giford.frame_wrapper.single_image import SingleImage
-
+from giford.frame_wrapper import AbstractFrameWrapper, SingleImage
+from giford.frame_batch import FrameBatch
 from tests.util import compare_file_hash, TEST_INPUT_ORANGE_IMAGE_FILEPATH
 
 def test_single_image_load():
@@ -8,9 +8,12 @@ def test_single_image_load():
 
     assert len(img.raw_data_frames) == 1
 
-def test_single_image_save(temp_output_png):
-    # todo use fixture
-    img = SingleImage()
-    img.load(TEST_INPUT_ORANGE_IMAGE_FILEPATH)
+def test_single_image_save(temp_output_png, single_orange_image):
+    single_orange_image.save(temp_output_png)
+    assert compare_file_hash(TEST_INPUT_ORANGE_IMAGE_FILEPATH, temp_output_png)
+
+def test_single_image_create_from_batch(temp_output_png, orange_image_batch):
+    img = SingleImage.create_from_frame_batch(orange_image_batch)
+    # TODO equality instead of write???? maybe one day
     img.save(temp_output_png)
     assert compare_file_hash(TEST_INPUT_ORANGE_IMAGE_FILEPATH, temp_output_png)

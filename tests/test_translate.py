@@ -19,7 +19,7 @@ from giford.image_actions.translate import Translate
     ],
 )
 def test_translate_basic(
-    temp_output_png: str, orange_image: Image, horizontal_px: int, vertical_px: int
+    temp_output_png: str, single_orange_image: Image, horizontal_px: int, vertical_px: int
 ):
     baseline = os.path.join(
         BASELINE_DIRECTORY,
@@ -28,7 +28,7 @@ def test_translate_basic(
 
     t = Translate()
     batch = FrameBatch()
-    batch.add_image(orange_image)
+    batch.add_image(single_orange_image)
 
     batch = t.process(
         batch, horizontal_shift_px=horizontal_px, vertical_shift_px=vertical_px
@@ -48,7 +48,7 @@ def test_translate_basic(
     ],
 )
 def test_translate_complex(
-    temp_output_png: str, orange_image: Image, horizontal_px: int, vertical_px: int
+    temp_output_png: str, single_orange_image: Image, horizontal_px: int, vertical_px: int
 ):
     baseline = os.path.join(
         BASELINE_DIRECTORY,
@@ -57,7 +57,7 @@ def test_translate_complex(
 
     t = Translate()
     batch = FrameBatch()
-    batch.add_image(orange_image)
+    batch.add_image(single_orange_image)
 
     batch = t.process(
         batch, horizontal_shift_px=horizontal_px, vertical_shift_px=vertical_px

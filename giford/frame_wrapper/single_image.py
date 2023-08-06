@@ -69,7 +69,7 @@ class SingleImage(AbstractFrameWrapper):
         img_ndarr = np.asarray(pimg)
         self._add_raw_data_frame(RawDataFrame(img_ndarr))
         return
-
+        
     def save(self, path, target_format: SingleImageFormat = None, overwrite_existing: bool = True):
         
         if target_format == SingleImageFormat.UNKNOWN:
@@ -92,5 +92,14 @@ class SingleImage(AbstractFrameWrapper):
         pimg = PillowImage.fromarray(rdf.get_data_arr(is_return_reference=True))
         pimg.save(path, format=target_format.name)
 
-    def create_from_frame_batch(self, batch: FrameBatch):
-        pass
+    def create_from_frame_batch(batch: FrameBatch, target_format: SingleImageFormat = SingleImageFormat.PNG):
+        if batch.is_empty():
+            raise Exception('batch is empty')
+        if batch.size() > 1:
+            raise Exception(f'batch is too large [{batch.size()}]')
+        
+        img = SingleImage()
+        img._add_raw_data_frame(batch.frames[0])
+        img.format = target_format
+        return img        
+        

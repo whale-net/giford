@@ -3,10 +3,10 @@ import tempfile
 
 import pytest
 
+from giford.frame_wrapper.single_image import SingleImage
 from giford.image import Image
 from giford.frame_batch import FrameBatch
 from tests.util import TEST_INPUT_DATA_FOLDER, TEST_INPUT_ORANGE_IMAGE_FILEPATH
-
 
 def create_test_image(directory, filename, is_delete_existing: bool = True):
     tmp_img_filepath = os.path.join(directory, filename)
@@ -30,10 +30,14 @@ def temp_output_gif(tmp_path):
 
 
 @pytest.fixture
-def orange_image() -> Image:
-    img = Image.create_from_file(TEST_INPUT_ORANGE_IMAGE_FILEPATH)
+def single_orange_image() -> Image:
+    img = SingleImage()
+    img.load(TEST_INPUT_ORANGE_IMAGE_FILEPATH)
     return img
 
+@pytest.fixture()
+def orange_image_batch(single_orange_image) -> FrameBatch:
+    return FrameBatch.create_from_single_image(single_orange_image)
 
 @pytest.fixture
 def orange_swirl_batch() -> FrameBatch:
