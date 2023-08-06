@@ -30,7 +30,7 @@ def temp_output_gif(tmp_path):
 
 
 @pytest.fixture
-def single_orange_image() -> Image:
+def single_orange_image() -> SingleImage:
     img = SingleImage()
     img.load(TEST_INPUT_ORANGE_IMAGE_FILEPATH)
     return img

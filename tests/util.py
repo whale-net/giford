@@ -3,6 +3,7 @@ import hashlib
 
 from giford.image import Image
 from giford.frame_batch import FrameBatch
+from giford.frame_wrapper import SingleImage
 from giford.image_actions.gif import Gifify
 
 TEST_INPUT_DATA_FOLDER = os.path.join(os.path.dirname(__file__), "input_data")
@@ -50,3 +51,15 @@ def compare_file_hash(baseline_filepath: str, test_filepath: str) -> bool:
     test_hash = hash_file(test_filepath)
 
     return baseline_hash == test_hash, "file hashs do not match"
+
+def save_batch_and_compare(baseline_filepath: str, batch: FrameBatch, test_filepath, is_force_multi_image: bool = False) -> bool:
+    assert not batch.is_empty()
+    
+    if batch.size() > 1 or is_force_multi_image:
+        raise NotImplementedError()
+    else:
+        wrapper = SingleImage.create_from_frame_batch(batch)
+
+    wrapper.save(test_filepath)
+
+    return compare_file_hash(baseline_filepath, test_filepath)
