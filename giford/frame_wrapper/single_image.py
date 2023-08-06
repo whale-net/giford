@@ -108,7 +108,17 @@ class SingleImage(AbstractFrameWrapper):
         # TODO WHAT FORMATS DOES THIS SUPPORT, how does it interpret datatype
         # https://github.com/python-pillow/Pillow/blob/a5b025629023477ec62410ce77fd717c372d9fa2/src/PIL/Image.py#L3119
         rdf = self.raw_data_frames[0]
-        pimg = PillowImage.fromarray(rdf.get_data_arr(is_return_reference=True))
+
+         
+        # pick up copy of data frame in case we need to convert type on export
+        # keep whatever RDF dtype to preserve quality
+        img_nd_arr = rdf.get_data_arr(is_return_reference=False)
+
+        img_nd_arr = RawDataFrame.convert_data_arr(
+                img_nd_arr, target_dtype=np.uint8
+            )
+
+        pimg = PillowImage.fromarray(img_nd_arr)
         pimg.save(path, format=target_format.name)
 
     def create_from_frame(
