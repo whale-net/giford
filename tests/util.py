@@ -17,14 +17,13 @@ TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH = os.path.join(
 BASELINE_DIRECTORY = os.path.join(os.path.dirname(__file__), "baseline_data")
 
 
-
 def compare_image_files(baseline_filepath: str, test_filepath: str) -> bool:
     assert baseline_filepath
     assert os.path.exists(baseline_filepath), "baseline_filepath does not exist"
     assert test_filepath
     assert os.path.exists(test_filepath), "test_filepath does not exist"
 
-    # Using PIL/Pillow to compare 
+    # Using PIL/Pillow to compare
     # Ran into issue using file hash since pillow will somtimes compress images when saving
     # which makes the hashes different
     # Hopefully PIL/Pillow is tested enough that this is a reasonable operation
@@ -33,7 +32,6 @@ def compare_image_files(baseline_filepath: str, test_filepath: str) -> bool:
     baseline_pimg.info = {}
     test_pimg = PillowImage.open(test_filepath)
     test_pimg.info = {}
-
 
     return baseline_pimg == test_pimg
 
@@ -55,8 +53,8 @@ def save_batch_and_compare(
         )
 
     if os.path.exists(test_filepath):
-        raise FileExistsError('cannot overwrite test file')
-    
+        raise FileExistsError("cannot overwrite test file")
+
     wrapper.save(test_filepath, overwrite_existing=False)
 
     return compare_image_files(baseline_filepath, test_filepath)

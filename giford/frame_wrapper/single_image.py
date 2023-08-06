@@ -69,9 +69,9 @@ class SingleImage(AbstractFrameWrapper):
 
         # using PIL/pillow to load images
         # TODO - always convert to RGBA?
-        pimg = PillowImage.open(path) #.convert('RGBA')
+        pimg = PillowImage.open(path)  # .convert('RGBA')
 
-        # TODO 
+        # TODO
         # pimg.info will have an icc_profile, do we want this?
 
         # TODO - consider passing formats into open instead
@@ -109,14 +109,11 @@ class SingleImage(AbstractFrameWrapper):
         # https://github.com/python-pillow/Pillow/blob/a5b025629023477ec62410ce77fd717c372d9fa2/src/PIL/Image.py#L3119
         rdf = self.raw_data_frames[0]
 
-         
         # pick up copy of data frame in case we need to convert type on export
         # keep whatever RDF dtype to preserve quality
         img_nd_arr = rdf.get_data_arr(is_return_reference=False)
 
-        img_nd_arr = RawDataFrame.convert_data_arr(
-                img_nd_arr, target_dtype=np.uint8
-            )
+        img_nd_arr = RawDataFrame.convert_data_arr(img_nd_arr, target_dtype=np.uint8)
 
         pimg = PillowImage.fromarray(img_nd_arr)
         pimg.save(path, format=target_format.name)

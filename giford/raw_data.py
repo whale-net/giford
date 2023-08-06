@@ -119,12 +119,12 @@ class RawDataFrame:
     def convert_data_arr(data_arr: np.ndarray, target_dtype: np.dtype):
         """
         return data_arr as target dtype
-        
+
         :param data_arr: numpy array containing data
         :param target_dtype: target numpy data type
         :return: data_arr
         """
-        
+
         current_dtype = data_arr.dtype
         match target_dtype:
             # TODO - better handling of conversion between compatible types (float32 and float64 for example)
