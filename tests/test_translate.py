@@ -2,11 +2,10 @@ import os
 
 import pytest
 
-from giford.image import Image
-#from giford.frame_wrapper import SingleImage
+
 from giford.frame_batch import FrameBatch
 from giford.image_actions.translate import Translate
-from tests.util import BASELINE_DIRECTORY, compare_file_hash, save_batch_and_compare
+from tests.util import BASELINE_DIRECTORY, save_batch_and_compare
 
 @pytest.mark.parametrize(
     "horizontal_px, vertical_px",
