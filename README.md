@@ -3,9 +3,13 @@
 ## about
 modify images and create gifs with unified toolkit
 
-### Concepts
+### concepts
 
-![giford_concepts](./giford_concepts.drawio.svg)
+![giford_concepts](./diagrams/giford_concepts.drawio.svg)
+
+### class diagram (very crude)
+
+![giford_class_diagram](./diagrams/giford_architecture.drawio.svg)
 
 ## manifesto:
 lowercase because it's friendly
