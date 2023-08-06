@@ -54,6 +54,9 @@ def save_batch_and_compare(
             batch, target_format=target_format
         )
 
-    wrapper.save(test_filepath)
+    if os.path.exists(test_filepath):
+        raise FileExistsError('cannot overwrite test file')
+    
+    wrapper.save(test_filepath, overwrite_existing=False)
 
     return compare_image_files(baseline_filepath, test_filepath)
