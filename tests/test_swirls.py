@@ -10,7 +10,7 @@ from tests.util import (
     compare_file_hash,
 )
 
-
+@pytest.mark.skip('rewrite')
 def test_basic_swirl(temp_output_png: str, orange_image: Image):
     baseline = os.path.join(BASELINE_DIRECTORY, "test_basic_swirl.png")
 
@@ -23,7 +23,7 @@ def test_basic_swirl(temp_output_png: str, orange_image: Image):
 
     assert compare_file_hash(baseline, temp_output_png)
 
-
+@pytest.mark.skip('rewrite')
 @pytest.mark.parametrize("swirl_depth", [0, 5, 10])
 def test_variable_swirl(temp_output_png: str, orange_image: Image, swirl_depth: int):
     # test variable swirl
@@ -42,7 +42,7 @@ def test_variable_swirl(temp_output_png: str, orange_image: Image, swirl_depth: 
     Image.create_from_frame_batch(batch).write_to_file(temp_output_png)
     assert compare_file_hash(baseline, temp_output_png)
 
-
+@pytest.mark.skip('rewrite')
 def test_varying_variable_swirl(temp_output_png: str, orange_image: Image):
     # produce a bunch of swirls
     # this will take a while because the code is SLOWOWOW

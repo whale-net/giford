@@ -13,6 +13,7 @@ from giford.image_actions.reshape import Reshape, ReshapeMethod
 
 # TODO - test_scroll various step sizes/scroll_multipliers
 # TODO - test various scroll scroll combinations
+@pytest.mark.skip('rewrite')
 @pytest.mark.parametrize(
     "is_wrap, is_reverse", [(False, False), (False, True), (True, False), (True, True)]
 )

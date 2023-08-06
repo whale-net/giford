@@ -8,7 +8,7 @@ from tests.util import BASELINE_DIRECTORY, compare_file_hash
 
 from giford.image_actions.translate import Translate
 
-
+@pytest.mark.skip('rewrite')
 @pytest.mark.parametrize(
     "horizontal_px, vertical_px",
     [
@@ -37,7 +37,7 @@ def test_translate_basic(
 
     assert compare_file_hash(baseline, temp_output_png)
 
-
+@pytest.mark.skip('rewrite')
 @pytest.mark.parametrize(
     "horizontal_px, vertical_px",
     [

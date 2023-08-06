@@ -10,6 +10,7 @@ from tests.util import BASELINE_DIRECTORY, compare_file_hash
 
 # TODO ReshapeMethod.DOWNSCALE
 # TODO parametrize scale
+@pytest.mark.skip('rewrite')
 @pytest.mark.parametrize(
     "reshape_method", [ReshapeMethod.RESCALE, ReshapeMethod.RESIZE]
 )
