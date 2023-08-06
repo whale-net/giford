@@ -3,6 +3,7 @@ import os
 
 import ffmpeg
 import numpy as np
+
 # aliasing to avoid confusion
 from PIL import Image as PillowImage
 
@@ -10,16 +11,18 @@ from giford.frame_batch import FrameBatch
 from giford.raw_data import RawDataFrame, RawDataVideo
 from giford.frame_wrapper.abstract_frame_wrapper import AbstractFrameWrapper
 
+
 class MultiImageFormat(enum.Enum):
     """
     currently supported multi image formats
     using the same name as PIL/pillow.format
     """
+
     UNKNOWN = 0
     GIF = 1
 
+
 class MultiImage(AbstractFrameWrapper):
-    
     DEFAULT_FRAMERATE = 15
     DEFAULT_FORMAT = MultiImageFormat.GIF
 
@@ -28,7 +31,7 @@ class MultiImage(AbstractFrameWrapper):
 
         self.raw_data_frames: list[RawDataFrame] = []
         self.format = MultiImageFormat.UNKNOWN
-    
+
     def load(self, path):
         # not currently supported
         raise NotImplementedError()
@@ -36,7 +39,7 @@ class MultiImage(AbstractFrameWrapper):
     def save(self, path, target_framerate: int = DEFAULT_FRAMERATE):
         # TODO type checking and more defaults - see single for ideas
         if self.format == MultiImageFormat.UNKNOWN:
-            raise Exception('unknown format not supported')
+            raise Exception("unknown format not supported")
         elif self.format == MultiImageFormat.GIF:
             self._write_gif(path, target_framerate)
         else:
@@ -105,10 +108,14 @@ class MultiImage(AbstractFrameWrapper):
         # )
 
         # TODO capture stderr flag
-        out, err = palleteuse_stream.output(path, format="gif").run(input=rdv_byte_pipe_input)
-        return out, err 
+        out, err = palleteuse_stream.output(path, format="gif").run(
+            input=rdv_byte_pipe_input
+        )
+        return out, err
 
-    def create_from_frame_batch(batch: FrameBatch, target_format: MultiImageFormat = DEFAULT_FORMAT): # one day 3.11 -> Self:
+    def create_from_frame_batch(
+        batch: FrameBatch, target_format: MultiImageFormat = DEFAULT_FORMAT
+    ):  # one day 3.11 -> Self:
         # TODO better type checking and such
         mimg = MultiImage()
         mimg.raw_data_frames += batch.frames

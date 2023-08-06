@@ -7,6 +7,7 @@ from giford.frame_wrapper.single_image import SingleImage
 from giford.frame_batch import FrameBatch
 from tests.util import TEST_INPUT_DATA_FOLDER, TEST_INPUT_ORANGE_IMAGE_FILEPATH
 
+
 def create_test_image(directory, filename, is_delete_existing: bool = True):
     tmp_img_filepath = os.path.join(directory, filename)
     # sometimes pytest tmp_path appears to be re-used
@@ -34,9 +35,11 @@ def single_orange_image() -> SingleImage:
     img.load(TEST_INPUT_ORANGE_IMAGE_FILEPATH)
     return img
 
+
 @pytest.fixture()
 def orange_image_batch(single_orange_image) -> FrameBatch:
     return FrameBatch.create_from_single_image(single_orange_image)
+
 
 @pytest.fixture
 def orange_swirl_batch() -> FrameBatch:

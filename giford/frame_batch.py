@@ -64,19 +64,19 @@ class FrameBatch:
         """
         for frame in self.frames:
             yield frame.clone()
-    
+
     def size(self):
         return len(self.frames)
-    
+
     def is_empty(self):
         return self.size() == 0
-    
-    def create_from_frame_wrapper(wrapper: AbstractFrameWrapper):    
+
+    def create_from_frame_wrapper(wrapper: AbstractFrameWrapper):
         batch = FrameBatch()
         for rdf in wrapper.raw_data_frames:
             batch.add_frame(rdf)
         return batch
-        
+
     def create_from_single_image(simg: SingleImage):
         """
         same as create_from_frame_wrapper, but here for convenience

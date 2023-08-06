@@ -4,7 +4,12 @@ import pytest
 
 from giford.frame_wrapper import MultiImage
 from giford.frame_batch import FrameBatch
-from tests.util import compare_file_hash, BASELINE_DIRECTORY, TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH
+from tests.util import (
+    compare_file_hash,
+    BASELINE_DIRECTORY,
+    TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH,
+)
+
 
 def test_multi_image_load(orange_swirl_batch: FrameBatch):
     mimg = MultiImage()
@@ -13,27 +18,32 @@ def test_multi_image_load(orange_swirl_batch: FrameBatch):
     except NotImplementedError:
         pass
     except:
-        assert False, 'unexpected exception thrown'
-        
-    
+        assert False, "unexpected exception thrown"
+
 
 def test_multi_image_save(temp_output_gif: str, orange_swirl_batch: FrameBatch):
-    baseline = os.path.join(BASELINE_DIRECTORY, 'test_multi_image_save.gif')
+    baseline = os.path.join(BASELINE_DIRECTORY, "test_multi_image_save.gif")
 
     mimg = MultiImage.create_from_frame_batch(orange_swirl_batch)
     mimg.save(temp_output_gif)
 
     assert compare_file_hash(baseline, temp_output_gif)
 
-def test_multi_image_create_from_batch(temp_output_gif: str, orange_swirl_batch: FrameBatch):
+
+def test_multi_image_create_from_batch(
+    temp_output_gif: str, orange_swirl_batch: FrameBatch
+):
     # yep this is the same test as above, hard to decouple these two right now
     # TODO decouple
-    baseline = os.path.join(BASELINE_DIRECTORY, 'test_multi_image_create_from_batch.gif')
+    baseline = os.path.join(
+        BASELINE_DIRECTORY, "test_multi_image_create_from_batch.gif"
+    )
 
     mimg = MultiImage.create_from_frame_batch(orange_swirl_batch)
     mimg.save(temp_output_gif)
 
     assert compare_file_hash(baseline, temp_output_gif)
+
 
 @pytest.mark.parametrize("framerate", [5, 15, 60])
 def test_multi_image_gif_framerate(

@@ -7,6 +7,7 @@ from giford.frame_batch import FrameBatch
 from giford.image_actions.translate import Translate
 from tests.util import BASELINE_DIRECTORY, save_batch_and_compare
 
+
 @pytest.mark.parametrize(
     "horizontal_px, vertical_px",
     [
@@ -17,7 +18,10 @@ from tests.util import BASELINE_DIRECTORY, save_batch_and_compare
     ],
 )
 def test_translate_basic(
-    temp_output_png: str, orange_image_batch: FrameBatch, horizontal_px: int, vertical_px: int
+    temp_output_png: str,
+    orange_image_batch: FrameBatch,
+    horizontal_px: int,
+    vertical_px: int,
 ):
     baseline = os.path.join(
         BASELINE_DIRECTORY,
@@ -25,12 +29,15 @@ def test_translate_basic(
     )
 
     t = Translate()
-    
+
     output_batch = t.process(
-        orange_image_batch, horizontal_shift_px=horizontal_px, vertical_shift_px=vertical_px
+        orange_image_batch,
+        horizontal_shift_px=horizontal_px,
+        vertical_shift_px=vertical_px,
     )
 
     assert save_batch_and_compare(baseline, output_batch, temp_output_png)
+
 
 @pytest.mark.parametrize(
     "horizontal_px, vertical_px",
@@ -42,7 +49,10 @@ def test_translate_basic(
     ],
 )
 def test_translate_complex(
-    temp_output_png: str, orange_image_batch: FrameBatch, horizontal_px: int, vertical_px: int
+    temp_output_png: str,
+    orange_image_batch: FrameBatch,
+    horizontal_px: int,
+    vertical_px: int,
 ):
     baseline = os.path.join(
         BASELINE_DIRECTORY,
@@ -52,7 +62,9 @@ def test_translate_complex(
     t = Translate()
 
     output_batch = t.process(
-        orange_image_batch, horizontal_shift_px=horizontal_px, vertical_shift_px=vertical_px
+        orange_image_batch,
+        horizontal_shift_px=horizontal_px,
+        vertical_shift_px=vertical_px,
     )
 
     assert save_batch_and_compare(baseline, output_batch, temp_output_png)

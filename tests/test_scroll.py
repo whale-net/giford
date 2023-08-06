@@ -16,7 +16,10 @@ from giford.image_actions.reshape import Reshape, ReshapeMethod
     "is_wrap, is_reverse", [(False, False), (False, True), (True, False), (True, True)]
 )
 def test_scroll(
-    temp_output_gif: str, orange_image_batch: FrameBatch, is_wrap: bool, is_reverse: bool
+    temp_output_gif: str,
+    orange_image_batch: FrameBatch,
+    is_wrap: bool,
+    is_reverse: bool,
 ):
     # test scroll combinations
     baseline = os.path.join(
@@ -25,7 +28,9 @@ def test_scroll(
 
     # shrink image so test is faster
     r = Reshape()
-    orange_image_batch = r.process(orange_image_batch, reshape_method=ReshapeMethod.RESIZE)  # idk why resize
+    orange_image_batch = r.process(
+        orange_image_batch, reshape_method=ReshapeMethod.RESIZE
+    )  # idk why resize
 
     s = Scroll()
     output_batch = s.process(
@@ -40,5 +45,5 @@ def test_scroll(
 
     mimg = MultiImage.create_from_frame_batch(output_batch)
     mimg.save(temp_output_gif)
-    
+
     assert compare_file_hash(baseline, temp_output_gif)

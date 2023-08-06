@@ -12,7 +12,9 @@ from tests.util import BASELINE_DIRECTORY, save_batch_and_compare
 @pytest.mark.parametrize(
     "reshape_method", [ReshapeMethod.RESCALE, ReshapeMethod.RESIZE]
 )
-def test_reshape(temp_output_png, orange_image_batch: FrameBatch, reshape_method: ReshapeMethod):
+def test_reshape(
+    temp_output_png, orange_image_batch: FrameBatch, reshape_method: ReshapeMethod
+):
     baseline = os.path.join(
         BASELINE_DIRECTORY, f"test_reshape_method_{reshape_method.name}.png"
     )

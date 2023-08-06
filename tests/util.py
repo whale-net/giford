@@ -8,7 +8,9 @@ DEFAULT_TEST_SINGLE_IMAGE_FORMAT = SingleImageFormat.PNG
 
 TEST_INPUT_DATA_FOLDER = os.path.join(os.path.dirname(__file__), "input_data")
 TEST_INPUT_ORANGE_IMAGE_FILEPATH = os.path.join(TEST_INPUT_DATA_FOLDER, "orange.png")
-TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH = os.path.join(TEST_INPUT_DATA_FOLDER, "orange_swirl.gif")
+TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH = os.path.join(
+    TEST_INPUT_DATA_FOLDER, "orange_swirl.gif"
+)
 
 BASELINE_DIRECTORY = os.path.join(os.path.dirname(__file__), "baseline_data")
 
@@ -35,6 +37,7 @@ def hash_file(filename):
     # return the hex representation of digest
     return h.hexdigest()
 
+
 def compare_file_hash(baseline_filepath: str, test_filepath: str) -> bool:
     assert baseline_filepath
     assert os.path.exists(baseline_filepath), "baseline_filepath does not exist"
@@ -46,16 +49,22 @@ def compare_file_hash(baseline_filepath: str, test_filepath: str) -> bool:
 
     return baseline_hash == test_hash, "file hashs do not match"
 
-def save_batch_and_compare(baseline_filepath: str, batch: FrameBatch, test_filepath: str, 
-                           is_force_multi_image: bool = False, 
-                           target_format: SingleImageFormat = DEFAULT_TEST_SINGLE_IMAGE_FORMAT
-                           ) -> bool:
+
+def save_batch_and_compare(
+    baseline_filepath: str,
+    batch: FrameBatch,
+    test_filepath: str,
+    is_force_multi_image: bool = False,
+    target_format: SingleImageFormat = DEFAULT_TEST_SINGLE_IMAGE_FORMAT,
+) -> bool:
     assert not batch.is_empty()
-    
+
     if batch.size() > 1 or is_force_multi_image:
         raise NotImplementedError()
     else:
-        wrapper = SingleImage.create_from_frame_batch(batch, target_format=target_format)
+        wrapper = SingleImage.create_from_frame_batch(
+            batch, target_format=target_format
+        )
 
     wrapper.save(test_filepath)
 
