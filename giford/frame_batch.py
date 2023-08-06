@@ -7,8 +7,6 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from giford.frame_wrapper import AbstractFrameWrapper, SingleImage
-
-    from giford.image import Image
     from giford.raw_data import RawDataFrame
 
 
@@ -27,13 +25,6 @@ class FrameBatch:
 
     def add_frame(self, frame: RawDataFrame):
         self.frames.append(frame.clone())
-
-        # allow chaining these functions together
-        return self
-
-    def add_image(self, img: SingleImage):
-        # TODO - cloning here is safe but expensive, can this be improved?
-        self.add_frame(img.raw_frame)
 
         # allow chaining these functions together
         return self

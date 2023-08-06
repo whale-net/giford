@@ -1,10 +1,8 @@
 import os
 import hashlib
 
-from giford.image import Image
 from giford.frame_batch import FrameBatch
 from giford.frame_wrapper import SingleImage, SingleImageFormat
-from giford.image_actions.gif import Gifify
 
 DEFAULT_TEST_SINGLE_IMAGE_FORMAT = SingleImageFormat.PNG
 
@@ -36,13 +34,6 @@ def hash_file(filename):
 
     # return the hex representation of digest
     return h.hexdigest()
-
-
-def create_gif(batch: FrameBatch, framerate: int = 15) -> Image:
-    # todo create util test file
-    g = Gifify()
-    return g.process(batch, framerate=framerate)
-
 
 def compare_file_hash(baseline_filepath: str, test_filepath: str) -> bool:
     assert baseline_filepath

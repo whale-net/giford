@@ -4,7 +4,6 @@ import tempfile
 import pytest
 
 from giford.frame_wrapper.single_image import SingleImage
-from giford.image import Image
 from giford.frame_batch import FrameBatch
 from tests.util import TEST_INPUT_DATA_FOLDER, TEST_INPUT_ORANGE_IMAGE_FILEPATH
 
@@ -46,6 +45,7 @@ def orange_swirl_batch() -> FrameBatch:
         img_path = os.path.join(
             TEST_INPUT_DATA_FOLDER, "gif_data", f"swirl_depth_{idx}.png"
         )
-        img = Image.create_from_file(img_path)
-        batch.add_image(img)
+        img = SingleImage()
+        img.load(img_path)
+        batch.add_frame(img.raw_data_frame)
     return batch

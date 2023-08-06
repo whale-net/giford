@@ -1,7 +1,6 @@
 import numpy as np
 from skimage import transform
 
-from giford.image import Image
 from giford.image_actions.image_action import ChainImageAction
 from giford.frame_batch import FrameBatch
 from giford.raw_data import RawDataFrame

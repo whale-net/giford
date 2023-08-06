@@ -37,6 +37,12 @@ class SingleImage(AbstractFrameWrapper):
 
         self.format: SingleImageFormat = SingleImageFormat.UNKNOWN
 
+    @property
+    def raw_data_frame(self) -> RawDataFrame:
+        if len(self.raw_data_frames) == 0:
+            raise Exception('image is empty')
+        return self.raw_data_frames[0]
+    
 
     def _add_raw_data_frame(self, frame: RawDataFrame):
         """
