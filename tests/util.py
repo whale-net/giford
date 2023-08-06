@@ -10,6 +10,7 @@ DEFAULT_TEST_SINGLE_IMAGE_FORMAT = SingleImageFormat.PNG
 
 TEST_INPUT_DATA_FOLDER = os.path.join(os.path.dirname(__file__), "input_data")
 TEST_INPUT_ORANGE_IMAGE_FILEPATH = os.path.join(TEST_INPUT_DATA_FOLDER, "orange.png")
+TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH = os.path.join(TEST_INPUT_DATA_FOLDER, "orange_swirl.gif")
 
 BASELINE_DIRECTORY = os.path.join(os.path.dirname(__file__), "baseline_data")
 
