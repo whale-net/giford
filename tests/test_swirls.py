@@ -8,6 +8,7 @@ from tests.util import (
     BASELINE_DIRECTORY,
     TEST_INPUT_ORANGE_IMAGE_FILEPATH,
     save_batch_and_compare,
+    compare_file_hash
 )
 
 def test_basic_swirl(temp_output_png: str, orange_image_batch: FrameBatch):
@@ -40,13 +41,11 @@ def test_varying_variable_swirl(temp_output_png: str, orange_image_batch: FrameB
     vvs = VaryingVariableSwirl()
     output_batch = vvs.process(orange_image_batch, 25)
     for i, frame in enumerate(output_batch.frames):
-        simg = SingleImage.create_from_frame(frame)
-        simg.save(temp_output_png)
         if i % 5 == 0:
-            # TODO - don't overwrite same image
-            simg.save(temp_output_png)
             baseline = os.path.join(
                 BASELINE_DIRECTORY, f"test_varying_variable_swirl_depth_{i}.png"
             )
 
-            assert save_batch_and_compare(baseline, output_batch[i], temp_output_png)
+            simg = SingleImage.create_from_frame(frame)
+            simg.save(temp_output_png)
+            assert compare_file_hash(baseline, temp_output_png)
