@@ -2,11 +2,10 @@ import os
 
 import pytest
 
-from giford.image import Image
-from giford.frame_batch import FrameBatch
-from tests.util import BASELINE_DIRECTORY, compare_file_hash
 
+from giford.frame_batch import FrameBatch
 from giford.image_actions.translate import Translate
+from tests.util import BASELINE_DIRECTORY, save_batch_and_compare
 
 
 @pytest.mark.parametrize(
@@ -19,7 +18,10 @@ from giford.image_actions.translate import Translate
     ],
 )
 def test_translate_basic(
-    temp_output_png: str, orange_image: Image, horizontal_px: int, vertical_px: int
+    temp_output_png: str,
+    orange_image_batch: FrameBatch,
+    horizontal_px: int,
+    vertical_px: int,
 ):
     baseline = os.path.join(
         BASELINE_DIRECTORY,
@@ -27,15 +29,14 @@ def test_translate_basic(
     )
 
     t = Translate()
-    batch = FrameBatch()
-    batch.add_image(orange_image)
 
-    batch = t.process(
-        batch, horizontal_shift_px=horizontal_px, vertical_shift_px=vertical_px
+    output_batch = t.process(
+        orange_image_batch,
+        horizontal_shift_px=horizontal_px,
+        vertical_shift_px=vertical_px,
     )
-    Image.create_from_frame_batch(batch).write_to_file(temp_output_png)
 
-    assert compare_file_hash(baseline, temp_output_png)
+    assert save_batch_and_compare(baseline, output_batch, temp_output_png)
 
 
 @pytest.mark.parametrize(
@@ -48,7 +49,10 @@ def test_translate_basic(
     ],
 )
 def test_translate_complex(
-    temp_output_png: str, orange_image: Image, horizontal_px: int, vertical_px: int
+    temp_output_png: str,
+    orange_image_batch: FrameBatch,
+    horizontal_px: int,
+    vertical_px: int,
 ):
     baseline = os.path.join(
         BASELINE_DIRECTORY,
@@ -56,12 +60,11 @@ def test_translate_complex(
     )
 
     t = Translate()
-    batch = FrameBatch()
-    batch.add_image(orange_image)
 
-    batch = t.process(
-        batch, horizontal_shift_px=horizontal_px, vertical_shift_px=vertical_px
+    output_batch = t.process(
+        orange_image_batch,
+        horizontal_shift_px=horizontal_px,
+        vertical_shift_px=vertical_px,
     )
-    Image.create_from_frame_batch(batch).write_to_file(temp_output_png)
 
-    assert compare_file_hash(baseline, temp_output_png)
+    assert save_batch_and_compare(baseline, output_batch, temp_output_png)

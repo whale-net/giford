@@ -6,7 +6,7 @@ import copy
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from giford.image import Image
+    from giford.frame_wrapper import AbstractFrameWrapper, SingleImage
     from giford.raw_data import RawDataFrame
 
 
@@ -29,13 +29,6 @@ class FrameBatch:
         # allow chaining these functions together
         return self
 
-    def add_image(self, img: Image):
-        # TODO - cloning here is safe but expensive, can this be improved?
-        self.add_frame(img.raw_frame)
-
-        # allow chaining these functions together
-        return self
-
     def add_batch(self, batch: FrameBatch):
         # self.images += batch.images
         # need to add_img, so we is_clone properly
@@ -49,7 +42,7 @@ class FrameBatch:
         """
         returns true if all images are the same size
         """
-        if len(self.frames) == 1:
+        if self.size() == 1:
             return True
 
         base_frame = self.frames[0]
@@ -67,6 +60,27 @@ class FrameBatch:
         returns cloned copy of all frames in batch
 
         useful for implementing image actions
+        TODO - self.readonly flag and clone on get_copy
         """
         for frame in self.frames:
             yield frame.clone()
+
+    def size(self):
+        return len(self.frames)
+
+    def is_empty(self):
+        return self.size() == 0
+
+    def create_from_frame_wrapper(wrapper: AbstractFrameWrapper):
+        batch = FrameBatch()
+        for rdf in wrapper.raw_data_frames:
+            batch.add_frame(rdf)
+        return batch
+
+    def create_from_single_image(simg: SingleImage):
+        """
+        same as create_from_frame_wrapper, but here for convenience
+
+        :param simg: single image
+        """
+        return FrameBatch.create_from_frame_wrapper(simg)

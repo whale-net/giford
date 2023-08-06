@@ -22,8 +22,6 @@ class Reshape(ChainImageAction):
     def __init__(self):
         super().__init__()
 
-    # TODO tests
-
     def process(
         self,
         input_batch: FrameBatch,
@@ -51,13 +49,6 @@ class Reshape(ChainImageAction):
             if frame is None:
                 raise Exception("developer error, didn" "t set frame")
 
-            # TODO make this way less weird
-            # convert back to uint8 if rgba, otherwise PIL (called by scikit imsave) will fail
-            frame.update_data_arr(
-                RawDataFrame.convert_data_arr(
-                    frame.get_data_arr(is_return_reference=True), target_dtype=np.uint8
-                )
-            )
             output_batch.add_frame(frame)
 
         return output_batch

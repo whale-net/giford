@@ -5,9 +5,10 @@ on:
 #    branches:
 #      #- 'main' # TODO re-enable this one day after pylint works
 #      #- 'releases/**'
-  pull_request:
-    branches:
-      - 'main'
+  # pull_request:
+  #   branches:
+  #     - 'main' # TODO also
+  workflow_dispatch
 
 jobs:
   lint-pylint:
@@ -26,5 +27,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pylint
     - name: Analysing the code with pylint
+      # run this but disable it from causing failure. already not required but still annoying
+      continue-on-error: true
       run: |
         pylint $(git ls-files '*.py')

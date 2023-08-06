@@ -1,7 +1,6 @@
 import numpy as np
 from skimage import transform
 
-from giford.image import Image
 from giford.image_actions.image_action import ChainImageAction
 from giford.frame_batch import FrameBatch
 from giford.raw_data import RawDataFrame
@@ -14,13 +13,9 @@ class BasicSwirl(ChainImageAction):
     def process(self, input_batch: FrameBatch) -> FrameBatch:
         output_batch = FrameBatch()
         for frame in input_batch.frames:
-            img_nd_arr = transform.swirl(frame.as_3d_ndarray())
+            img_nd_arr = frame.as_3d_ndarray()
 
-            # TODO make this way less weird
-            # convert back to uint8 if rgba, otherwise PIL (called by scikit imsave) will fail
-            img_nd_arr = RawDataFrame.convert_data_arr(
-                img_nd_arr, target_dtype=np.uint8
-            )
+            img_nd_arr = transform.swirl(img_nd_arr)
 
             output_batch.add_frame(RawDataFrame(img_nd_arr))
 

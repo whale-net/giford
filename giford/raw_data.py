@@ -118,11 +118,13 @@ class RawDataFrame:
     @staticmethod
     def convert_data_arr(data_arr: np.ndarray, target_dtype: np.dtype):
         """
-        modify data_arr in place
+        return data_arr as target dtype
+
         :param data_arr: numpy array containing data
         :param target_dtype: target numpy data type
-        :return:
+        :return: data_arr
         """
+
         current_dtype = data_arr.dtype
         match target_dtype:
             # TODO - better handling of conversion between compatible types (float32 and float64 for example)
@@ -130,18 +132,19 @@ class RawDataFrame:
                 if current_dtype in (np.float32, np.float64):
                     # if max value is 1.0 then assume scaled [0, 1] and rescale
                     if data_arr.max() <= 1.0:
+                        data_arr = data_arr.copy()
                         data_arr *= 255
 
                 # we want to modify array
                 return data_arr.astype(target_dtype)
-            case np.float:
-                data_arr.astype(target_dtype)
+            case np.float64:
+                data_arr = data_arr.astype(target_dtype)
 
                 if current_dtype == np.uint8:
-                    data_arr /= 256
+                    # 0 = 0, 1.0 = 255
+                    data_arr /= 255
 
                 return data_arr
-
             case _:
                 raise Exception(f"unsupported target_dtype: [{target_dtype}]")
 
