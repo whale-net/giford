@@ -67,12 +67,12 @@ class VaryingVariableSwirl(ChainImageAction):
 
         def recursive_swirl(in_batch: FrameBatch, swirl_depth: int, out_batch: FrameBatch):
             """
-            _summary_
+            recursively call variable_swirl adding frames into out_batch
+            hopefully tail recursive but idk if python supports that
 
-            :param in_batch: _description_
-            :param swirl_depth: _description_
-            :param out_batch: _description_
-            :return: _description_
+            :param in_batch: batch to process
+            :param swirl_depth: number of times left to swirl
+            :param out_batch: output batch to append swirls to
             """
             if swirl_depth <= 0:
                 return out_batch
