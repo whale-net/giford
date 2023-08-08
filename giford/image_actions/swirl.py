@@ -62,10 +62,12 @@ class VaryingVariableSwirl(ChainImageAction):
         if depth < 0:
             # todo - make fun thing with negatives
             raise Exception(f"depth cannot be negative [{depth}]")
-        
+
         variable_swirl = VariableSwirl()
 
-        def recursive_swirl(in_batch: FrameBatch, swirl_depth: int, out_batch: FrameBatch):
+        def recursive_swirl(
+            in_batch: FrameBatch, swirl_depth: int, out_batch: FrameBatch
+        ):
             """
             recursively call variable_swirl adding frames into out_batch
             hopefully tail recursive but idk if python supports that
@@ -79,11 +81,9 @@ class VaryingVariableSwirl(ChainImageAction):
             out_batch.add_batch(in_batch)
             next_batch = variable_swirl.process(in_batch, depth=1)
             recursive_swirl(next_batch, swirl_depth - 1, out_batch)
-            
-            
 
         output_batch = FrameBatch()
-        
+
         for frame in input_batch.frames:
             # turn each image in input_batch into its own batch so we can feed it into another action
             batch = FrameBatch()

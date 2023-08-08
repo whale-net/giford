@@ -55,7 +55,6 @@ def test_varying_variable_swirl(temp_out_png_generator, orange_image_batch: Fram
             simg = SingleImage.create_from_frame(frame)
             simg.save(temp_output_png)
             comparisons.append((baseline, temp_output_png))
-            
-    
+
     for baseline, test in comparisons:
-        assert compare_image_files(baseline, test) 
+        assert compare_image_files(baseline, test)
