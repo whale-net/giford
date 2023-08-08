@@ -39,7 +39,7 @@ class VariableSwirl(ChainImageAction):
             # turn each image in input_batch into its own batch so we can feed it into another action
             batch = FrameBatch()
             batch.add_frame(frame)
-            for i in range(0, depth):
+            for _ in range(0, depth):
                 batch = basic_swirl.process(batch)
 
             # adding a batch will copy them
@@ -62,15 +62,31 @@ class VaryingVariableSwirl(ChainImageAction):
         if depth < 0:
             # todo - make fun thing with negatives
             raise Exception(f"depth cannot be negative [{depth}]")
+        
+        variable_swirl = VariableSwirl()
+
+        def recursive_swirl(in_batch: FrameBatch, swirl_depth: int, out_batch: FrameBatch):
+            """
+            _summary_
+
+            :param in_batch: _description_
+            :param swirl_depth: _description_
+            :param out_batch: _description_
+            :return: _description_
+            """
+            if swirl_depth <= 0:
+                return out_batch
+            out_batch.add_batch(in_batch)
+            next_batch = variable_swirl.process(in_batch, depth=1)
+            recursive_swirl(next_batch, swirl_depth - 1, out_batch)
+            
+            
 
         output_batch = FrameBatch()
-        variable_swirl = VariableSwirl()
+        
         for frame in input_batch.frames:
             # turn each image in input_batch into its own batch so we can feed it into another action
             batch = FrameBatch()
-            batch.add_frame(frame)
-            for i in range(0, depth):
-                batch = variable_swirl.process(batch, i)
-                output_batch.add_batch(batch)
+            recursive_swirl(batch, depth, output_batch)
 
         return output_batch
