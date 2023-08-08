@@ -66,7 +66,10 @@ class VaryingVariableSwirl(ChainImageAction):
         variable_swirl = VariableSwirl()
 
         def recursive_swirl(
-            in_batch: FrameBatch, swirl_depth: int, out_batch: FrameBatch
+            in_batch: FrameBatch,
+            swirl_depth: int,
+            out_batch: FrameBatch,
+            depth_counter=0,
         ):
             """
             recursively call variable_swirl adding frames into out_batch
@@ -77,10 +80,14 @@ class VaryingVariableSwirl(ChainImageAction):
             :param out_batch: output batch to append swirls to
             """
             if swirl_depth <= 0:
-                return out_batch
+                return
+            depth_counter += 1
             out_batch.add_batch(in_batch)
-            next_batch = variable_swirl.process(in_batch, depth=1)
-            recursive_swirl(next_batch, swirl_depth - 1, out_batch)
+            # TODO - implement non-depth counter swirl. this isn't what I wanted, but is still cool
+            next_batch = variable_swirl.process(in_batch, depth=depth_counter)
+            recursive_swirl(
+                next_batch, swirl_depth - 1, out_batch, depth_counter=depth_counter
+            )
 
         output_batch = FrameBatch()
 
