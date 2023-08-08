@@ -20,21 +20,15 @@ class RawDataFrame:
 
     @property
     def height(self) -> int:
-        return self.get_data_arr(is_return_reference=True).shape[
-            RawDataFrame.SHAPE_HEIGHT_IDX
-        ]
+        return self._data_arr.shape[RawDataFrame.SHAPE_HEIGHT_IDX]
 
     @property
     def width(self) -> int:
-        return self.get_data_arr(is_return_reference=True).shape[
-            RawDataFrame.SHAPE_WIDTH_IDX
-        ]
+        return self._data_arr.shape[RawDataFrame.SHAPE_WIDTH_IDX]
 
     @property
     def depth(self) -> int:
-        return self.get_data_arr(is_return_reference=True).shape[
-            RawDataFrame.SHAPE_DEPTH_IDX
-        ]
+        return self._data_arr.shape[RawDataFrame.SHAPE_DEPTH_IDX]
 
     @property
     def data_size(self) -> int:
@@ -66,12 +60,16 @@ class RawDataFrame:
         :param is_return_reference: if true return underlying array (dangerous)
         :return:
         """
-        arr = self._data_arr if is_return_reference else copy.deepcopy(self._data_arr)
+        arr = self._data_arr if is_return_reference else np.copy(self._data_arr)
         return arr
 
-    def update_data_arr(self, data_arr: np.ndarray):
+    def update_data_arr(self, target_data_arr: np.ndarray):
         # TODO type checking
-        self._data_arr = data_arr
+        if self._data_arr.shape != target_data_arr.shape:
+            raise Exception(
+                "target array is different shape than existing. if you want to change underlying shape, create new frame"
+            )
+        self._data_arr = target_data_arr
 
     def __init__(self, nd_arr: np.ndarray):
         if not isinstance(nd_arr, np.ndarray):
@@ -81,7 +79,7 @@ class RawDataFrame:
         if nd_arr.dtype not in RawDataFrame.SUPPORTED_DATATYPES:
             raise Exception(f"unsupported datatype given {nd_arr.dtype}")
 
-        self._data_arr = nd_arr
+        self._data_arr = np.copy(nd_arr)
 
         if self.depth != 4:
             # todo transform d=1->4 and d=3->4. then error on depth not in [1, 3, 4]
@@ -89,14 +87,16 @@ class RawDataFrame:
                 "image_arr depth is not 4, this can be fixed, but i cba now"
             )
 
-    def as_3d_ndarray(self) -> np.ndarray:
-        # modifying will modify array in this data frame
-        # array is already 3d ndarray
-        return self.get_data_arr()
+    # unused
+    # def as_3d_ndarray(self) -> np.ndarray:
+    #     # modifying will modify array in this data frame
+    #     # array is already 3d ndarray
+    #     return self.get_data_arr()
 
-    def as_1d_ndarray(self) -> np.ndarray:
-        # modifying will modify array in this data frame
-        return self.get_data_arr().ravel()
+    # unused
+    # def as_1d_ndarray(self) -> np.ndarray:
+    #     # modifying will modify array in this data frame
+    #     return self.get_data_arr().ravel()
 
     def is_same_shape(
         self, other_raw_data: RawDataFrame, is_check_depth: bool = False
@@ -110,10 +110,10 @@ class RawDataFrame:
         )
 
     def clone(self):
-        return copy.deepcopy(self)
+        return RawDataFrame(self._data_arr)
 
     def get_empty_pixel(self):
-        return np.zeros((self.depth,)).astype(self.get_data_arr().dtype)
+        return np.zeros((self.depth,)).astype(self._data_arr.dtype)
 
     @staticmethod
     def convert_data_arr(data_arr: np.ndarray, target_dtype: np.dtype):

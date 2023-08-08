@@ -34,7 +34,7 @@ def compare_image_files(baseline_filepath: str, test_filepath: str) -> bool:
     # baseline_pimg.info = {}
     # test_pimg = PillowImage.open(test_filepath)
     # test_pimg.info = {}
-    #return baseline_pimg == test_pimg
+    # return baseline_pimg == test_pimg
 
     # Using PIL/Pillow to open images since that is indepdent of this project
     # Calculate MSE of each file
@@ -43,7 +43,9 @@ def compare_image_files(baseline_filepath: str, test_filepath: str) -> bool:
     baseline_pimg = PillowImage.open(baseline_filepath)
     test_pimg = PillowImage.open(test_filepath)
 
-    mse = np.square(np.subtract(np.asarray(baseline_pimg), np.asarray(test_pimg))).mean()
+    mse = np.square(
+        np.subtract(np.asarray(baseline_pimg), np.asarray(test_pimg))
+    ).mean()
 
     # a MSE is acceptable for equality
     return mse < 1.00
