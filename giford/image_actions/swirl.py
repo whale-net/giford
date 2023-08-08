@@ -87,6 +87,7 @@ class VaryingVariableSwirl(ChainImageAction):
         for frame in input_batch.frames:
             # turn each image in input_batch into its own batch so we can feed it into another action
             batch = FrameBatch()
+            batch.add_frame(frame)
             recursive_swirl(batch, depth, output_batch)
 
         return output_batch
