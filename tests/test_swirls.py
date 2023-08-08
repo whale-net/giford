@@ -39,18 +39,23 @@ def test_variable_swirl(
     assert save_batch_and_compare(baseline, output_batch, temp_output_png)
 
 
-def test_varying_variable_swirl(temp_output_png: str, orange_image_batch: FrameBatch):
+def test_varying_variable_swirl(temp_out_png_generator, orange_image_batch: FrameBatch):
     # produce a bunch of swirls
     # this will take a while because the code is SLOWOWOW
 
     vvs = VaryingVariableSwirl()
     output_batch = vvs.process(orange_image_batch, 25)
+    comparisons: list[tuple[str, str]] = []
     for i, frame in enumerate(output_batch.frames):
         if i % 5 == 0:
             baseline = os.path.join(
                 BASELINE_DIRECTORY, f"test_varying_variable_swirl_depth_{i}.png"
             )
-
+            temp_output_png = next(temp_out_png_generator)
             simg = SingleImage.create_from_frame(frame)
             simg.save(temp_output_png)
-            assert compare_image_files(baseline, temp_output_png)
+            comparisons.append((baseline, temp_output_png))
+            
+    
+    for baseline, test in comparisons:
+        assert compare_image_files(baseline, test) 
