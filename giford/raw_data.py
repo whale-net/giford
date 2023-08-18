@@ -20,10 +20,16 @@ class RawDataFrame:
 
     @property
     def height(self) -> int:
+        """
+        vertical, y
+        """
         return self._data_arr.shape[RawDataFrame.SHAPE_HEIGHT_IDX]
 
     @property
     def width(self) -> int:
+        """
+        horizontal, x
+        """
         return self._data_arr.shape[RawDataFrame.SHAPE_WIDTH_IDX]
 
     @property

@@ -5,6 +5,7 @@ import pytest
 
 from giford.frame_wrapper.single_image import SingleImage
 from giford.frame_batch import FrameBatch
+from giford.virtual_path import Point, Movement, VirtualPath
 from tests.util import TEST_INPUT_DATA_FOLDER, TEST_INPUT_ORANGE_IMAGE_FILEPATH
 
 
@@ -52,3 +53,23 @@ def orange_swirl_batch() -> FrameBatch:
         img.load(img_path)
         batch.add_frame(img.raw_data_frame)
     return batch
+
+@pytest.fixture
+def basic_movements() -> list[Movement]:
+    # cover all 9 quadrants
+    neg_x = -0.25
+    pos_x = 0.25
+    neg_y = -0.25
+    pos_y = 0.25
+    vp = VirtualPath()
+    vp.add_point(Point(neg_x, neg_y))
+    vp.add_point(Point(0    , neg_y))
+    vp.add_point(Point(pos_x, neg_y))
+    vp.add_point(Point(neg_x, 0))
+    vp.add_point(Point(0    , 0))
+    vp.add_point(Point(pos_x, 0))
+    vp.add_point(Point(neg_x, pos_y))
+    vp.add_point(Point(0    , pos_y))
+    vp.add_point(Point(pos_x, pos_y))
+
+    return vp.calculate_movements(is_from_true_origin=True)
