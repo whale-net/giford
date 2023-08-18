@@ -55,7 +55,7 @@ def orange_swirl_batch() -> FrameBatch:
     return batch
 
 @pytest.fixture
-def basic_movements() -> list[Movement]:
+def basic_movement_matrix() -> list[Movement]:
     # cover all 9 quadrants
     neg_x = -0.25
     pos_x = 0.25

@@ -6,6 +6,8 @@ from giford.image_actions.image_action import ChainImageAction
 from giford.frame_batch import FrameBatch
 from giford.raw_data import RawDataFrame
 
+from giford.virtual_path import Movement
+
 
 class Translate(ChainImageAction):
     def __init__(self):
@@ -14,24 +16,38 @@ class Translate(ChainImageAction):
     def process(
         self,
         input_batch: FrameBatch,
-        horizontal_shift_px=0,
-        vertical_shift_px=0,
-        wrap_image=False,
+        horizontal_shift_px: int = None,
+        vertical_shift_px: int = None,
+        movement: Movement = None,
+        wrap_image: bool = False,
     ) -> FrameBatch:
         """
         translate image up down left right
         """
-        # todo type checking and errors
-        # todo support background color per pixel on shift
-        # -> different function maybe to fill in left side
-        # todo, look at more mathy numpy to see if there is a more better implementation
-        if horizontal_shift_px == 0 and vertical_shift_px == 0:
+        is_px_mode = (horizontal_shift_px is not None or horizontal_shift_px is not None)
+        is_movement_mode = movement is not None
+
+        if not is_px_mode and not is_movement_mode:
+            raise Exception("no translate instructions provided")
+        
+        if is_px_mode and is_movement_mode:
+            raise Exception("cannot use both px and movement")
+        
+        if is_px_mode and horizontal_shift_px == 0 and vertical_shift_px == 0 or is_movement_mode and movement.distance() == 0:
             return input_batch.clone()
+        
+        # TODO support background color per pixel on shift
+        # TODO, look at more mathy numpy to see if there is a more better implementation
 
         output_batch = FrameBatch()
         for frame in input_batch.cloned_frames():
             # data_arr references the img data in the cloned frame
             data_arr = frame.get_data_arr()
+
+            if is_movement_mode:
+                horizontal_shift_px = int(frame.width * movement.x_distance)
+                vertical_shift_px = int(frame.height * movement.y_distance)
+                
 
             # handle horizontal shifts
             if horizontal_shift_px != 0:
@@ -74,6 +90,7 @@ class Translate(ChainImageAction):
                     else:
                         data_arr[vertical_shift_px:] = frame.get_empty_pixel()
 
+            # is this update needed?
             frame.update_data_arr(data_arr)
             output_batch.add_frame(frame)
 
