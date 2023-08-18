@@ -47,15 +47,18 @@ class VariableSwirl(ChainImageAction):
 
         return output_batch
 
-
 class VaryingVariableSwirl(ChainImageAction):
     def __init__(self):
         super().__init__()
 
-    def process(self, input_batch: FrameBatch, depth: int) -> FrameBatch:
+    def process(self, input_batch: FrameBatch, depth: int, swirl_depth_increment: int = 1, is_increasing_swirl_depth: bool = False) -> FrameBatch:
         """
         if multiple images are passed in, array with size len(image_input)*depth return
         index with [image_idx * depth + depth_idx]
+
+        :param swirl_depth_increment: number of swirls between return swirls, default 1
+        :param is_increasing_swirl_depth: tie swirl depth to number of swirls, default False
+        # TODO - support swirl_depth_increment + increasing depth???
         """
         if not isinstance(depth, int):
             raise Exception(f"depth is not valid int [{depth}]")
@@ -83,8 +86,12 @@ class VaryingVariableSwirl(ChainImageAction):
                 return
             depth_counter += 1
             out_batch.add_batch(in_batch)
-            # TODO - implement non-depth counter swirl. this isn't what I wanted, but is still cool
-            next_batch = variable_swirl.process(in_batch, depth=depth_counter)
+
+            if is_increasing_swirl_depth:
+                target_depth = depth_counter
+            else:
+                target_depth = swirl_depth_increment
+            next_batch = variable_swirl.process(in_batch, depth=target_depth)
             recursive_swirl(
                 next_batch, swirl_depth - 1, out_batch, depth_counter=depth_counter
             )
