@@ -6,7 +6,12 @@ import pytest
 from giford.frame_wrapper.single_image import SingleImage
 from giford.frame_batch import FrameBatch
 from giford.virtual_path import Point, Movement, VirtualPath
-from tests.util import TEST_INPUT_DATA_FOLDER, TEST_INPUT_ORANGE_IMAGE_FILEPATH
+
+from tests.util import (
+    TEST_INPUT_DATA_FOLDER,
+    TEST_INPUT_ORANGE_IMAGE_FILEPATH,
+    MAX_IMAGES_PER_TEST,
+)
 
 
 def create_test_image(directory, filename, is_delete_existing: bool = True):
@@ -22,6 +27,14 @@ def create_test_image(directory, filename, is_delete_existing: bool = True):
 def temp_output_png(tmp_path):
     # create path of temporary png for tests to use
     return create_test_image(tmp_path, "output.png")
+
+
+@pytest.fixture
+def temp_out_png_generator(tmp_path):
+    return (
+        create_test_image(tmp_path, f"output{i}.png")
+        for i in range(MAX_IMAGES_PER_TEST)
+    )
 
 
 @pytest.fixture

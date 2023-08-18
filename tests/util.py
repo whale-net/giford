@@ -17,6 +17,8 @@ TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH = os.path.join(
 
 BASELINE_DIRECTORY = os.path.join(os.path.dirname(__file__), "baseline_data")
 
+MAX_IMAGES_PER_TEST = 30
+
 
 def compare_image_files(baseline_filepath: str, test_filepath: str) -> bool:
     assert baseline_filepath

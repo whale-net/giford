@@ -39,7 +39,7 @@ class VariableSwirl(ChainImageAction):
             # turn each image in input_batch into its own batch so we can feed it into another action
             batch = FrameBatch()
             batch.add_frame(frame)
-            for i in range(0, depth):
+            for _ in range(0, depth):
                 batch = basic_swirl.process(batch)
 
             # adding a batch will copy them
@@ -52,10 +52,20 @@ class VaryingVariableSwirl(ChainImageAction):
     def __init__(self):
         super().__init__()
 
-    def process(self, input_batch: FrameBatch, depth: int) -> FrameBatch:
+    def process(
+        self,
+        input_batch: FrameBatch,
+        depth: int,
+        swirl_depth_increment: int = 1,
+        is_increasing_swirl_depth: bool = False,
+    ) -> FrameBatch:
         """
         if multiple images are passed in, array with size len(image_input)*depth return
         index with [image_idx * depth + depth_idx]
+
+        :param swirl_depth_increment: number of swirls between return swirls, default 1
+        :param is_increasing_swirl_depth: tie swirl depth to number of swirls, default False
+        # TODO - support swirl_depth_increment + increasing depth???
         """
         if not isinstance(depth, int):
             raise Exception(f"depth is not valid int [{depth}]")
@@ -63,14 +73,42 @@ class VaryingVariableSwirl(ChainImageAction):
             # todo - make fun thing with negatives
             raise Exception(f"depth cannot be negative [{depth}]")
 
-        output_batch = FrameBatch()
         variable_swirl = VariableSwirl()
+
+        def recursive_swirl(
+            in_batch: FrameBatch,
+            swirl_depth: int,
+            out_batch: FrameBatch,
+            depth_counter=0,
+        ):
+            """
+            recursively call variable_swirl adding frames into out_batch
+            hopefully tail recursive but idk if python supports that
+
+            :param in_batch: batch to process
+            :param swirl_depth: number of times left to swirl
+            :param out_batch: output batch to append swirls to
+            """
+            if swirl_depth <= 0:
+                return
+            depth_counter += 1
+            out_batch.add_batch(in_batch)
+
+            if is_increasing_swirl_depth:
+                target_depth = depth_counter
+            else:
+                target_depth = swirl_depth_increment
+            next_batch = variable_swirl.process(in_batch, depth=target_depth)
+            recursive_swirl(
+                next_batch, swirl_depth - 1, out_batch, depth_counter=depth_counter
+            )
+
+        output_batch = FrameBatch()
+
         for frame in input_batch.frames:
             # turn each image in input_batch into its own batch so we can feed it into another action
             batch = FrameBatch()
             batch.add_frame(frame)
-            for i in range(0, depth):
-                batch = variable_swirl.process(batch, i)
-                output_batch.add_batch(batch)
+            recursive_swirl(batch, depth, output_batch)
 
         return output_batch

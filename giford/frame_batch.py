@@ -23,6 +23,9 @@ class FrameBatch:
         self._frames: list[RawDataFrame] = []
         pass
 
+    def reverse_batch(self):
+        self._frames.reverse()
+
     def add_frame(self, frame: RawDataFrame):
         self.frames.append(frame.clone())
 
