@@ -13,7 +13,7 @@ class BasicSwirl(ChainImageAction):
     def process(self, input_batch: FrameBatch) -> FrameBatch:
         output_batch = FrameBatch()
         for frame in input_batch.frames:
-            img_nd_arr = frame.as_3d_ndarray()
+            img_nd_arr = frame.get_data_arr()
 
             img_nd_arr = transform.swirl(img_nd_arr)
 
