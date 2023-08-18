@@ -57,6 +57,7 @@ def save_batch_and_compare(
     test_filepath: str,
     is_force_multi_image: bool = False,
     target_format: SingleImageFormat = DEFAULT_TEST_SINGLE_IMAGE_FORMAT,
+    is_overwrite_existing: bool = False,
 ) -> bool:
     assert not batch.is_empty()
 
@@ -67,9 +68,9 @@ def save_batch_and_compare(
             batch, target_format=target_format
         )
 
-    if os.path.exists(test_filepath):
+    if not is_overwrite_existing and os.path.exists(test_filepath):
         raise FileExistsError("cannot overwrite test file")
 
-    wrapper.save(test_filepath, overwrite_existing=False)
+    wrapper.save(test_filepath, overwrite_existing=is_overwrite_existing)
 
     return compare_image_files(baseline_filepath, test_filepath)
