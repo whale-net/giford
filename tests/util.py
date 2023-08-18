@@ -57,7 +57,7 @@ def save_batch_and_compare(
     test_filepath: str,
     is_force_multi_image: bool = False,
     target_format: SingleImageFormat = DEFAULT_TEST_SINGLE_IMAGE_FORMAT,
-    is_overwrite_existing: bool = False
+    is_overwrite_existing: bool = False,
 ) -> bool:
     assert not batch.is_empty()
 

@@ -24,18 +24,24 @@ class Translate(ChainImageAction):
         """
         translate image up down left right
         """
-        is_px_mode = (horizontal_shift_px is not None or horizontal_shift_px is not None)
+        is_px_mode = horizontal_shift_px is not None or horizontal_shift_px is not None
         is_movement_mode = movement is not None
 
         if not is_px_mode and not is_movement_mode:
             raise Exception("no translate instructions provided")
-        
+
         if is_px_mode and is_movement_mode:
             raise Exception("cannot use both px and movement")
-        
-        if is_px_mode and horizontal_shift_px == 0 and vertical_shift_px == 0 or is_movement_mode and movement.distance() == 0:
+
+        if (
+            is_px_mode
+            and horizontal_shift_px == 0
+            and vertical_shift_px == 0
+            or is_movement_mode
+            and movement.distance() == 0
+        ):
             return input_batch.clone()
-        
+
         # TODO support background color per pixel on shift
         # TODO, look at more mathy numpy to see if there is a more better implementation
 
@@ -47,7 +53,6 @@ class Translate(ChainImageAction):
             if is_movement_mode:
                 horizontal_shift_px = int(frame.width * movement.x_distance)
                 vertical_shift_px = int(frame.height * movement.y_distance)
-                
 
             # handle horizontal shifts
             if horizontal_shift_px != 0:

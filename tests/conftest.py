@@ -54,6 +54,7 @@ def orange_swirl_batch() -> FrameBatch:
         batch.add_frame(img.raw_data_frame)
     return batch
 
+
 @pytest.fixture
 def basic_movement_matrix() -> list[Movement]:
     # cover all 9 quadrants
@@ -63,13 +64,13 @@ def basic_movement_matrix() -> list[Movement]:
     pos_y = 0.25
     vp = VirtualPath()
     vp.add_point(Point(neg_x, neg_y))
-    vp.add_point(Point(0    , neg_y))
+    vp.add_point(Point(0, neg_y))
     vp.add_point(Point(pos_x, neg_y))
     vp.add_point(Point(neg_x, 0))
-    vp.add_point(Point(0    , 0))
+    vp.add_point(Point(0, 0))
     vp.add_point(Point(pos_x, 0))
     vp.add_point(Point(neg_x, pos_y))
-    vp.add_point(Point(0    , pos_y))
+    vp.add_point(Point(0, pos_y))
     vp.add_point(Point(pos_x, pos_y))
 
     return vp.calculate_movements(is_from_true_origin=True)

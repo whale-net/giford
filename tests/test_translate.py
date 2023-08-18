@@ -70,8 +70,13 @@ def test_translate_complex(
 
     assert save_batch_and_compare(baseline, output_batch, temp_output_png)
 
+
 # TODO use output generator once #60 is merged and remove overwrite
-def test_translate_movement_basic_matrix(temp_output_png, basic_movement_matrix: list[Movement], orange_image_batch: FrameBatch):
+def test_translate_movement_basic_matrix(
+    temp_output_png,
+    basic_movement_matrix: list[Movement],
+    orange_image_batch: FrameBatch,
+):
     # uses matrix movement list
     t = Translate()
 
@@ -80,10 +85,9 @@ def test_translate_movement_basic_matrix(temp_output_png, basic_movement_matrix:
 
         baseline = os.path.join(
             BASELINE_DIRECTORY,
-            f'test_translate_movement_basic_matrix_{movement.x_distance}h_{movement.y_distance}v.png'
+            f"test_translate_movement_basic_matrix_{movement.x_distance}h_{movement.y_distance}v.png",
         )
 
-        assert save_batch_and_compare(baseline, output_batch, temp_output_png, is_overwrite_existing=True)
-
-
-    
+        assert save_batch_and_compare(
+            baseline, output_batch, temp_output_png, is_overwrite_existing=True
+        )

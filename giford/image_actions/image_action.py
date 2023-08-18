@@ -3,7 +3,6 @@ import abc
 from giford.frame_batch import FrameBatch
 
 
-
 # done - do i need both *args and **kwargs?
 # i think yes, *args for positional, **kwargs for keyword
 # if not both, may get weird warnings depending on usage
