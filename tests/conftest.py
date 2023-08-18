@@ -5,7 +5,13 @@ import pytest
 
 from giford.frame_wrapper.single_image import SingleImage
 from giford.frame_batch import FrameBatch
-from tests.util import TEST_INPUT_DATA_FOLDER, TEST_INPUT_ORANGE_IMAGE_FILEPATH
+from giford.virtual_path import Point, Movement, VirtualPath
+
+from tests.util import (
+    TEST_INPUT_DATA_FOLDER,
+    TEST_INPUT_ORANGE_IMAGE_FILEPATH,
+    MAX_IMAGES_PER_TEST,
+)
 
 
 def create_test_image(directory, filename, is_delete_existing: bool = True):
@@ -21,6 +27,14 @@ def create_test_image(directory, filename, is_delete_existing: bool = True):
 def temp_output_png(tmp_path):
     # create path of temporary png for tests to use
     return create_test_image(tmp_path, "output.png")
+
+
+@pytest.fixture
+def temp_out_png_generator(tmp_path):
+    return (
+        create_test_image(tmp_path, f"output{i}.png")
+        for i in range(MAX_IMAGES_PER_TEST)
+    )
 
 
 @pytest.fixture
@@ -52,3 +66,24 @@ def orange_swirl_batch() -> FrameBatch:
         img.load(img_path)
         batch.add_frame(img.raw_data_frame)
     return batch
+
+
+@pytest.fixture
+def basic_movement_matrix() -> list[Movement]:
+    # cover all 9 quadrants
+    neg_x = -0.25
+    pos_x = 0.25
+    neg_y = -0.25
+    pos_y = 0.25
+    vp = VirtualPath()
+    vp.add_point(Point(neg_x, neg_y))
+    vp.add_point(Point(0, neg_y))
+    vp.add_point(Point(pos_x, neg_y))
+    vp.add_point(Point(neg_x, 0))
+    vp.add_point(Point(0, 0))
+    vp.add_point(Point(pos_x, 0))
+    vp.add_point(Point(neg_x, pos_y))
+    vp.add_point(Point(0, pos_y))
+    vp.add_point(Point(pos_x, pos_y))
+
+    return vp.calculate_movements(is_from_true_origin=True)
