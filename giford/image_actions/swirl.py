@@ -47,11 +47,18 @@ class VariableSwirl(ChainImageAction):
 
         return output_batch
 
+
 class VaryingVariableSwirl(ChainImageAction):
     def __init__(self):
         super().__init__()
 
-    def process(self, input_batch: FrameBatch, depth: int, swirl_depth_increment: int = 1, is_increasing_swirl_depth: bool = False) -> FrameBatch:
+    def process(
+        self,
+        input_batch: FrameBatch,
+        depth: int,
+        swirl_depth_increment: int = 1,
+        is_increasing_swirl_depth: bool = False,
+    ) -> FrameBatch:
         """
         if multiple images are passed in, array with size len(image_input)*depth return
         index with [image_idx * depth + depth_idx]
