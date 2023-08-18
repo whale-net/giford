@@ -28,11 +28,13 @@ def test_movement_formula():
     p2 = Point(0, -2)
     m = Movement(p1, p2)
 
+    assert m.x_distance == 3
+    assert m.y_distance == -4
     assert m.distance() == 5
 
 
 def test_virtual_path_empty():
-    vp = VirtualPath(origin_point=None)
+    vp = VirtualPath()
 
     assert len(vp.points) == 0
 
@@ -43,8 +45,7 @@ def test_virtual_path_empty():
         pass
 
 def test_virtual_path_one_point():
-    # also test default constructor args
-    vp = VirtualPath()
+    vp = VirtualPath(origin_point=Point.get_true_origin())
     assert len(vp.points) == 1
     origin_point = vp.points[0]
 
@@ -54,7 +55,7 @@ def test_virtual_path_one_point():
     mov = movements[0]
     assert mov.origin == origin_point and mov.target == origin_point
 
-def test_virtual_path_multi_point():
+def test_virtual_path_multi_point_no_origin():
     p0 = Point(-1, 1)
     vp = VirtualPath(origin_point=p0)
 
@@ -63,13 +64,27 @@ def test_virtual_path_multi_point():
 
     vp.add_point_from_coords(1, -1)
 
-    movements: list[Movement] = vp.calculate_movements()
+    movements: list[Movement] = vp.calculate_movements(is_from_true_origin=False)
 
     assert len(movements) == 2
 
     assert movements[0].origin == p0 and movements[0].target == p1
     assert movements[1].origin == p1 and movements[1].target.x == 1 and movements[1].target.y == -1
     
+def test_virtual_path_multi_point_from_true_origin():
+    # this test uses calculate movements in the way that is useful
+    p0 = Point(-1, 1)
+    p1 = Point(0, 0)
+    p2 = Point(1, -1)
+    vp = VirtualPath().add_point(p0).add_point(p1).add_point(p2)
+
+    movements: list[Movement] = vp.calculate_movements()
+
+    assert len(movements) == 3
+
+    assert movements[0].origin == Point(0,0) and movements[0].target == p0
+    assert movements[1].origin == Point(0,0) and movements[1].target == p1
+    assert movements[2].origin == Point(0,0) and movements[2].target == p2
 
     
     
