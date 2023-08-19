@@ -27,7 +27,7 @@ jobs:
         pip install -e .[mypy]
     - name: Run mypy
       continue-on-error: true
-      run: 
+      run:
         mypy giford
 
   lint-black:
@@ -74,4 +74,3 @@ jobs:
       continue-on-error: true
       run: |
         pylint $(git ls-files '*.py')
-      

@@ -37,6 +37,7 @@ lint = [
     'pylint',
 ]
 dev = [
+    'pre-commit',
     'giford[test]',
     'giford[lint]'
 ]
