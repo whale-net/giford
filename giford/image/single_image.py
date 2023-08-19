@@ -88,7 +88,7 @@ class SingleImage(AbstractImage):
     def save(
         self,
         path: str,
-        target_format: SingleImageFormat = SingleImageFormat.UNKNOWN,
+        target_format: Optional[SingleImageFormat] = None,
         overwrite_existing: bool = True,
     ) -> None:
         if target_format == SingleImageFormat.UNKNOWN:
@@ -101,10 +101,7 @@ class SingleImage(AbstractImage):
         if len(self.raw_data_frames) == 0:
             raise Exception("no image data to write")
 
-        if target_format == SingleImageFormat.UNKNOWN:
-            # if unknown, letting pillow figure it out based on file extension
-            pass
-        else:
+        if target_format is None:
             target_format = self.format
         
 
@@ -120,7 +117,7 @@ class SingleImage(AbstractImage):
         img_nd_arr = RawDataFrame.convert_data_arr(img_nd_arr, target_dtype=np.uint8)
 
         pimg = PillowImage.fromarray(img_nd_arr)
-        pimg.save(path, format=target_format.name)
+        pimg.save(path, format=self.format.name)
 
     @staticmethod
     def create_from_frame(
