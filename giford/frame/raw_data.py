@@ -59,7 +59,7 @@ class RawDataFrame:
         """
         return self._data_arr.size
 
-    def flat_data(self, target_dtype: np.dtype = None):
+    def flat_data(self, target_dtype: np.dtype | None = None):
         """
         iterator for data in array
         """
@@ -174,7 +174,7 @@ class RawDataVideo:
         for frame in batch.frames:
             self.add_frame(frame)
 
-    def as_ndarray(self, target_dtype: np.dtype = None) -> np.ndarray:
+    def as_ndarray(self, target_dtype: np.dtype | None = None) -> np.ndarray:
         """
         convert raw_data_frames to array of raw data arrays
         # TODO currently 1d
