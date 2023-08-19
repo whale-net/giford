@@ -18,7 +18,7 @@ class AbstractFrameAction:
     """
 
     @abc.abstractmethod
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     @abc.abstractmethod

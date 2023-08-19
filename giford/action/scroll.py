@@ -4,7 +4,7 @@ from giford.frame.frame_batch import FrameBatch
 
 
 class Scroll(AbstractFrameAction):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     def process(

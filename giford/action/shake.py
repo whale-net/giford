@@ -18,8 +18,8 @@ class Shake(AbstractFrameAction):
 
     DEFAULT_FRAME_COUNT = 30
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self) -> None:
+        pass
 
     def process(
         self,
@@ -31,7 +31,7 @@ class Shake(AbstractFrameAction):
         max_horizontal_shift_px: int | None = None,
         max_vertical_shift_px: int | None = None,
         seed: str | int | None = None,
-    ):
+    ) -> FrameBatch:
         """
         Shake frame
 

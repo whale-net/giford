@@ -1,5 +1,6 @@
 import enum
 import os
+from typing import Optional
 
 import numpy as np
 
@@ -36,7 +37,7 @@ class SingleImage(AbstractImage):
     # replace with strenum in 3.11
     _FORMAT_NAME_MAP = {fmt.name: fmt for fmt in SingleImageFormat}
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.format: SingleImageFormat = SingleImageFormat.UNKNOWN
@@ -47,7 +48,7 @@ class SingleImage(AbstractImage):
             raise Exception("image is empty")
         return self.raw_data_frames[0]
 
-    def _add_raw_data_frame(self, frame: RawDataFrame):
+    def _add_raw_data_frame(self, frame: RawDataFrame) -> None:
         """
         helper function to make sure rdf list never grows beyond one item
         only meant to be called during initialization
@@ -58,7 +59,7 @@ class SingleImage(AbstractImage):
             raise Exception("unable to add frame to SingleImage")
         self.raw_data_frames.append(frame)
 
-    def load(self, path):
+    def load(self, path: str) -> None:
         if not os.path.exists(path):
             raise FileNotFoundError()
 
@@ -83,14 +84,13 @@ class SingleImage(AbstractImage):
         # 4 band PNG uint8 so far, really should just support whatever though
         img_ndarr = np.asarray(pimg)
         self._add_raw_data_frame(RawDataFrame(img_ndarr))
-        return
 
     def save(
         self,
-        path,
-        target_format: SingleImageFormat | None = None,
+        path: str,
+        target_format: SingleImageFormat = SingleImageFormat.UNKNOWN,
         overwrite_existing: bool = True,
-    ):
+    ) -> None:
         if target_format == SingleImageFormat.UNKNOWN:
             raise Exception("UNKNOWN cannot be saved")
 
@@ -101,8 +101,12 @@ class SingleImage(AbstractImage):
         if len(self.raw_data_frames) == 0:
             raise Exception("no image data to write")
 
-        if target_format is None:
+        if target_format == SingleImageFormat.UNKNOWN:
+            # if unknown, letting pillow figure it out based on file extension
+            pass
+        else:
             target_format = self.format
+        
 
         # using PIL/pillow to save images
         # TODO WHAT FORMATS DOES THIS SUPPORT, how does it interpret datatype
@@ -121,7 +125,7 @@ class SingleImage(AbstractImage):
     @staticmethod
     def create_from_frame(
         raw_data_frame: RawDataFrame, target_format: SingleImageFormat = DEFAULT_FORMAT
-    ):
+    ) -> 'SingleImage':
         img = SingleImage()
         img._add_raw_data_frame(raw_data_frame)
         img.format = target_format
@@ -130,7 +134,7 @@ class SingleImage(AbstractImage):
     @staticmethod
     def create_from_frame_batch(
         batch: FrameBatch, target_format: SingleImageFormat = DEFAULT_FORMAT
-    ):
+    ) -> 'SingleImage':
         if batch.is_empty():
             raise Exception("batch is empty")
         if batch.size() > 1:

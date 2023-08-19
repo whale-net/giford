@@ -17,7 +17,7 @@ class Reshape(AbstractFrameAction):
     turns 120x120 into 60x60 or 240x240
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     def process(

@@ -6,7 +6,7 @@ from giford.frame.raw_data import RawDataFrame
 
 
 class BasicSwirl(AbstractFrameAction):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     def process(self, input_batch: FrameBatch) -> FrameBatch:
@@ -24,7 +24,7 @@ class BasicSwirl(AbstractFrameAction):
 class VariableSwirl(AbstractFrameAction):
     DEFAULT_DEPTH = 5
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     def process(
@@ -52,7 +52,7 @@ class VariableSwirl(AbstractFrameAction):
 
 
 class VaryingVariableSwirl(AbstractFrameAction):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
     def process(
@@ -82,8 +82,8 @@ class VaryingVariableSwirl(AbstractFrameAction):
             in_batch: FrameBatch,
             swirl_depth: int,
             out_batch: FrameBatch,
-            depth_counter=0,
-        ):
+            depth_counter: int = 0
+        ) -> None:
             """
             recursively call variable_swirl adding frames into out_batch
             hopefully tail recursive but idk if python supports that

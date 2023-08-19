@@ -13,17 +13,17 @@ class AbstractImage(abc.ABC):
     :param abc: this is an abstract base class
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.raw_data_frames: list[RawDataFrame] = []
 
     @abc.abstractmethod
-    def load(self, path):
+    def load(self, path: str) -> None:
         pass
 
     @abc.abstractmethod
-    def save(self, path):
+    def save(self, path: str) -> None:
         pass
 
     @abc.abstractmethod
-    def create_from_frame_batch(self, batch: FrameBatch):  # one day 3.11 -> Self:
+    def create_from_frame_batch(self, batch: FrameBatch) -> 'AbstractImage':  # one day 3.11 -> Self:
         pass

@@ -57,6 +57,7 @@ write_to = 'giford/_version.py'
 
 # mypy config
 [tool.mypy]
+disallow_untyped_defs = true
 plugins = 'numpy.typing.mypy_plugin'
 # supress modules that don't have type hints
 # i cba stubs
