@@ -46,6 +46,11 @@ class Shake(ChainImageAction):
         :return: _description_
         """
 
+        if not isinstance(input_batch, FrameBatch):
+            raise Exception("wrong type")
+        if frame_count <= 0:
+            raise Exception("need > 0 frames")
+
         is_move: bool = max_horizontal_move is not None or max_vertical_move is not None
         is_px: bool = (
             max_horizontal_shift_px is not None or max_vertical_shift_px is not None
