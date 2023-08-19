@@ -9,7 +9,7 @@ on:
       - 'main'
 
 jobs:
-  lint-black:
+  black-check:
     runs-on: ubuntu-latest
     strategy:
       matrix:

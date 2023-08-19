@@ -1,17 +1,15 @@
 name: Pylint
 
 on:
-#  push:
-#    branches:
-#      #- 'main' # TODO re-enable this one day after pylint works
-#      #- 'releases/**'
-  # pull_request:
-  #   branches:
-  #     - 'main' # TODO also
-  workflow_dispatch
+ push:
+   branches:
+     - 'main'
+ pull_request:
+   branches:
+     - 'main'
 
 jobs:
-  lint-pylint:
+  pylint-check:
     runs-on: ubuntu-latest
     strategy:
       matrix:
