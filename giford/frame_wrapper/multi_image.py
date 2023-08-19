@@ -36,7 +36,12 @@ class MultiImage(AbstractFrameWrapper):
         # not currently supported
         raise NotImplementedError()
 
-    def save(self, path, target_framerate: int = DEFAULT_FRAMERATE, overwrite_existing: bool = False):
+    def save(
+        self,
+        path,
+        target_framerate: int = DEFAULT_FRAMERATE,
+        overwrite_existing: bool = False,
+    ):
         # yolo
         if overwrite_existing:
             os.remove(path)

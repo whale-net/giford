@@ -36,9 +36,9 @@ class Shake(ChainImageAction):
         :param input_batch: input FrameBatch
         :param frame_count: number of frames to produce per input frame
         :param shake_mode: which shake algorithm is desired
-        :param max_horizontal_move: 
+        :param max_horizontal_move:
             max horizontal variance relative to frame origin, defaults to 0.1
-        :param max_vertical_move: 
+        :param max_vertical_move:
             max vertical variance relative to frame origin, defaults to 0.1
         :param max_horizontal_shift_px: _description_, defaults to None
         :param max_vertical_shift_px: _description_, defaults to None
@@ -46,8 +46,10 @@ class Shake(ChainImageAction):
         :return: _description_
         """
 
-        is_move: bool = max_horizontal_move is not None  or max_vertical_move is not None
-        is_px: bool = max_horizontal_shift_px is not None or max_vertical_shift_px is not None
+        is_move: bool = max_horizontal_move is not None or max_vertical_move is not None
+        is_px: bool = (
+            max_horizontal_shift_px is not None or max_vertical_shift_px is not None
+        )
 
         if not is_move and not is_px:
             raise Exception("please specify move or px")
@@ -61,10 +63,10 @@ class Shake(ChainImageAction):
         for frame in input_batch.frames:
             vp = VirtualPath()
             for _ in range(frame_count):
-                x_shift:float = 0
-                y_shift:float = 0
+                x_shift: float = 0
+                y_shift: float = 0
                 if is_move:
-                    # random() is between 0,1 so need to adjust by 0.5 
+                    # random() is between 0,1 so need to adjust by 0.5
                     # to account for origin at 0,0
                     if max_horizontal_move:
                         x_shift = max_horizontal_move * (random.random() - 0.5)
@@ -76,7 +78,7 @@ class Shake(ChainImageAction):
                         x_shift = max_horizontal_shift_px / frame.width
                     if max_vertical_shift_px:
                         y_shift = max_vertical_shift_px / frame.height
-                    
+
                 vp.add_point_from_coords(x_shift, y_shift)
 
             for movement in vp.calculate_movements():
@@ -84,9 +86,7 @@ class Shake(ChainImageAction):
                 process_batch.add_frame(frame)
 
                 # TODO play with wrap
-                process_batch = t.process(
-                    process_batch, movement=movement
-                )
+                process_batch = t.process(process_batch, movement=movement)
                 output_batch.add_batch(process_batch)
 
         return output_batch

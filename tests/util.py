@@ -5,7 +5,12 @@ import numpy as np
 from PIL import Image as PillowImage
 
 from giford.frame_batch import FrameBatch
-from giford.frame_wrapper import SingleImage, SingleImageFormat, MultiImage, MultiImageFormat
+from giford.frame_wrapper import (
+    SingleImage,
+    SingleImageFormat,
+    MultiImage,
+    MultiImageFormat,
+)
 
 DEFAULT_TEST_SINGLE_IMAGE_FORMAT = SingleImageFormat.PNG
 
@@ -67,7 +72,9 @@ def save_batch_and_compare(
         raise FileExistsError("cannot overwrite test file")
 
     if batch.size() > 1 or is_force_multi_image:
-        wrapper = MultiImage.create_from_frame_batch(batch, target_format=MultiImageFormat.GIF)
+        wrapper = MultiImage.create_from_frame_batch(
+            batch, target_format=MultiImageFormat.GIF
+        )
     else:
         wrapper = SingleImage.create_from_frame_batch(
             batch, target_format=target_format
