@@ -36,7 +36,12 @@ class MultiImage(AbstractFrameWrapper):
         # not currently supported
         raise NotImplementedError()
 
-    def save(self, path, target_framerate: int = DEFAULT_FRAMERATE):
+    def save(self, path, target_framerate: int = DEFAULT_FRAMERATE, overwrite_existing: bool = False):
+        # yolo
+        if overwrite_existing:
+            os.remove(path)
+
+        # TODO - can write to stage and then swap pointer at end to preserve image?
         # TODO type checking and more defaults - see single for ideas
         if self.format == MultiImageFormat.UNKNOWN:
             raise Exception("unknown format not supported")

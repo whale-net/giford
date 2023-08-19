@@ -21,6 +21,7 @@ class Point:
     x: float
     y: float
 
+    # TODO - make this more static
     @staticmethod
     def get_true_origin() -> "Point":
         return Point(0, 0)
