@@ -1,13 +1,15 @@
+import pytest
+
 from giford.image import MultiImage
-from giford.frame.frame_batch import FrameBatch
-from giford.action.reshape import Reshape, ReshapeMethod
+from giford.frame import FrameBatch
+from giford.action import Reshape, ReshapeMethod
 
 
 def test_feed_garbage_to_multi_image(
     temp_output_gif: str, orange_swirl_batch: FrameBatch
 ):
     # this test should fail
-    try:
+    with pytest.raises(ValueError):
         new_batch = FrameBatch()
         for i, frame in enumerate(orange_swirl_batch.frames):
             new_batch.add_frame(frame)
@@ -24,8 +26,3 @@ def test_feed_garbage_to_multi_image(
 
         mimg = MultiImage.create_from_frame_batch(new_batch)
         mimg.save(temp_output_gif)
-    except ValueError as ve:
-        assert "iterator too short: " in str(ve)
-        pass
-    except:
-        assert False

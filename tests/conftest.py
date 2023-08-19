@@ -2,9 +2,9 @@ import os
 
 import pytest
 
-from giford.image.single_image import SingleImage
-from giford.frame.frame_batch import FrameBatch
-from giford.util.virtual_path import Point, Movement, VirtualPath
+from giford.image import SingleImage
+from giford.frame import FrameBatch
+from giford.util import Point, Movement, VirtualPath
 
 from tests.util import (
     TEST_INPUT_DATA_FOLDER,
