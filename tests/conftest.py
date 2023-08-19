@@ -3,7 +3,7 @@ import tempfile
 
 import pytest
 
-from giford.frame_wrapper.single_image import SingleImage
+from giford.image.single_image import SingleImage
 from giford.frame_batch import FrameBatch
 from giford.virtual_path import Point, Movement, VirtualPath
 

@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from giford.frame_wrapper import MultiImage
+from giford.image import MultiImage
 from giford.frame_batch import FrameBatch
 from tests.util import BASELINE_DIRECTORY, compare_image_files
 

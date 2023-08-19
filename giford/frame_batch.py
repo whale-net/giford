@@ -6,7 +6,7 @@ import copy
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from giford.frame_wrapper import AbstractFrameWrapper, SingleImage
+    from giford.image import AbstractImage, SingleImage
     from giford.raw_data import RawDataFrame
 
 
@@ -74,7 +74,7 @@ class FrameBatch:
     def is_empty(self):
         return self.size() == 0
 
-    def create_from_frame_wrapper(wrapper: AbstractFrameWrapper):
+    def create_from_frame_wrapper(wrapper: AbstractImage):
         batch = FrameBatch()
         for rdf in wrapper.raw_data_frames:
             batch.add_frame(rdf)

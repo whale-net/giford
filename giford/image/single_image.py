@@ -8,7 +8,7 @@ from PIL import Image as PillowImage
 
 from giford.frame_batch import FrameBatch
 from giford.raw_data import RawDataFrame
-from giford.frame_wrapper.abstract_frame_wrapper import AbstractFrameWrapper
+from giford.image.abstract_image import AbstractImage
 
 
 class SingleImageFormat(enum.Enum):
@@ -24,7 +24,7 @@ class SingleImageFormat(enum.Enum):
     # JPG = 2 # TODO
 
 
-class SingleImage(AbstractFrameWrapper):
+class SingleImage(AbstractImage):
     """
     represents a single, non-animated, image (png, jpg)
 

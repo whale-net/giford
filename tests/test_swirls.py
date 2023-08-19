@@ -2,7 +2,7 @@ import os
 import pytest
 
 from giford.frame_batch import FrameBatch
-from giford.frame_wrapper import SingleImage
+from giford.image import SingleImage
 from giford.image_actions.swirl import BasicSwirl, VariableSwirl, VaryingVariableSwirl
 from tests.util import (
     BASELINE_DIRECTORY,
