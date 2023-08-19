@@ -22,13 +22,14 @@ class BasicSwirl(AbstractFrameAction):
 
 
 class VariableSwirl(AbstractFrameAction):
-
     DEFAULT_DEPTH = 5
 
     def __init__(self):
         super().__init__()
 
-    def process(self, input_batch: FrameBatch, depth: int = DEFAULT_DEPTH) -> FrameBatch:
+    def process(
+        self, input_batch: FrameBatch, depth: int = DEFAULT_DEPTH
+    ) -> FrameBatch:
         if not isinstance(depth, int):
             raise Exception(f"depth is not valid int [{depth}]")
         if depth < 0:

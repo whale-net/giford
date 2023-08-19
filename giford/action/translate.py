@@ -36,7 +36,7 @@ class Translate(AbstractFrameAction):
             and horizontal_shift_px == 0
             and vertical_shift_px == 0
             or is_movement_mode
-            and movement.distance() == 0 # type: ignore
+            and movement.distance() == 0  # type: ignore
         ):
             return input_batch.clone()
 
@@ -49,13 +49,15 @@ class Translate(AbstractFrameAction):
             data_arr = frame.get_data_arr()
 
             if is_movement_mode:
-                h_move = movement.x_distance # type: ignore
-                horizontal_shift_px = int(frame.width * h_move) 
-                y_move = movement.y_distance # type: ignore
-                vertical_shift_px = int(frame.height * y_move) 
+                h_move = movement.x_distance  # type: ignore
+                horizontal_shift_px = int(frame.width * h_move)
+                y_move = movement.y_distance  # type: ignore
+                vertical_shift_px = int(frame.height * y_move)
 
             # mypy test
-            horizontal_shift_px = 0 if horizontal_shift_px is None else horizontal_shift_px
+            horizontal_shift_px = (
+                0 if horizontal_shift_px is None else horizontal_shift_px
+            )
             vertical_shift_px = 0 if vertical_shift_px is None else vertical_shift_px
 
             # handle horizontal shifts
