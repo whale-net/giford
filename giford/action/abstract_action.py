@@ -2,6 +2,7 @@ import abc
 
 from giford.frame.frame_batch import FrameBatch
 
+
 class AbstractAction(abc.ABC):
     @abc.abstractmethod
     def __init__(self, *args, **kwargs):
