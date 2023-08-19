@@ -17,6 +17,22 @@ class RawDataFrame:
 
     SUPPORTED_DATATYPES = (np.uint8, np.float32, np.float64)
 
+    def __init__(self, nd_arr: np.ndarray):
+        if not isinstance(nd_arr, np.ndarray):
+            raise Exception("image_arr not ndarray")
+        if nd_arr.ndim != 3:
+            raise Exception("image_arr has incorrect dimensions. expected h x w x 4")
+        if nd_arr.dtype not in RawDataFrame.SUPPORTED_DATATYPES:
+            raise Exception(f"unsupported datatype given {nd_arr.dtype}")
+
+        self._data_arr: np.ndarray = np.copy(nd_arr)
+
+        if self.depth != 4:
+            # TODO transform d=1->4 and d=3->4. then error on depth not in [1, 3, 4]
+            raise Exception(
+                "image_arr depth is not 4, this can be fixed, but i cba now"
+            )
+
     @property
     def height(self) -> int:
         """
@@ -75,22 +91,6 @@ class RawDataFrame:
                 "target array is different shape than existing. if you want to change underlying shape, create new frame"
             )
         self._data_arr = target_data_arr
-
-    def __init__(self, nd_arr: np.ndarray):
-        if not isinstance(nd_arr, np.ndarray):
-            raise Exception("image_arr not ndarray")
-        if nd_arr.ndim != 3:
-            raise Exception("image_arr has incorrect dimensions. expected h x w x 4")
-        if nd_arr.dtype not in RawDataFrame.SUPPORTED_DATATYPES:
-            raise Exception(f"unsupported datatype given {nd_arr.dtype}")
-
-        self._data_arr = np.copy(nd_arr)
-
-        if self.depth != 4:
-            # todo transform d=1->4 and d=3->4. then error on depth not in [1, 3, 4]
-            raise Exception(
-                "image_arr depth is not 4, this can be fixed, but i cba now"
-            )
 
     # unused
     # def as_3d_ndarray(self) -> np.ndarray:

@@ -74,12 +74,14 @@ class FrameBatch:
     def is_empty(self):
         return self.size() == 0
 
+    @staticmethod
     def create_from_frame_wrapper(wrapper: AbstractImage):
         batch = FrameBatch()
         for rdf in wrapper.raw_data_frames:
             batch.add_frame(rdf)
         return batch
 
+    @staticmethod
     def create_from_single_image(simg: SingleImage):
         """
         same as create_from_frame_wrapper, but here for convenience
