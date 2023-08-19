@@ -1,21 +1,22 @@
 import numpy as np
+from typing import Optional
 
-from giford.action.abstract_frame_action import ChainFrameAction
+from giford.action.abstract_frame_action import AbstractFrameAction
 from giford.frame.frame_batch import FrameBatch
 
 from giford.virtual_path import Movement
 
 
-class Translate(ChainFrameAction):
-    def __init__(self):
+class Translate(AbstractFrameAction):
+    def __init__(self) -> None:
         super().__init__()
 
     def process(
         self,
         input_batch: FrameBatch,
-        horizontal_shift_px: int = None,
-        vertical_shift_px: int = None,
-        movement: Movement = None,
+        horizontal_shift_px: Optional[int] = None,
+        vertical_shift_px: Optional[int] = None,
+        movement: Optional[Movement] = None,
         wrap_image: bool = False,
     ) -> FrameBatch:
         """
@@ -35,7 +36,7 @@ class Translate(ChainFrameAction):
             and horizontal_shift_px == 0
             and vertical_shift_px == 0
             or is_movement_mode
-            and movement.distance() == 0
+            and movement.distance() == 0  # type: ignore
         ):
             return input_batch.clone()
 
@@ -48,8 +49,16 @@ class Translate(ChainFrameAction):
             data_arr = frame.get_data_arr()
 
             if is_movement_mode:
-                horizontal_shift_px = int(frame.width * movement.x_distance)
-                vertical_shift_px = int(frame.height * movement.y_distance)
+                h_move = movement.x_distance  # type: ignore
+                horizontal_shift_px = int(frame.width * h_move)
+                y_move = movement.y_distance  # type: ignore
+                vertical_shift_px = int(frame.height * y_move)
+
+            # mypy test
+            horizontal_shift_px = (
+                0 if horizontal_shift_px is None else horizontal_shift_px
+            )
+            vertical_shift_px = 0 if vertical_shift_px is None else vertical_shift_px
 
             # handle horizontal shifts
             if horizontal_shift_px != 0:

@@ -1,21 +1,19 @@
 name: Pylint
 
 on:
-#  push:
-#    branches:
-#      #- 'main' # TODO re-enable this one day after pylint works
-#      #- 'releases/**'
-  # pull_request:
-  #   branches:
-  #     - 'main' # TODO also
-  workflow_dispatch
+  push:
+    branches:
+      - 'main' # TODO re-enable this one day after pylint works
+  pull_request:
+    branches:
+      - 'main'
 
 jobs:
   lint-pylint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.11"]
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}

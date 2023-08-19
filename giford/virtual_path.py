@@ -1,5 +1,6 @@
 import math
 from dataclasses import dataclass
+from typing import Self
 
 
 @dataclass
@@ -56,17 +57,17 @@ class VirtualPath:
     on different sized images by dynamically interpreting movements relative to the size of an image
     """
 
-    def __init__(self, origin_point: Point = None):
+    def __init__(self, origin_point: Point | None = None):
         self.points: list[Point] = []
 
         if origin_point is not None:
             self.add_point(origin_point)
 
-    def add_point(self, point: Point):
+    def add_point(self, point: Point) -> Self:
         self.points.append(point)
         return self
 
-    def add_point_from_coords(self, x: float, y: float):
+    def add_point_from_coords(self, x: float, y: float) -> Self:
         self.add_point(Point(x, y))
         # allow function chaining
         return self

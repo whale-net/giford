@@ -25,22 +25,31 @@ class MultiImage(AbstractImage):
     DEFAULT_FRAMERATE = 15
     DEFAULT_FORMAT = MultiImageFormat.GIF
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.raw_data_frames: list[RawDataFrame] = []
         self.format = MultiImageFormat.UNKNOWN
 
-    def load(self, path):
+    def load(self, path: str) -> None:
         # not currently supported
         raise NotImplementedError()
 
     def save(
         self,
-        path,
+        path: str,
         target_framerate: int = DEFAULT_FRAMERATE,
         overwrite_existing: bool = False,
-    ):
+    ) -> None:
+        """
+        Save MultiImage to path
+
+        :param path: path to filesystem
+        :param target_framerate: framerate of saved file, defaults to DEFAULT_FRAMERATE
+        :param overwrite_existing: remove existing file, defaults to False
+        :raises Exception: format exception
+        :raises Exception: generic it didnt work exception
+        """
         # yolo
         if overwrite_existing:
             os.remove(path)
@@ -52,9 +61,9 @@ class MultiImage(AbstractImage):
         elif self.format == MultiImageFormat.GIF:
             self._write_gif(path, target_framerate)
         else:
-            raise Exception()
+            raise Exception("unable to save for whatever reason")
 
-    def _write_gif(self, path, target_framerate: int):
+    def _write_gif(self, path: str, target_framerate: int) -> tuple[str, str]:
         """
         previously gifify action
 
@@ -120,11 +129,14 @@ class MultiImage(AbstractImage):
         out, err = palleteuse_stream.output(path, format="gif").run(
             input=rdv_byte_pipe_input
         )
+
+        # assuming these are strings
         return out, err
 
+    @staticmethod
     def create_from_frame_batch(
         batch: FrameBatch, target_format: MultiImageFormat = DEFAULT_FORMAT
-    ):  # one day 3.11 -> Self:
+    ) -> "MultiImage":  # one day 3.11 -> Self:
         # TODO better type checking and such
         mimg = MultiImage()
         mimg.raw_data_frames += batch.frames

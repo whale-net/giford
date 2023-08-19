@@ -1,5 +1,6 @@
 import enum
 import os
+from typing import Optional
 
 import numpy as np
 
@@ -36,7 +37,7 @@ class SingleImage(AbstractImage):
     # replace with strenum in 3.11
     _FORMAT_NAME_MAP = {fmt.name: fmt for fmt in SingleImageFormat}
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.format: SingleImageFormat = SingleImageFormat.UNKNOWN
@@ -47,7 +48,7 @@ class SingleImage(AbstractImage):
             raise Exception("image is empty")
         return self.raw_data_frames[0]
 
-    def _add_raw_data_frame(self, frame: RawDataFrame):
+    def _add_raw_data_frame(self, frame: RawDataFrame) -> None:
         """
         helper function to make sure rdf list never grows beyond one item
         only meant to be called during initialization
@@ -58,7 +59,7 @@ class SingleImage(AbstractImage):
             raise Exception("unable to add frame to SingleImage")
         self.raw_data_frames.append(frame)
 
-    def load(self, path):
+    def load(self, path: str) -> None:
         if not os.path.exists(path):
             raise FileNotFoundError()
 
@@ -83,14 +84,13 @@ class SingleImage(AbstractImage):
         # 4 band PNG uint8 so far, really should just support whatever though
         img_ndarr = np.asarray(pimg)
         self._add_raw_data_frame(RawDataFrame(img_ndarr))
-        return
 
     def save(
         self,
-        path,
-        target_format: SingleImageFormat = None,
+        path: str,
+        target_format: Optional[SingleImageFormat] = None,
         overwrite_existing: bool = True,
-    ):
+    ) -> None:
         if target_format == SingleImageFormat.UNKNOWN:
             raise Exception("UNKNOWN cannot be saved")
 
@@ -116,19 +116,21 @@ class SingleImage(AbstractImage):
         img_nd_arr = RawDataFrame.convert_data_arr(img_nd_arr, target_dtype=np.uint8)
 
         pimg = PillowImage.fromarray(img_nd_arr)
-        pimg.save(path, format=target_format.name)
+        pimg.save(path, format=self.format.name)
 
+    @staticmethod
     def create_from_frame(
         raw_data_frame: RawDataFrame, target_format: SingleImageFormat = DEFAULT_FORMAT
-    ):
+    ) -> "SingleImage":
         img = SingleImage()
         img._add_raw_data_frame(raw_data_frame)
         img.format = target_format
         return img
 
+    @staticmethod
     def create_from_frame_batch(
         batch: FrameBatch, target_format: SingleImageFormat = DEFAULT_FORMAT
-    ):
+    ) -> "SingleImage":
         if batch.is_empty():
             raise Exception("batch is empty")
         if batch.size() > 1:

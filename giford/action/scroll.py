@@ -1,10 +1,10 @@
-from giford.action.abstract_frame_action import ChainFrameAction
+from giford.action.abstract_frame_action import AbstractFrameAction
 from giford.action.translate import Translate
 from giford.frame.frame_batch import FrameBatch
 
 
-class Scroll(ChainFrameAction):
-    def __init__(self):
+class Scroll(AbstractFrameAction):
+    def __init__(self) -> None:
         super().__init__()
 
     def process(

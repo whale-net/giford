@@ -1,12 +1,12 @@
 from skimage import transform
 
-from giford.action.abstract_frame_action import ChainFrameAction
+from giford.action.abstract_frame_action import AbstractFrameAction
 from giford.frame.frame_batch import FrameBatch
 from giford.frame.raw_data import RawDataFrame
 
 
-class BasicSwirl(ChainFrameAction):
-    def __init__(self):
+class BasicSwirl(AbstractFrameAction):
+    def __init__(self) -> None:
         super().__init__()
 
     def process(self, input_batch: FrameBatch) -> FrameBatch:
@@ -21,11 +21,15 @@ class BasicSwirl(ChainFrameAction):
         return output_batch
 
 
-class VariableSwirl(ChainFrameAction):
-    def __init__(self):
+class VariableSwirl(AbstractFrameAction):
+    DEFAULT_DEPTH = 5
+
+    def __init__(self) -> None:
         super().__init__()
 
-    def process(self, input_batch: FrameBatch, depth: int) -> FrameBatch:
+    def process(
+        self, input_batch: FrameBatch, depth: int = DEFAULT_DEPTH
+    ) -> FrameBatch:
         if not isinstance(depth, int):
             raise Exception(f"depth is not valid int [{depth}]")
         if depth < 0:
@@ -47,14 +51,14 @@ class VariableSwirl(ChainFrameAction):
         return output_batch
 
 
-class VaryingVariableSwirl(ChainFrameAction):
-    def __init__(self):
+class VaryingVariableSwirl(AbstractFrameAction):
+    def __init__(self) -> None:
         super().__init__()
 
     def process(
         self,
         input_batch: FrameBatch,
-        depth: int,
+        depth: int = VariableSwirl.DEFAULT_DEPTH,
         swirl_depth_increment: int = 1,
         is_increasing_swirl_depth: bool = False,
     ) -> FrameBatch:
@@ -78,8 +82,8 @@ class VaryingVariableSwirl(ChainFrameAction):
             in_batch: FrameBatch,
             swirl_depth: int,
             out_batch: FrameBatch,
-            depth_counter=0,
-        ):
+            depth_counter: int = 0,
+        ) -> None:
             """
             recursively call variable_swirl adding frames into out_batch
             hopefully tail recursive but idk if python supports that

@@ -1,7 +1,7 @@
 import random
 import enum
 
-from giford.action.abstract_frame_action import ChainFrameAction
+from giford.action.abstract_frame_action import AbstractFrameAction
 from giford.frame.frame_batch import FrameBatch
 from giford.virtual_path import VirtualPath
 from giford.action.translate import Translate
@@ -11,25 +11,27 @@ class ShakeMode(enum.Enum):
     RANDOM = 1
 
 
-class Shake(ChainFrameAction):
+class Shake(AbstractFrameAction):
     """
     testing idea, what this whole thing was for in the first place
     """
 
-    def __init__(self):
-        super().__init__()
+    DEFAULT_FRAME_COUNT = 30
+
+    def __init__(self) -> None:
+        pass
 
     def process(
         self,
         input_batch: FrameBatch,
-        frame_count: int,
+        frame_count: int = DEFAULT_FRAME_COUNT,
         shake_mode: ShakeMode = ShakeMode.RANDOM,
         max_horizontal_move: float | None = 0.1,
         max_vertical_move: float | None = 0.1,
         max_horizontal_shift_px: int | None = None,
         max_vertical_shift_px: int | None = None,
         seed: str | int | None = None,
-    ):
+    ) -> FrameBatch:
         """
         Shake frame
 
