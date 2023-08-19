@@ -27,17 +27,15 @@ todo - package config
 packages - scikit-image (skimage), ffmpeg
 python sample_run.py
 
-python >=3.7
+python >=3.11
 needed because:
 ```
-from __future__ import annotations
+from typing import Self
 ```
 
-install required modules
+install required for developmet
+will install linters, pytest and all supporting modules for those
 ```
-pip install -e .
-
-# if running development locally do this:
 pip install -e .[dev]
 ```
 

@@ -1,4 +1,4 @@
-name: Linters
+name: Lint
 
 on:
   push:
@@ -10,11 +10,11 @@ on:
 
 jobs:
   mypy:
-    name: mypy type check
+    name: mypy
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11"]
+        python-version: ['3.11']
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -24,8 +24,54 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install mypy
+        pip install -e .[mypy]
     - name: Run mypy
       continue-on-error: true
       run: 
         mypy giford
+
+  lint-black:
+    name: black
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11']
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install black
+    - name: Black Check
+      uses: jpetrucciani/black-check@23.7.0
+      with:
+        # File or directory to run black on
+        path: ./giford/
+        # Optional Black flags (refer to `black --help`)
+        #black_flags: # optional, default is
+
+  pylint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11']
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pylint
+    - name: Analysing the code with pylint
+      # run this but disable it from causing failure. already not required but still annoying
+      continue-on-error: true
+      run: |
+        pylint $(git ls-files '*.py')
+      
