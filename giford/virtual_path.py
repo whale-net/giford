@@ -56,7 +56,7 @@ class VirtualPath:
     on different sized images by dynamically interpreting movements relative to the size of an image
     """
 
-    def __init__(self, origin_point: Point = None):
+    def __init__(self, origin_point: Point | None = None):
         self.points: list[Point] = []
 
         if origin_point is not None:
