@@ -18,7 +18,7 @@ class Shake(AbstractFrameAction):
 
     DEFAULT_FRAME_COUNT = 30
 
-    def __init__(self) -> None:
+    def __init__(self):
         pass
 
     def process(
