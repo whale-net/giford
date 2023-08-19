@@ -88,7 +88,7 @@ class SingleImage(AbstractImage):
     def save(
         self,
         path,
-        target_format: SingleImageFormat = None,
+        target_format: SingleImageFormat | None = None,
         overwrite_existing: bool = True,
     ):
         if target_format == SingleImageFormat.UNKNOWN:
@@ -118,6 +118,7 @@ class SingleImage(AbstractImage):
         pimg = PillowImage.fromarray(img_nd_arr)
         pimg.save(path, format=target_format.name)
 
+    @staticmethod
     def create_from_frame(
         raw_data_frame: RawDataFrame, target_format: SingleImageFormat = DEFAULT_FORMAT
     ):
@@ -126,6 +127,7 @@ class SingleImage(AbstractImage):
         img.format = target_format
         return img
 
+    @staticmethod
     def create_from_frame_batch(
         batch: FrameBatch, target_format: SingleImageFormat = DEFAULT_FORMAT
     ):
