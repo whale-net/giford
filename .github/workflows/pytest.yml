@@ -37,7 +37,7 @@ jobs:
 
     - name: Run pytest
       run: |
-        pytest --cov=giford -n 10
+        pytest --cov=giford --durations 15 -n 10
 
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3
