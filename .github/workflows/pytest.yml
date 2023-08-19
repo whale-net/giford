@@ -1,4 +1,4 @@
-name: Test
+name: Pytest
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
       - 'main'
 
 jobs:
-  pytest:
+  run_tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:

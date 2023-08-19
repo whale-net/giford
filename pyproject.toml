@@ -29,8 +29,7 @@ test= [
 ]
 lint = [
     'black',
-    'mypy',
-    'pylint'
+    'mypy'
 ]
 dev = [
     'giford[test]',
