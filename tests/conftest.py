@@ -51,7 +51,7 @@ def single_orange_image() -> SingleImage:
 
 @pytest.fixture()
 def orange_image_batch(single_orange_image) -> FrameBatch:
-    return FrameBatch.create_from_single_image(single_orange_image)
+    return FrameBatch.create_from_image(single_orange_image)
 
 
 @pytest.fixture

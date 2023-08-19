@@ -22,8 +22,8 @@ class MultiImageFormat(enum.Enum):
 
 
 class MultiImage(AbstractImage):
-    DEFAULT_FRAMERATE = 15
-    DEFAULT_FORMAT = MultiImageFormat.GIF
+    DEFAULT_FRAMERATE: int = 15
+    DEFAULT_FORMAT: MultiImageFormat = MultiImageFormat.GIF
 
     def __init__(self) -> None:
         super().__init__()
@@ -133,12 +133,11 @@ class MultiImage(AbstractImage):
         # assuming these are strings
         return out, err
 
-    @staticmethod
+    @classmethod
     def create_from_frame_batch(
-        batch: FrameBatch, target_format: MultiImageFormat = DEFAULT_FORMAT
+        cls, batch: FrameBatch, target_format: MultiImageFormat = DEFAULT_FORMAT
     ) -> "MultiImage":  # one day 3.11 -> Self:
-        # TODO better type checking and such
-        mimg = MultiImage()
+        mimg = cls()
         mimg.raw_data_frames += batch.frames
         mimg.format = target_format
         return mimg

@@ -74,18 +74,9 @@ class FrameBatch:
     def is_empty(self) -> bool:
         return self.size() == 0
 
-    @staticmethod
-    def create_from_frame_wrapper(wrapper: AbstractImage) -> "FrameBatch":
+    @classmethod
+    def create_from_image(cls, img: AbstractImage) -> "FrameBatch":
         batch = FrameBatch()
-        for rdf in wrapper.raw_data_frames:
+        for rdf in img.raw_data_frames:
             batch.add_frame(rdf)
         return batch
-
-    @staticmethod
-    def create_from_single_image(simg: SingleImage) -> "FrameBatch":
-        """
-        same as create_from_frame_wrapper, but here for convenience
-
-        :param simg: single image
-        """
-        return FrameBatch.create_from_frame_wrapper(simg)

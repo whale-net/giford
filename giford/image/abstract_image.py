@@ -24,8 +24,7 @@ class AbstractImage(abc.ABC):
     def save(self, path: str) -> None:
         pass
 
+    @classmethod
     @abc.abstractmethod
-    def create_from_frame_batch(
-        self, batch: FrameBatch
-    ) -> "AbstractImage":  # one day 3.11 -> Self:
+    def create_from_frame_batch(self, batch: FrameBatch) -> "AbstractImage":
         pass

@@ -32,7 +32,7 @@ class SingleImage(AbstractImage):
     datatypes of underlying image data is handled by RawDataFrame
     """
 
-    DEFAULT_FORMAT = SingleImageFormat.PNG
+    DEFAULT_FORMAT: SingleImageFormat = SingleImageFormat.PNG
 
     # replace with strenum in 3.11
     _FORMAT_NAME_MAP = {fmt.name: fmt for fmt in SingleImageFormat}
@@ -118,22 +118,24 @@ class SingleImage(AbstractImage):
         pimg = PillowImage.fromarray(img_nd_arr)
         pimg.save(path, format=self.format.name)
 
-    @staticmethod
+    @classmethod
     def create_from_frame(
-        raw_data_frame: RawDataFrame, target_format: SingleImageFormat = DEFAULT_FORMAT
+        cls,
+        raw_data_frame: RawDataFrame,
+        target_format: SingleImageFormat = DEFAULT_FORMAT,
     ) -> "SingleImage":
-        img = SingleImage()
+        img = cls()
         img._add_raw_data_frame(raw_data_frame)
         img.format = target_format
         return img
 
-    @staticmethod
+    @classmethod
     def create_from_frame_batch(
-        batch: FrameBatch, target_format: SingleImageFormat = DEFAULT_FORMAT
+        cls, batch: FrameBatch, target_format: SingleImageFormat = DEFAULT_FORMAT
     ) -> "SingleImage":
         if batch.is_empty():
             raise Exception("batch is empty")
         if batch.size() > 1:
             raise Exception(f"batch is too large [{batch.size()}]")
 
-        return SingleImage.create_from_frame(batch.frames[0])
+        return cls.create_from_frame(batch.frames[0])
