@@ -7,7 +7,6 @@ import itertools
 from giford.frame.frame_batch import FrameBatch
 
 
-
 class RawDataFrame:
     """
     wrapper for ndarray of size h x w x d (d=depth=always 4)
@@ -62,7 +61,9 @@ class RawDataFrame:
         """
         return self._data_arr.size
 
-    def flat_data(self, target_dtype: np_typing.DTypeLike | None = None) -> Iterable[np_typing.DTypeLike]:
+    def flat_data(
+        self, target_dtype: np_typing.DTypeLike | None = None
+    ) -> Iterable[np_typing.DTypeLike]:
         """
         iterator for data in array
         """
@@ -117,14 +118,16 @@ class RawDataFrame:
             and (not is_check_depth or self.depth == other_raw_data.depth)
         )
 
-    def clone(self) -> 'RawDataFrame':
+    def clone(self) -> "RawDataFrame":
         return RawDataFrame(self._data_arr)
 
     def get_empty_pixel(self) -> np_typing.NDArray:
         return np.zeros((self.depth,)).astype(self._data_arr.dtype)
 
     @staticmethod
-    def convert_data_arr(data_arr: np.ndarray, target_dtype: np_typing.DTypeLike) -> np_typing.NDArray:
+    def convert_data_arr(
+        data_arr: np.ndarray, target_dtype: np_typing.DTypeLike
+    ) -> np_typing.NDArray:
         """
         return data_arr as target dtype
 
@@ -151,7 +154,7 @@ class RawDataFrame:
                 data_arr /= 255
 
             return data_arr
-    
+
         raise Exception(f"unsupported target_dtype: [{target_dtype}]")
 
 

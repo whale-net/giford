@@ -15,7 +15,9 @@ def test_single_image_save(temp_output_png, single_orange_image: SingleImage):
     assert compare_image_files(TEST_INPUT_ORANGE_IMAGE_FILEPATH, temp_output_png)
 
 
-def test_single_image_create_from_batch(temp_output_png, orange_image_batch: FrameBatch):
+def test_single_image_create_from_batch(
+    temp_output_png, orange_image_batch: FrameBatch
+):
     img = SingleImage.create_from_frame_batch(orange_image_batch)
     # TODO equality instead of write???? maybe one day
     img.save(temp_output_png)

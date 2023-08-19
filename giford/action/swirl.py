@@ -82,7 +82,7 @@ class VaryingVariableSwirl(AbstractFrameAction):
             in_batch: FrameBatch,
             swirl_depth: int,
             out_batch: FrameBatch,
-            depth_counter: int = 0
+            depth_counter: int = 0,
         ) -> None:
             """
             recursively call variable_swirl adding frames into out_batch

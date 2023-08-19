@@ -103,7 +103,6 @@ class SingleImage(AbstractImage):
 
         if target_format is None:
             target_format = self.format
-        
 
         # using PIL/pillow to save images
         # TODO WHAT FORMATS DOES THIS SUPPORT, how does it interpret datatype
@@ -122,7 +121,7 @@ class SingleImage(AbstractImage):
     @staticmethod
     def create_from_frame(
         raw_data_frame: RawDataFrame, target_format: SingleImageFormat = DEFAULT_FORMAT
-    ) -> 'SingleImage':
+    ) -> "SingleImage":
         img = SingleImage()
         img._add_raw_data_frame(raw_data_frame)
         img.format = target_format
@@ -131,7 +130,7 @@ class SingleImage(AbstractImage):
     @staticmethod
     def create_from_frame_batch(
         batch: FrameBatch, target_format: SingleImageFormat = DEFAULT_FORMAT
-    ) -> 'SingleImage':
+    ) -> "SingleImage":
         if batch.is_empty():
             raise Exception("batch is empty")
         if batch.size() > 1:

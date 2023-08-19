@@ -55,7 +55,7 @@ class FrameBatch:
 
         return True
 
-    def clone(self) -> 'FrameBatch':
+    def clone(self) -> "FrameBatch":
         return copy.deepcopy(self)
 
     def cloned_frames(self) -> Iterable[RawDataFrame]:
@@ -75,14 +75,14 @@ class FrameBatch:
         return self.size() == 0
 
     @staticmethod
-    def create_from_frame_wrapper(wrapper: AbstractImage) -> 'FrameBatch':
+    def create_from_frame_wrapper(wrapper: AbstractImage) -> "FrameBatch":
         batch = FrameBatch()
         for rdf in wrapper.raw_data_frames:
             batch.add_frame(rdf)
         return batch
 
     @staticmethod
-    def create_from_single_image(simg: SingleImage) -> 'FrameBatch':
+    def create_from_single_image(simg: SingleImage) -> "FrameBatch":
         """
         same as create_from_frame_wrapper, but here for convenience
 
