@@ -54,7 +54,7 @@ jobs:
         # Optional Black flags (refer to `black --help`)
         #black_flags: # optional, default is
 
-  lint-pylint:
+  pylint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
