@@ -22,11 +22,18 @@ dependencies = [
 
 [project.optional-dependencies]
 # TODO one day these should be split so dev doesn't require installing all of these
-dev = [
+test= [
     'pytest',
     'pytest-xdist',
+    'pytest-cov',
+]
+lint = [
     'black',
-    'pytest-cov'
+    'mypy'
+]
+dev = [
+    'giford[test]',
+    'giford[lint]'
 ]
 
 
