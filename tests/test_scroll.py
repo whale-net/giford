@@ -6,8 +6,8 @@ from giford.image import MultiImage
 from giford.frame_batch import FrameBatch
 from tests.util import BASELINE_DIRECTORY, compare_image_files
 
-from giford.image_actions.scroll import Scroll
-from giford.image_actions.reshape import Reshape, ReshapeMethod
+from giford.action.scroll import Scroll
+from giford.action.reshape import Reshape, ReshapeMethod
 
 
 # TODO - test_scroll various step sizes/scroll_multipliers

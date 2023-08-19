@@ -3,7 +3,7 @@ import os
 import pytest
 
 from giford.frame_batch import FrameBatch
-from giford.image_actions.shake import Shake
+from giford.action.shake import Shake
 from giford.image import MultiImage
 from tests.util import BASELINE_DIRECTORY, save_batch_and_compare
 

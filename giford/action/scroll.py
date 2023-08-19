@@ -1,12 +1,12 @@
 from skimage import transform
 
-from giford.image_actions.image_action import ChainImageAction
-from giford.image_actions.translate import Translate
+from giford.action.abstract_frame_action import ChainFrameAction
+from giford.action.translate import Translate
 from giford.frame_batch import FrameBatch
 from giford.raw_data import RawDataFrame
 
 
-class Scroll(ChainImageAction):
+class Scroll(ChainFrameAction):
     def __init__(self):
         super().__init__()
 

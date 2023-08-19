@@ -1,17 +1,17 @@
 import random
 import enum
 
-from giford.image_actions.image_action import ChainImageAction
+from giford.action.abstract_frame_action import ChainFrameAction
 from giford.frame_batch import FrameBatch
 from giford.virtual_path import VirtualPath
-from giford.image_actions.translate import Translate
+from giford.action.translate import Translate
 
 
 class ShakeMode(enum.Enum):
     RANDOM = 1
 
 
-class Shake(ChainImageAction):
+class Shake(ChainFrameAction):
     """
     testing idea, what this whole thing was for in the first place
     """
