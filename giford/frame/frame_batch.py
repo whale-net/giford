@@ -76,7 +76,7 @@ class FrameBatch:
 
     @classmethod
     def create_from_image(cls, img: AbstractImage) -> "FrameBatch":
-        batch = FrameBatch()
+        batch = cls()
         for rdf in img.raw_data_frames:
             batch.add_frame(rdf)
         return batch
