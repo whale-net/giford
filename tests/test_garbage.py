@@ -1,6 +1,6 @@
-from giford.frame_wrapper import MultiImage
-from giford.frame_batch import FrameBatch
-from giford.image_actions.reshape import Reshape, ReshapeMethod
+from giford.image import MultiImage
+from giford.frame.frame_batch import FrameBatch
+from giford.action.reshape import Reshape, ReshapeMethod
 
 
 def test_feed_garbage_to_multi_image(

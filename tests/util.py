@@ -1,11 +1,10 @@
 import os
-import hashlib
 
 import numpy as np
 from PIL import Image as PillowImage
 
-from giford.frame_batch import FrameBatch
-from giford.frame_wrapper import (
+from giford.frame.frame_batch import FrameBatch
+from giford.image import (
     SingleImage,
     SingleImageFormat,
     MultiImage,

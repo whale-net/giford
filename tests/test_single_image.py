@@ -1,5 +1,4 @@
-from giford.frame_wrapper import AbstractFrameWrapper, SingleImage
-from giford.frame_batch import FrameBatch
+from giford.image import SingleImage
 from tests.util import compare_image_files, TEST_INPUT_ORANGE_IMAGE_FILEPATH
 
 

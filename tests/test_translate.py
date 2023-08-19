@@ -3,8 +3,8 @@ import os
 import pytest
 
 
-from giford.frame_batch import FrameBatch
-from giford.image_actions.translate import Translate
+from giford.frame.frame_batch import FrameBatch
+from giford.action.translate import Translate
 from giford.virtual_path import Movement
 from tests.util import BASELINE_DIRECTORY, save_batch_and_compare
 
