@@ -1,14 +1,12 @@
 name: Pylint
 
 on:
-#  push:
-#    branches:
-#      #- 'main' # TODO re-enable this one day after pylint works
-#      #- 'releases/**'
-  # pull_request:
-  #   branches:
-  #     - 'main' # TODO also
-  workflow_dispatch
+  push:
+    branches:
+      - 'main' # TODO re-enable this one day after pylint works
+  pull_request:
+    branches:
+      - 'main'
 
 jobs:
   lint-pylint:
