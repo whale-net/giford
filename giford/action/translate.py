@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Optional
 
 from giford.action.abstract_frame_action import AbstractFrameAction
 from giford.frame.frame_batch import FrameBatch
@@ -13,9 +14,9 @@ class Translate(AbstractFrameAction):
     def process(
         self,
         input_batch: FrameBatch,
-        horizontal_shift_px: int | None = None,
-        vertical_shift_px: int | None = None,
-        movement: Movement | None = None,
+        horizontal_shift_px: Optional[int] = None,
+        vertical_shift_px: Optional[int] = None,
+        movement: Optional[Movement] = None,
         wrap_image: bool = False,
     ) -> FrameBatch:
         """
