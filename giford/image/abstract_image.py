@@ -25,5 +25,5 @@ class AbstractImage(abc.ABC):
         pass
 
     @abc.abstractstaticmethod
-    def create_from_frame_batch(self, batch: FrameBatch):  # one day 3.11 -> Self:
+    def create_from_frame_batch(self, batch: FrameBatch) -> 'AbstractImage':  # one day 3.11 -> Self:
         pass

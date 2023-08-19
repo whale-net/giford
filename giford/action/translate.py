@@ -13,9 +13,9 @@ class Translate(ChainFrameAction):
     def process(
         self,
         input_batch: FrameBatch,
-        horizontal_shift_px: int = None,
-        vertical_shift_px: int = None,
-        movement: Movement = None,
+        horizontal_shift_px: int | None = None,
+        vertical_shift_px: int | None = None,
+        movement: Movement | None = None,
         wrap_image: bool = False,
     ) -> FrameBatch:
         """

@@ -1,6 +1,7 @@
 from __future__ import annotations  # py>=3.7
 
 import numpy as np
+import numpy.typing as np_typing
 import itertools
 from giford.frame.frame_batch import FrameBatch
 
@@ -59,7 +60,7 @@ class RawDataFrame:
         """
         return self._data_arr.size
 
-    def flat_data(self, target_dtype: np.dtype | None = None):
+    def flat_data(self, target_dtype: np_typing.DTypeLike | None = None):
         """
         iterator for data in array
         """
@@ -121,7 +122,7 @@ class RawDataFrame:
         return np.zeros((self.depth,)).astype(self._data_arr.dtype)
 
     @staticmethod
-    def convert_data_arr(data_arr: np.ndarray, target_dtype: np.dtype):
+    def convert_data_arr(data_arr: np.ndarray, target_dtype: np_typing.DTypeLike):
         """
         return data_arr as target dtype
 
@@ -174,7 +175,7 @@ class RawDataVideo:
         for frame in batch.frames:
             self.add_frame(frame)
 
-    def as_ndarray(self, target_dtype: np.dtype | None = None) -> np.ndarray:
+    def as_ndarray(self, target_dtype: np_typing.DTypeLike | None = None) -> np.ndarray:
         """
         convert raw_data_frames to array of raw data arrays
         # TODO currently 1d

@@ -54,3 +54,6 @@ namespaces = false  # true by default
 
 [tool.setuptools_scm]
 write_to = 'giford/_version.py'
+
+[tool.mypy]
+plugins = 'numpy.typing.mypy_plugin'
