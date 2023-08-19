@@ -3,11 +3,10 @@ import os
 import pytest
 
 from giford.image import MultiImage
-from giford.frame.frame_batch import FrameBatch
-from tests.util import BASELINE_DIRECTORY, compare_image_files
+from giford.frame import FrameBatch
+from giford.action import Scroll, Reshape, ReshapeMethod
 
-from giford.action.scroll import Scroll
-from giford.action.reshape import Reshape, ReshapeMethod
+from tests.util import BASELINE_DIRECTORY, compare_image_files
 
 
 # TODO - test_scroll various step sizes/scroll_multipliers

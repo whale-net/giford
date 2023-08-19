@@ -1,4 +1,4 @@
-from giford.virtual_path import Point, Movement, VirtualPath
+from giford.util import Point, Movement, VirtualPath
 
 
 def test_point():

@@ -2,8 +2,8 @@ import os
 
 import pytest
 
-from giford.frame.frame_batch import FrameBatch
-from giford.action.shake import Shake
+from giford.frame import FrameBatch
+from giford.action import Shake
 from tests.util import BASELINE_DIRECTORY, save_batch_and_compare
 
 

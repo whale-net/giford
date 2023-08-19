@@ -1,5 +1,5 @@
 from giford.image import SingleImage
-from giford.frame.frame_batch import FrameBatch
+from giford.frame import FrameBatch
 from tests.util import compare_image_files, TEST_INPUT_ORANGE_IMAGE_FILEPATH
 
 
