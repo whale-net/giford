@@ -1,5 +1,5 @@
 # this file is currently unused
-# need to satisfy LSP and only real way to is to make common FrameBatch input, but that's for another time
+# need to satisfy LSP and only real way to is to make common FrameBatch input or something
 
 # import abc
 
