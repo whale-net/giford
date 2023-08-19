@@ -1,9 +1,8 @@
 from __future__ import annotations  # py>=3.7
 
-import copy
 import numpy as np
 import itertools
-from giford.frame_batch import FrameBatch
+from giford.frame.frame_batch import FrameBatch
 
 
 class RawDataFrame:

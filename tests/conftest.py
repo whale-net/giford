@@ -1,10 +1,9 @@
 import os
-import tempfile
 
 import pytest
 
 from giford.image.single_image import SingleImage
-from giford.frame_batch import FrameBatch
+from giford.frame.frame_batch import FrameBatch
 from giford.virtual_path import Point, Movement, VirtualPath
 
 from tests.util import (

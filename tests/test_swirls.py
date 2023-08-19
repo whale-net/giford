@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from giford.frame_batch import FrameBatch
+from giford.frame.frame_batch import FrameBatch
 from giford.image import SingleImage
 from giford.action.swirl import BasicSwirl, VariableSwirl, VaryingVariableSwirl
 from tests.util import (

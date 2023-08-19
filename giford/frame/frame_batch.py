@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from giford.image import AbstractImage, SingleImage
-    from giford.raw_data import RawDataFrame
+    from giford.frame.raw_data import RawDataFrame
 
 
 class FrameBatch:

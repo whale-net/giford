@@ -5,10 +5,9 @@ import ffmpeg
 import numpy as np
 
 # aliasing to avoid confusion
-from PIL import Image as PillowImage
 
-from giford.frame_batch import FrameBatch
-from giford.raw_data import RawDataFrame, RawDataVideo
+from giford.frame.frame_batch import FrameBatch
+from giford.frame.raw_data import RawDataFrame, RawDataVideo
 from giford.image.abstract_image import AbstractImage
 
 

@@ -1,9 +1,8 @@
-import numpy as np
 from skimage import transform
 
 from giford.action.abstract_frame_action import ChainFrameAction
-from giford.frame_batch import FrameBatch
-from giford.raw_data import RawDataFrame
+from giford.frame.frame_batch import FrameBatch
+from giford.frame.raw_data import RawDataFrame
 
 
 class BasicSwirl(ChainFrameAction):

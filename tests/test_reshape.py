@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from giford.frame_batch import FrameBatch
+from giford.frame.frame_batch import FrameBatch
 from giford.action.reshape import Reshape, ReshapeMethod
 from tests.util import BASELINE_DIRECTORY, save_batch_and_compare
 

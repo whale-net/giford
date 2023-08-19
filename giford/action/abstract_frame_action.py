@@ -1,4 +1,4 @@
-from giford.frame_batch import FrameBatch
+from giford.frame.frame_batch import FrameBatch
 from .abstract_action import AbstractAction
 
 # done - do i need both *args and **kwargs?

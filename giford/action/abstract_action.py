@@ -1,6 +1,6 @@
 import abc
 
-from giford.frame_batch import FrameBatch
+from giford.frame.frame_batch import FrameBatch
 
 class AbstractAction(abc.ABC):
     @abc.abstractmethod

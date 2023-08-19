@@ -2,7 +2,7 @@ import random
 import enum
 
 from giford.action.abstract_frame_action import ChainFrameAction
-from giford.frame_batch import FrameBatch
+from giford.frame.frame_batch import FrameBatch
 from giford.virtual_path import VirtualPath
 from giford.action.translate import Translate
 

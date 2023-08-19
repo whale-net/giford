@@ -1,7 +1,7 @@
 import abc
 
-from giford.frame_batch import FrameBatch
-from giford.raw_data import RawDataFrame
+from giford.frame.frame_batch import FrameBatch
+from giford.frame.raw_data import RawDataFrame
 
 
 class AbstractImage(abc.ABC):

@@ -1,5 +1,5 @@
 from giford.image import MultiImage
-from giford.frame_batch import FrameBatch
+from giford.frame.frame_batch import FrameBatch
 from giford.action.reshape import Reshape, ReshapeMethod
 
 
