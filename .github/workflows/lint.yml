@@ -10,6 +10,7 @@ on:
 
 jobs:
   black-check:
+    name: Black Check
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -30,8 +31,9 @@ jobs:
         path: ./giford/
         # Optional Black flags (refer to `black --help`)
         #black_flags: # optional, default is
-
+        
   pylint-check:
+    name: Pylint Check
     runs-on: ubuntu-latest
     strategy:
       matrix:
