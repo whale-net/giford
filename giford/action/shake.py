@@ -3,7 +3,7 @@ import enum
 
 from giford.action.abstract_frame_action import AbstractFrameAction
 from giford.frame.frame_batch import FrameBatch
-from giford.virtual_path import VirtualPath
+from giford.util.virtual_path import VirtualPath
 from giford.action.translate import Translate
 
 

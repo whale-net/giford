@@ -5,7 +5,7 @@ import pytest
 
 from giford.frame.frame_batch import FrameBatch
 from giford.action.translate import Translate
-from giford.virtual_path import Movement
+from giford.util.virtual_path import Movement
 from tests.util import BASELINE_DIRECTORY, save_batch_and_compare
 
 

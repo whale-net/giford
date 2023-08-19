@@ -4,7 +4,7 @@ from typing import Optional
 from giford.action.abstract_frame_action import AbstractFrameAction
 from giford.frame.frame_batch import FrameBatch
 
-from giford.virtual_path import Movement
+from giford.util.virtual_path import Movement
 
 
 class Translate(AbstractFrameAction):
