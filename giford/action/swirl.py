@@ -1,11 +1,11 @@
 from skimage import transform
 
-from giford.action.abstract_frame_action import ChainFrameAction
+from giford.action.abstract_frame_action import AbstractFrameAction
 from giford.frame.frame_batch import FrameBatch
 from giford.frame.raw_data import RawDataFrame
 
 
-class BasicSwirl(ChainFrameAction):
+class BasicSwirl(AbstractFrameAction):
     def __init__(self):
         super().__init__()
 
@@ -21,7 +21,7 @@ class BasicSwirl(ChainFrameAction):
         return output_batch
 
 
-class VariableSwirl(ChainFrameAction):
+class VariableSwirl(AbstractFrameAction):
     def __init__(self):
         super().__init__()
 
@@ -47,7 +47,7 @@ class VariableSwirl(ChainFrameAction):
         return output_batch
 
 
-class VaryingVariableSwirl(ChainFrameAction):
+class VaryingVariableSwirl(AbstractFrameAction):
     def __init__(self):
         super().__init__()
 

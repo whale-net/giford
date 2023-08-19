@@ -1,12 +1,12 @@
 import numpy as np
 
-from giford.action.abstract_frame_action import ChainFrameAction
+from giford.action.abstract_frame_action import AbstractFrameAction
 from giford.frame.frame_batch import FrameBatch
 
 from giford.virtual_path import Movement
 
 
-class Translate(ChainFrameAction):
+class Translate(AbstractFrameAction):
     def __init__(self):
         super().__init__()
 

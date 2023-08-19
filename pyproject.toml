@@ -55,5 +55,14 @@ namespaces = false  # true by default
 [tool.setuptools_scm]
 write_to = 'giford/_version.py'
 
+# mypy config
 [tool.mypy]
 plugins = 'numpy.typing.mypy_plugin'
+# supress modules that don't have type hints
+# i cba stubs
+[[tool.mypy.overrides]]
+module = [
+    'ffmpeg',
+    'skimage'
+]
+ignore_missing_imports = true

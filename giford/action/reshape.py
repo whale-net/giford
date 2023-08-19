@@ -1,7 +1,7 @@
 import enum
 from skimage import transform
 
-from giford.action.abstract_frame_action import ChainFrameAction
+from giford.action.abstract_frame_action import AbstractFrameAction
 from giford.frame.frame_batch import FrameBatch
 from giford.frame.raw_data import RawDataFrame
 
@@ -12,7 +12,7 @@ class ReshapeMethod(enum.Enum):
     DOWNSCALE = 3
 
 
-class Reshape(ChainFrameAction):
+class Reshape(AbstractFrameAction):
     """
     turns 120x120 into 60x60 or 240x240
     """
@@ -77,5 +77,5 @@ class Reshape(ChainFrameAction):
         return RawDataFrame(nd_arr)
 
     @staticmethod
-    def _downscale() -> RawDataFrame:
+    def _downscale(frame: RawDataFrame) -> RawDataFrame:
         raise NotImplementedError()
