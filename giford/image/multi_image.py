@@ -2,6 +2,7 @@ import enum
 import os
 from io import IOBase
 from typing import BinaryIO
+from tempfile import NamedTemporaryFile
 
 import ffmpeg
 import numpy as np
@@ -44,9 +45,32 @@ class MultiImage(AbstractImage):
             height: int = video_stream["height"]
             frames: int = video_stream["nb_frames"]
         elif isinstance(in_file, IOBase):
-            # TODO implement
-            input_args = {"filename": "pipe:"}
-            # the width, height, and frames will have to come from somewhere else, somehow
+            # giving up for now, no number of args help, need to rethink
+            input_args = {"filename": "pipe:", 'format': 'gif', 'pix_fmt':'bgr24'}
+            # TODO - revisit probe in memory, can't get it to work
+            #vstreams = ffmpeg.probe(in_file, select_streams="v")
+            # alternatively, could enforce width/height/frames as input
+            # but that may be weird and force users to save file themselves
+            # instead of passing it in while in memory
+            # so for now going to make pretend and write to a temp file
+            with NamedTemporaryFile('w+b') as file:
+                BUFFER_SIZE = 4096 * 16
+                buff = in_file.read(BUFFER_SIZE)
+                while len(buff) > 0:
+                    file.write(buff)
+                    buff = file.read(BUFFER_SIZE)
+                file.flush()
+
+                vstreams = ffmpeg.probe(file.name, select_streams="v")
+                video_stream = vstreams["streams"][0]
+                width: int = video_stream["width"]
+                height: int = video_stream["height"]
+                # unsure why only 1 frame is picked up
+                frames: int = 25 # video_stream["nb_frames"]
+
+                input_args['s'] = f'{width}x{height}'
+
+                
         else:
             raise ValueError("wrong input type, dolt")
 
@@ -57,6 +81,14 @@ class MultiImage(AbstractImage):
             .output("pipe:", format="rawvideo", pix_fmt="bgr32", vframes=frames)
             .run_async(pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True)
         )
+
+        if isinstance(in_file, IOBase):
+            in_file.seek(0)
+            # TODO buffer by frame
+            buff = in_file.read()
+            input_process.stdin.write(buff)
+            input_process.stdin.close()
+            input_process.wait()
 
         depth = RawDataFrame.DEFAULT_DEPTH
         while True:
