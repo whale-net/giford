@@ -39,16 +39,17 @@ class MultiImage(AbstractImage):
             # TODO - probe
             width: int = 449
             height: int = 524
+            frames: int = 25
         elif isinstance(in_file, IOBase):
             input_args = {"filename": "pipe:"}
         else:
-            raise Exception("wrong input type, dolt")
+            raise ValueError("wrong input type, dolt")
 
         # TODO - is always default depth?
         # want bgr32, rgb32 is wrong order and I guess we're just wrong everywhere else lolol
         input_process = (
             ffmpeg.input(**input_args)
-            .output("pipe:", format="rawvideo", pix_fmt="bgr32", vframes=25)
+            .output("pipe:", format="rawvideo", pix_fmt="bgr32", vframes=frames)
             .run_async(pipe_stdout=True)
         )
         depth = RawDataFrame.DEFAULT_DEPTH

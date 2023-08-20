@@ -17,7 +17,7 @@ class RawDataFrame:
     SHAPE_WIDTH_IDX: int = 1
     SHAPE_DEPTH_IDX: int = 2
 
-    # RGBA
+    # RGBA (maybe bgra, but still, 4 bands)
     DEFAULT_DEPTH: int = 4
 
     SUPPORTED_DATATYPES = (np.uint8, np.float32, np.float64)
