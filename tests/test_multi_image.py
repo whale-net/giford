@@ -9,13 +9,19 @@ from tests.util import (
     compare_image_files,
     BASELINE_DIRECTORY,
     TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH,
+    TEST_INPUT_DATA_FOLDER
 )
 
 
-def test_multi_image_load(orange_swirl_batch: FrameBatch):
+def test_multi_image_load_path(temp_output_gif):
     mimg = MultiImage()
-    with pytest.raises(NotImplementedError):
-        mimg.load(TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH)
+    # with pytest.raises(NotImplementedError):
+    #     mimg.load(TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH)
+    base_img_path = os.path.join(TEST_INPUT_DATA_FOLDER, 'orange_swirl.gif')
+    mimg.load(base_img_path)
+    mimg.save(temp_output_gif)
+    print(temp_output_gif)
+    assert compare_image_files(base_img_path, temp_output_gif)
 
 
 def test_multi_image_save_path(temp_output_gif: str, orange_swirl_batch: FrameBatch):

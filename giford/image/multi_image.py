@@ -34,13 +34,50 @@ class MultiImage(AbstractImage):
         self.format = MultiImageFormat.UNKNOWN
 
     def load(self, in_file: str | BinaryIO) -> None:
-        # not currently supported
-        raise NotImplementedError()
+        
+        if isinstance(in_file, str):
+            input_args = {
+                'filename': in_file
+            }
+            # TODO - probe
+            width: int = 449
+            height: int = 524
+        elif isinstance(in_file, IOBase):
+            input_args = {
+                'filename': 'pipe:'
+            }
+        else:
+            raise Exception('wrong input type, dolt')
+        
+        # TODO - is always default depth?
+        input_process = (
+            ffmpeg
+            .input(**input_args)
+            .output('pipe:', format='rawvideo', pix_fmt='rgb32', vframes=25)
+            .run_async(pipe_stdout=True)
+        )
+
+        while True:
+            buff = input_process.stdout.read(width * height * RawDataFrame.DEFAULT_DEPTH)
+
+            if not buff or len(buff) == 0:
+                break
+
+            in_frame = (
+                np.frombuffer(buff, np.uint8)
+                .reshape((height, width, RawDataFrame.DEFAULT_DEPTH))
+            )
+
+            rdf = RawDataFrame(in_frame)
+            self.raw_data_frames.append(rdf)
+
+        input_process.wait()
 
     def save(
         self,
         out_file: str | BinaryIO,
         target_framerate: int = DEFAULT_FRAMERATE,
+        target_format: MultiImageFormat = DEFAULT_FORMAT,
         overwrite_existing: bool = False,
     ) -> None:
         """
@@ -58,9 +95,9 @@ class MultiImage(AbstractImage):
 
         # TODO - can write to stage and then swap pointer at end to preserve image?
         # TODO type checking and more defaults - see single for ideas
-        if self.format == MultiImageFormat.UNKNOWN:
-            raise Exception("unknown format not supported")
-        elif self.format == MultiImageFormat.GIF:
+        if target_format == MultiImageFormat.UNKNOWN:
+            raise Exception("unknown not supported")
+        elif target_format == MultiImageFormat.GIF:
             self._write_gif(out_file, target_framerate)
         else:
             raise Exception("unable to save for whatever reason")

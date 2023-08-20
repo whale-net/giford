@@ -13,9 +13,12 @@ class RawDataFrame:
     """
 
     # ndarray.shape index
-    SHAPE_HEIGHT_IDX = 0
-    SHAPE_WIDTH_IDX = 1
-    SHAPE_DEPTH_IDX = 2
+    SHAPE_HEIGHT_IDX: int = 0
+    SHAPE_WIDTH_IDX: int = 1
+    SHAPE_DEPTH_IDX: int = 2
+
+    # RGBA
+    DEFAULT_DEPTH: int = 4
 
     SUPPORTED_DATATYPES = (np.uint8, np.float32, np.float64)
 
