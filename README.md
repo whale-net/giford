@@ -50,4 +50,4 @@ python -m build
 
 ## sometimes things don't go right
 ![whoops](./whoops_example.gif)
-![whoops](./whoops2_example.gif)
+![whoops](./whoops_example2.gif)

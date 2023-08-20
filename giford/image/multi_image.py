@@ -169,10 +169,10 @@ class MultiImage(AbstractImage):
             # 3 appears to be number of bands for output
             t = write_process.stdout.read(width * height * 3)
             out_file.write(t)
-            
+
             # Close stdout after reading otherwise wait will hang
             write_process.stdout.close()
-        
+
         write_process.wait()
 
     @classmethod

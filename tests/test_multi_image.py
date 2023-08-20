@@ -41,6 +41,7 @@ def test_multi_image_save_path(temp_output_gif: str, orange_swirl_batch: FrameBa
 
     assert compare_image_files(baseline, temp_output_gif)
 
+
 def test_multi_image_save_fp(temp_output_gif: str, orange_swirl_batch: FrameBatch):
     mimg = MultiImage.create_from_frame_batch(orange_swirl_batch)
 
