@@ -1,5 +1,6 @@
 import enum
 import os
+from io import IOBase
 from typing import BinaryIO
 
 import ffmpeg
@@ -64,9 +65,7 @@ class MultiImage(AbstractImage):
         else:
             raise Exception("unable to save for whatever reason")
 
-    def _write_gif(
-        self, out_file: str | BinaryIO, target_framerate: int
-    ) -> tuple[str, str]:
+    def _write_gif(self, out_file: str | BinaryIO, target_framerate: int) -> None:
         """
         previously gifify action
 
@@ -78,7 +77,7 @@ class MultiImage(AbstractImage):
         """
         takes list of images and returns a gif
         """
-        if target_framerate is None or target_framerate <= 0:
+        if target_framerate <= 0:
             target_framerate = MultiImage.DEFAULT_FRAMERATE
 
         # TODO re-introduce validation
@@ -129,12 +128,23 @@ class MultiImage(AbstractImage):
         # )
 
         # TODO capture stderr flag
-        out, err = palleteuse_stream.output(out_file, format="gif").run(
-            input=rdv_byte_pipe_input
-        )
+        if isinstance(out_file, str):
+            # returns stdout, stderr
+            _, _ = palleteuse_stream.output(out_file, format="gif").run(
+                input=rdv_byte_pipe_input
+                # todo overwrite_output argument in _run.py
+            )
+        elif isinstance(out_file, IOBase):
+            std_out_buffer, _ = palleteuse_stream.output("pipe:", format="gif").run(
+                input=rdv_byte_pipe_input,
+                capture_stdout=True
+                # todo overwrite_output argument in _run.py
+            )
+            out_file.write(std_out_buffer)
+        else:
+            raise Exception()
 
         # assuming these are strings
-        return out, err
 
     @classmethod
     def create_from_frame_batch(
