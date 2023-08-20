@@ -17,6 +17,7 @@ def test_multi_image_load_bad():
     with pytest.raises(ValueError):
         mimg = MultiImage().load(in_file=None)
 
+
 def test_multi_image_load_path(temp_output_gif, temp_output_png):
     mimg = MultiImage()
     # with pytest.raises(NotImplementedError):

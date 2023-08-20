@@ -105,28 +105,16 @@ class MultiImage(AbstractImage):
         """
 
         # TODO - cleanup comments, general refactor of this and RDV
-        """
-        takes list of images and returns a gif
-        """
         if target_framerate <= 0:
             target_framerate = MultiImage.DEFAULT_FRAMERATE
 
-        # TODO re-introduce validation
-        # validate shape and create raw_video
-        # if not input_batch.is_all_frame_same_shape():
-        #     raise Exception("not all images are same size in input")
-        rdv = RawDataVideo()
-        for frame in self.raw_data_frames:
-            rdv.add_frame(frame)
-
-        height = rdv.frames[0].height
-        width = rdv.frames[0].width
-
-        rdv_byte_pipe_input = rdv.as_ndarray(target_dtype=np.uint8).tobytes()
-
-        # TODO - look at https://github.com/kkroening/ffmpeg-python/blob/master/examples/README.md#tensorflow-streaming
-        # and make this buffered
-
+        if len(self.raw_data_frames) == 0:
+            raise Exception("empty, cannot save")
+    
+        # TODO re-introduce validation for frame size consistency and shape
+        height = self.raw_data_frames[0].height
+        width = self.raw_data_frames[0].width
+        
         ###
         # build ffmpeg command
         # based on: -filter_complex "[0:v] split [a][b];[a] palettegen [p];[b][p] paletteuse"
@@ -154,19 +142,19 @@ class MultiImage(AbstractImage):
 
         # TODO capture stderr flag
         if isinstance(out_file, str):
-            # returns stdout, stderr
+            # TODO - overwrite_output()
             write_process = (
-                palleteuse_stream.output(out_file, format="gif").run_async(
-                    pipe_stdin=True
-                )
-                # TODO - overwrite_output()
+                palleteuse_stream
+                .output(out_file, format="gif")
+                .run_async(pipe_stdin=True)
             )
         elif isinstance(out_file, IOBase):
             # read to memory, this is definitely slow, but should be OK for now until async
-            std_out_buffer, _ = palleteuse_stream.output("pipe:", format="gif").run(
-                input=rdv_byte_pipe_input, capture_stdout=True
+            write_process = (
+                palleteuse_stream
+                .output("pipe:", format="gif")
+                .run_async(pipe_stdin=True, pipe_stdout=True)
             )
-            out_file.write(std_out_buffer)
         else:
             # this type check should really be earlier
             # but to make mypy work better, I think it is bettr here
@@ -178,6 +166,11 @@ class MultiImage(AbstractImage):
                 frame.get_data_arr(is_return_reference=True), np.uint8
             )
             write_process.stdin.write(data_arr.tobytes())
+
+            if isinstance(out_file, IOBase):
+                # TODO 3?
+                t = write_process.stdout.read(width * height * 3)
+                out_file.write(t)
 
         write_process.stdin.close()
         write_process.wait()
