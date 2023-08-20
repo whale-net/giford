@@ -65,9 +65,7 @@ class MultiImage(AbstractImage):
         else:
             raise Exception("unable to save for whatever reason")
 
-    def _write_gif(
-        self, out_file: str | BinaryIO, target_framerate: int
-    ) -> None:
+    def _write_gif(self, out_file: str | BinaryIO, target_framerate: int) -> None:
         """
         previously gifify action
 
@@ -132,9 +130,8 @@ class MultiImage(AbstractImage):
             )
         elif isinstance(out_file, IOBase):
             # read to memory, this is definitely slow, but should be OK for now until async
-            std_out_buffer, _ = palleteuse_stream.output('pipe:', format="gif").run(
-                input=rdv_byte_pipe_input,
-                capture_stdout=True
+            std_out_buffer, _ = palleteuse_stream.output("pipe:", format="gif").run(
+                input=rdv_byte_pipe_input, capture_stdout=True
             )
             out_file.write(std_out_buffer)
         else:
