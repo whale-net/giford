@@ -139,7 +139,7 @@ class MultiImage(AbstractImage):
     @classmethod
     def create_from_frame_batch(
         cls, batch: FrameBatch, target_format: MultiImageFormat = DEFAULT_FORMAT
-    ) -> "MultiImage":  # one day 3.11 -> Self:
+    ) -> "MultiImage":
         mimg = cls()
         mimg.raw_data_frames += batch.frames
         mimg.format = target_format
