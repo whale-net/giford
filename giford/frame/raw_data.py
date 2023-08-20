@@ -136,21 +136,24 @@ class RawDataFrame:
 
         :param data_arr: numpy array containing data
         :param target_dtype: target numpy data type
-        :return: data_arr
+        :return: copy of data_arr as desired type
         """
+        # TODO - support non-copy?
+
+        # copy array, all other actions can be mutating
+        data_arr = data_arr.copy()
 
         current_dtype = data_arr.dtype
-        if target_dtype == np.uint8:
+        if current_dtype == target_dtype:
+            return data_arr
+        elif target_dtype == np.uint8:
             if current_dtype in (np.float32, np.float64):
                 # if max value is 1.0 then assume scaled [0, 1] and rescale
                 if data_arr.max() <= 1.0:
-                    data_arr = data_arr.copy()
                     data_arr *= 255
-
-            # we want to modify array
-            return data_arr.astype(target_dtype)
-        if target_dtype == np.float64:
-            data_arr = data_arr.astype(target_dtype)
+            return data_arr.astype(target_dtype, copy=False)
+        elif target_dtype == np.float64:
+            data_arr = data_arr.astype(target_dtype, copy=False)
 
             if current_dtype == np.uint8:
                 # 0 = 0, 1.0 = 255

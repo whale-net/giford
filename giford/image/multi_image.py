@@ -155,9 +155,11 @@ class MultiImage(AbstractImage):
         # TODO capture stderr flag
         if isinstance(out_file, str):
             # returns stdout, stderr
-            _, _ = palleteuse_stream.output(out_file, format="gif").run(
-                input=rdv_byte_pipe_input
-                # todo overwrite_output argument in _run.py
+            write_process = (
+                palleteuse_stream.output(out_file, format="gif").run_async(
+                    pipe_stdin=True
+                )
+                # TODO - overwrite_output()
             )
         elif isinstance(out_file, IOBase):
             # read to memory, this is definitely slow, but should be OK for now until async
@@ -166,7 +168,19 @@ class MultiImage(AbstractImage):
             )
             out_file.write(std_out_buffer)
         else:
-            raise Exception()
+            # this type check should really be earlier
+            # but to make mypy work better, I think it is bettr here
+            raise ValueError("invalid input type")
+
+        for frame in self.raw_data_frames:
+            # convert array, convert_data_arr is non-mutating so it's ok
+            data_arr = RawDataFrame.convert_data_arr(
+                frame.get_data_arr(is_return_reference=True), np.uint8
+            )
+            write_process.stdin.write(data_arr.tobytes())
+
+        write_process.stdin.close()
+        write_process.wait()
 
     @classmethod
     def create_from_frame_batch(
