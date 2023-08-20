@@ -34,43 +34,36 @@ class MultiImage(AbstractImage):
         self.format = MultiImageFormat.UNKNOWN
 
     def load(self, in_file: str | BinaryIO) -> None:
-        
         if isinstance(in_file, str):
-            input_args = {
-                'filename': in_file
-            }
+            input_args = {"filename": in_file}
             # TODO - probe
             width: int = 449
             height: int = 524
         elif isinstance(in_file, IOBase):
-            input_args = {
-                'filename': 'pipe:'
-            }
+            input_args = {"filename": "pipe:"}
         else:
-            raise Exception('wrong input type, dolt')
-        
+            raise Exception("wrong input type, dolt")
+
         # TODO - is always default depth?
+        # want bgr32, rgb32 is wrong order and I guess we're just wrong everywhere else lolol
         input_process = (
-            ffmpeg
-            .input(**input_args)
-            .output('pipe:', format='rawvideo', pix_fmt='rgb32', vframes=25)
+            ffmpeg.input(**input_args)
+            .output("pipe:", format="rawvideo", pix_fmt="bgr32", vframes=25)
             .run_async(pipe_stdout=True)
         )
-
+        depth = RawDataFrame.DEFAULT_DEPTH
         while True:
-            buff = input_process.stdout.read(width * height * RawDataFrame.DEFAULT_DEPTH)
+            buff = input_process.stdout.read(width * height * depth)
 
             if not buff or len(buff) == 0:
                 break
 
-            in_frame = (
-                np.frombuffer(buff, np.uint8)
-                .reshape((height, width, RawDataFrame.DEFAULT_DEPTH))
-            )
-
+            in_frame = np.frombuffer(buff, np.uint8).reshape((height, width, depth))
             rdf = RawDataFrame(in_frame)
             self.raw_data_frames.append(rdf)
 
+        # TODO - figure out what happens here more
+        # if I break loop too early, it will stall
         input_process.wait()
 
     def save(

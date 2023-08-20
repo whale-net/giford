@@ -3,24 +3,28 @@ from tempfile import TemporaryFile
 
 import pytest
 
-from giford.image import MultiImage
+from giford.image import MultiImage, SingleImage
 from giford.frame import FrameBatch
 from tests.util import (
     compare_image_files,
     BASELINE_DIRECTORY,
     TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH,
-    TEST_INPUT_DATA_FOLDER
+    TEST_INPUT_DATA_FOLDER,
 )
 
 
-def test_multi_image_load_path(temp_output_gif):
+def test_multi_image_load_path(temp_output_gif, temp_output_png):
     mimg = MultiImage()
     # with pytest.raises(NotImplementedError):
     #     mimg.load(TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH)
-    base_img_path = os.path.join(TEST_INPUT_DATA_FOLDER, 'orange_swirl.gif')
+    base_img_path = os.path.join(TEST_INPUT_DATA_FOLDER, "orange_swirl.gif")
     mimg.load(base_img_path)
+
+    # simg = SingleImage.create_from_frame(mimg.raw_data_frames[0])
+    # simg.save(temp_output_png)
     mimg.save(temp_output_gif)
-    print(temp_output_gif)
+    # print(temp_output_png)
+    # print(temp_output_gif)
     assert compare_image_files(base_img_path, temp_output_gif)
 
 
