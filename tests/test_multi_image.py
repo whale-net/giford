@@ -16,6 +16,7 @@ def test_multi_image_load(orange_swirl_batch: FrameBatch):
     with pytest.raises(NotImplementedError):
         mimg.load(TEST_INPUT_ORANGE_IMAGE_SWIRL_FILEPATH)
 
+
 def test_multi_image_save(temp_output_gif: str, orange_swirl_batch: FrameBatch):
     baseline = os.path.join(BASELINE_DIRECTORY, "test_multi_image_save.gif")
 

@@ -1,5 +1,6 @@
 import enum
 import os
+from typing import BinaryIO
 
 import ffmpeg
 import numpy as np
@@ -37,7 +38,7 @@ class MultiImage(AbstractImage):
 
     def save(
         self,
-        path: str,
+        out_file: str | BinaryIO,
         target_framerate: int = DEFAULT_FRAMERATE,
         overwrite_existing: bool = False,
     ) -> None:
@@ -51,19 +52,21 @@ class MultiImage(AbstractImage):
         :raises Exception: generic it didnt work exception
         """
         # yolo
-        if overwrite_existing:
-            os.remove(path)
+        if isinstance(overwrite_existing, str):
+            os.remove(out_file)
 
         # TODO - can write to stage and then swap pointer at end to preserve image?
         # TODO type checking and more defaults - see single for ideas
         if self.format == MultiImageFormat.UNKNOWN:
             raise Exception("unknown format not supported")
         elif self.format == MultiImageFormat.GIF:
-            self._write_gif(path, target_framerate)
+            self._write_gif(out_file, target_framerate)
         else:
             raise Exception("unable to save for whatever reason")
 
-    def _write_gif(self, path: str, target_framerate: int) -> tuple[str, str]:
+    def _write_gif(
+        self, out_file: str | BinaryIO, target_framerate: int
+    ) -> tuple[str, str]:
         """
         previously gifify action
 
@@ -126,7 +129,7 @@ class MultiImage(AbstractImage):
         # )
 
         # TODO capture stderr flag
-        out, err = palleteuse_stream.output(path, format="gif").run(
+        out, err = palleteuse_stream.output(out_file, format="gif").run(
             input=rdv_byte_pipe_input
         )
 

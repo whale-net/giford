@@ -1,6 +1,7 @@
 import enum
+import io
 import os
-from typing import Optional
+from typing import Optional, BinaryIO
 
 import numpy as np
 
@@ -87,16 +88,12 @@ class SingleImage(AbstractImage):
 
     def save(
         self,
-        path: str,
+        target_file: str | BinaryIO,
         target_format: Optional[SingleImageFormat] = None,
-        overwrite_existing: bool = True,
+        overwrite_existing: bool = True,  # TODO - false?
     ) -> None:
         if target_format == SingleImageFormat.UNKNOWN:
             raise Exception("UNKNOWN cannot be saved")
-
-        # should rename to error_if_exists?
-        if not overwrite_existing and os.path.exists(path):
-            raise Exception(f"file at this path already exists [{path}]")
 
         if len(self.raw_data_frames) == 0:
             raise Exception("no image data to write")
@@ -105,18 +102,26 @@ class SingleImage(AbstractImage):
             target_format = self.format
 
         # using PIL/pillow to save images
-        # TODO WHAT FORMATS DOES THIS SUPPORT, how does it interpret datatype
+        # still not sure WHAT FORMATS THIS SUPPORTs, how does it interpret datatype
         # https://github.com/python-pillow/Pillow/blob/a5b025629023477ec62410ce77fd717c372d9fa2/src/PIL/Image.py#L3119
-        rdf = self.raw_data_frames[0]
+        # but also not sure it matters because of conversion to uint8 anyways
+        # only issue would be shape, and there is already a plan to convert to RGBA shape always
 
         # pick up copy of data frame in case we need to convert type on export
-        # keep whatever RDF dtype to preserve quality
-        img_nd_arr = rdf.get_data_arr(is_return_reference=False)
-
+        img_nd_arr = self.raw_data_frames[0].get_data_arr(is_return_reference=False)
         img_nd_arr = RawDataFrame.convert_data_arr(img_nd_arr, target_dtype=np.uint8)
 
         pimg = PillowImage.fromarray(img_nd_arr)
-        pimg.save(path, format=self.format.name)
+        pimg.save(target_file, format=target_format.name)
+
+    # def _save_str(
+    #     self,
+    #     target_path: str,
+    #     target_format: Optional[SingleImageFormat],
+    #     overwrite_existing: bool,
+    # ):
+    #     if not overwrite_existing and os.path.exists(target_path):
+    #         raise Exception(f"file at this path already exists [{target_path}]")
 
     @classmethod
     def create_from_frame(
