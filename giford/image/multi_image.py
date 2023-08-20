@@ -9,7 +9,7 @@ import numpy as np
 # aliasing to avoid confusion
 
 from giford.frame.frame_batch import FrameBatch
-from giford.frame.raw_data import RawDataFrame, RawDataVideo
+from giford.frame.raw_data import RawDataFrame
 from giford.image.abstract_image import AbstractImage
 
 
@@ -110,11 +110,11 @@ class MultiImage(AbstractImage):
 
         if len(self.raw_data_frames) == 0:
             raise Exception("empty, cannot save")
-    
+
         # TODO re-introduce validation for frame size consistency and shape
         height = self.raw_data_frames[0].height
         width = self.raw_data_frames[0].width
-        
+
         ###
         # build ffmpeg command
         # based on: -filter_complex "[0:v] split [a][b];[a] palettegen [p];[b][p] paletteuse"
@@ -143,18 +143,14 @@ class MultiImage(AbstractImage):
         # TODO capture stderr flag
         if isinstance(out_file, str):
             # TODO - overwrite_output()
-            write_process = (
-                palleteuse_stream
-                .output(out_file, format="gif")
-                .run_async(pipe_stdin=True)
+            write_process = palleteuse_stream.output(out_file, format="gif").run_async(
+                pipe_stdin=True
             )
         elif isinstance(out_file, IOBase):
             # read to memory, this is definitely slow, but should be OK for now until async
-            write_process = (
-                palleteuse_stream
-                .output("pipe:", format="gif")
-                .run_async(pipe_stdin=True, pipe_stdout=True)
-            )
+            write_process = palleteuse_stream.output(
+                "pipe:", format="gif", vframes=len(self.raw_data_frames)
+            ).run_async(pipe_stdin=True, pipe_stdout=True)
         else:
             # this type check should really be earlier
             # but to make mypy work better, I think it is bettr here
@@ -167,13 +163,15 @@ class MultiImage(AbstractImage):
             )
             write_process.stdin.write(data_arr.tobytes())
 
-            if isinstance(out_file, IOBase):
-                # TODO 3?
-                t = write_process.stdout.read(width * height * 3)
-                out_file.write(t)
-
         write_process.stdin.close()
-        write_process.wait()
+
+        if isinstance(out_file, IOBase):
+            # 3 appears to be number of bands for output
+            t = write_process.stdout.read(width * height * 3)
+            out_file.write(t)
+
+        # TODO wait?
+        # write_process.wait()
 
     @classmethod
     def create_from_frame_batch(
