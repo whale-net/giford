@@ -36,12 +36,17 @@ class MultiImage(AbstractImage):
     def load(self, in_file: str | BinaryIO) -> None:
         if isinstance(in_file, str):
             input_args = {"filename": in_file}
-            # TODO - probe
-            width: int = 449
-            height: int = 524
-            frames: int = 25
+            # TODO - what happens if multiple streams? can we support multiple files???
+            # for now assuming one input stream
+            vstreams = ffmpeg.probe(in_file, select_streams="v")
+            video_stream = vstreams["streams"][0]
+            width: int = video_stream["width"]
+            height: int = video_stream["height"]
+            frames: int = video_stream["nb_frames"]
         elif isinstance(in_file, IOBase):
+            # TODO implement
             input_args = {"filename": "pipe:"}
+            # the width, height, and frames will have to come from somewhere else, somehow
         else:
             raise ValueError("wrong input type, dolt")
 
@@ -50,8 +55,9 @@ class MultiImage(AbstractImage):
         input_process = (
             ffmpeg.input(**input_args)
             .output("pipe:", format="rawvideo", pix_fmt="bgr32", vframes=frames)
-            .run_async(pipe_stdout=True)
+            .run_async(pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True)
         )
+
         depth = RawDataFrame.DEFAULT_DEPTH
         while True:
             buff = input_process.stdout.read(width * height * depth)
@@ -65,6 +71,9 @@ class MultiImage(AbstractImage):
 
         # TODO - figure out what happens here more
         # if I break loop too early, it will stall
+        # if isinstance(in_file, IOBase):
+        #     input_process.stdin.close()
+        input_process.stdout.close()
         input_process.wait()
 
     def save(
@@ -141,6 +150,7 @@ class MultiImage(AbstractImage):
         palleteuse_stream = ffmpeg.filter((stream2, palletegen_stream), "paletteuse")
 
         # TODO capture stderr flag
+        # TODO share more between process creation, no need for copy paste
         if isinstance(out_file, str):
             # TODO - overwrite_output()
             write_process = palleteuse_stream.output(out_file, format="gif").run_async(
