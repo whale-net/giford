@@ -18,7 +18,7 @@ class AbstractImage(abc.ABC):
         self.raw_data_frames: list[RawDataFrame] = []
 
     @abc.abstractmethod
-    def load(self, path: str) -> None:
+    def load(self, in_file: str | BinaryIO) -> None:
         pass
 
     @abc.abstractmethod

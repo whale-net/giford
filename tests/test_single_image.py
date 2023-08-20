@@ -5,11 +5,22 @@ from giford.frame import FrameBatch
 from tests.util import compare_image_files, TEST_INPUT_ORANGE_IMAGE_FILEPATH
 
 
-def test_single_image_load():
+def test_single_image_load_path():
     img = SingleImage()
     img.load(TEST_INPUT_ORANGE_IMAGE_FILEPATH)
 
     assert len(img.raw_data_frames) == 1
+
+def test_single_image_load_fp(temp_output_png):
+    img = SingleImage()
+    with open(TEST_INPUT_ORANGE_IMAGE_FILEPATH, 'r+b') as fp:
+        img.load(fp)
+
+    assert len(img.raw_data_frames) == 1
+    # although it's not quite an isolated test
+    # want to make sure we're still reading/writing the correct stuff
+    img.save(temp_output_png)
+    assert compare_image_files(TEST_INPUT_ORANGE_IMAGE_FILEPATH, temp_output_png)
 
 
 def test_single_image_save_path(temp_output_png, single_orange_image: SingleImage):

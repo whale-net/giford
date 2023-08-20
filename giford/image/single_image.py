@@ -60,8 +60,8 @@ class SingleImage(AbstractImage):
             raise Exception("unable to add frame to SingleImage")
         self.raw_data_frames.append(frame)
 
-    def load(self, path: str) -> None:
-        if not os.path.exists(path):
+    def load(self, in_file: str | BinaryIO) -> None:
+        if isinstance(in_file, str) and not os.path.exists(in_file):
             raise FileNotFoundError()
 
         # maybe there is a use case for loading over an existing file
@@ -71,7 +71,7 @@ class SingleImage(AbstractImage):
 
         # using PIL/pillow to load images
         # TODO - always convert to RGBA?
-        pimg = PillowImage.open(path)  # .convert('RGBA')
+        pimg = PillowImage.open(in_file)#.convert(mode='RGBA')
 
         # TODO
         # pimg.info will have an icc_profile, do we want this?
@@ -113,15 +113,6 @@ class SingleImage(AbstractImage):
 
         pimg = PillowImage.fromarray(img_nd_arr)
         pimg.save(target_file, format=target_format.name)
-
-    # def _save_str(
-    #     self,
-    #     target_path: str,
-    #     target_format: Optional[SingleImageFormat],
-    #     overwrite_existing: bool,
-    # ):
-    #     if not overwrite_existing and os.path.exists(target_path):
-    #         raise Exception(f"file at this path already exists [{target_path}]")
 
     @classmethod
     def create_from_frame(
