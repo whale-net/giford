@@ -71,7 +71,7 @@ class SingleImage(AbstractImage):
 
         # using PIL/pillow to load images
         # TODO - always convert to RGBA?
-        pimg = PillowImage.open(in_file)#.convert(mode='RGBA')
+        pimg = PillowImage.open(in_file)  # .convert(mode='RGBA')
 
         # TODO
         # pimg.info will have an icc_profile, do we want this?

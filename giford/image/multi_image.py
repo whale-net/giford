@@ -33,7 +33,7 @@ class MultiImage(AbstractImage):
         self.raw_data_frames: list[RawDataFrame] = []
         self.format = MultiImageFormat.UNKNOWN
 
-    def load(self, path: str) -> None:
+    def load(self, in_file: str | BinaryIO) -> None:
         # not currently supported
         raise NotImplementedError()
 

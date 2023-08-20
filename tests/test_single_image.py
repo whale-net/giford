@@ -11,9 +11,10 @@ def test_single_image_load_path():
 
     assert len(img.raw_data_frames) == 1
 
+
 def test_single_image_load_fp(temp_output_png):
     img = SingleImage()
-    with open(TEST_INPUT_ORANGE_IMAGE_FILEPATH, 'r+b') as fp:
+    with open(TEST_INPUT_ORANGE_IMAGE_FILEPATH, "r+b") as fp:
         img.load(fp)
 
     assert len(img.raw_data_frames) == 1
