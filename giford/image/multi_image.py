@@ -65,7 +65,9 @@ class MultiImage(AbstractImage):
         else:
             raise Exception("unable to save for whatever reason")
 
-    def _write_gif(self, out_file: str | BinaryIO, target_framerate: int) -> None:
+    def _write_gif(
+        self, out_file: str | BinaryIO, target_framerate: int
+    ) -> None:
         """
         previously gifify action
 
@@ -121,12 +123,6 @@ class MultiImage(AbstractImage):
         # apply custom pallete to other input stream
         palleteuse_stream = ffmpeg.filter((stream2, palletegen_stream), "paletteuse")
 
-        # this was in memory which was cool but not needed here
-        # keeping because it could be useful for later reference in other areas
-        # out, err = palleteuse_stream.output("pipe:", format="gif").run(
-        #     capture_stdout=True, capture_stderr=True, input=rdv_byte_pipe_input
-        # )
-
         # TODO capture stderr flag
         if isinstance(out_file, str):
             # returns stdout, stderr
@@ -135,16 +131,14 @@ class MultiImage(AbstractImage):
                 # todo overwrite_output argument in _run.py
             )
         elif isinstance(out_file, IOBase):
-            std_out_buffer, _ = palleteuse_stream.output("pipe:", format="gif").run(
+            # read to memory, this is definitely slow, but should be OK for now until async
+            std_out_buffer, _ = palleteuse_stream.output('pipe:', format="gif").run(
                 input=rdv_byte_pipe_input,
                 capture_stdout=True
-                # todo overwrite_output argument in _run.py
             )
             out_file.write(std_out_buffer)
         else:
             raise Exception()
-
-        # assuming these are strings
 
     @classmethod
     def create_from_frame_batch(
