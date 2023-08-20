@@ -171,7 +171,7 @@ class MultiImage(AbstractImage):
             out_file.write(t)
 
         # TODO wait?
-        # write_process.wait()
+        write_process.wait()
 
     @classmethod
     def create_from_frame_batch(
