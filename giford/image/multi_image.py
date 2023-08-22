@@ -45,8 +45,9 @@ class MultiImage(AbstractImage):
             height: int = video_stream["height"]
             frames: int = video_stream["nb_frames"]
         elif isinstance(in_file, IOBase):
+            BUFFER_SIZE = 4096 * 16
             # giving up for now, no number of args help, need to rethink
-            input_args = {"filename": "pipe:", 'format': 'gif', 'pix_fmt':'bgr24'}
+            input_args = {"filename": "pipe:"} #, 'format': 'gif', 'pix_fmt':'bgr24'}
             # TODO - revisit probe in memory, can't get it to work
             #vstreams = ffmpeg.probe(in_file, select_streams="v")
             # alternatively, could enforce width/height/frames as input
@@ -54,21 +55,20 @@ class MultiImage(AbstractImage):
             # instead of passing it in while in memory
             # so for now going to make pretend and write to a temp file
             with NamedTemporaryFile('w+b') as file:
-                BUFFER_SIZE = 4096 * 16
+            #with open('~/giford/test_gif_tmp.gif') as file:
                 buff = in_file.read(BUFFER_SIZE)
                 while len(buff) > 0:
                     file.write(buff)
-                    buff = file.read(BUFFER_SIZE)
+                    buff = in_file.read(BUFFER_SIZE)
                 file.flush()
 
                 vstreams = ffmpeg.probe(file.name, select_streams="v")
                 video_stream = vstreams["streams"][0]
-                width: int = video_stream["width"]
-                height: int = video_stream["height"]
-                # unsure why only 1 frame is picked up
-                frames: int = 25 # video_stream["nb_frames"]
+                width: int = int(video_stream["width"])
+                height: int = int(video_stream["height"])
+                frames: int = int(video_stream["nb_frames"])
 
-                input_args['s'] = f'{width}x{height}'
+                #input_args['s'] = f'{width}x{height}'
 
                 
         else:
@@ -78,15 +78,21 @@ class MultiImage(AbstractImage):
         # want bgr32, rgb32 is wrong order and I guess we're just wrong everywhere else lolol
         input_process = (
             ffmpeg.input(**input_args)
-            .output("pipe:", format="rawvideo", pix_fmt="bgr32", vframes=frames)
+            .output("pipe:", format="rawvideo", pix_fmt="bgr32") #, vframes=frames)
             .run_async(pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True)
         )
 
         if isinstance(in_file, IOBase):
             in_file.seek(0)
-            # TODO buffer by frame
-            buff = in_file.read()
-            input_process.stdin.write(buff)
+            # TODO buffer by frame - can't do that because don't want to process gif
+            # also unclear if ffmpeg will support this format
+            buff = in_file.read(BUFFER_SIZE)
+            count = 0
+            while len(buff) > 0:
+                # count 22 has error, rest is OK
+                input_process.stdin.write(buff)
+                buff = in_file.read(BUFFER_SIZE)
+                count += 1
             input_process.stdin.close()
             input_process.wait()
 
