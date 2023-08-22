@@ -45,17 +45,21 @@ class MultiImage(AbstractImage):
             height: int = video_stream["height"]
             frames: int = video_stream["nb_frames"]
         elif isinstance(in_file, IOBase):
-            BUFFER_SIZE = 4096 * 16
+            BUFFER_SIZE = 1024 * 4 # reasonable block/cluster size
             # giving up for now, no number of args help, need to rethink
-            input_args = {"filename": "pipe:"} #, 'format': 'gif', 'pix_fmt':'bgr24'}
+            input_args = {
+                "filename": "pipe:", 
+                'format': 'gif_pipe',
+            }
+
             # TODO - revisit probe in memory, can't get it to work
             #vstreams = ffmpeg.probe(in_file, select_streams="v")
             # alternatively, could enforce width/height/frames as input
             # but that may be weird and force users to save file themselves
             # instead of passing it in while in memory
             # so for now going to make pretend and write to a temp file
+            # idea - just call subprocess ffmprobe
             with NamedTemporaryFile('w+b') as file:
-            #with open('~/giford/test_gif_tmp.gif') as file:
                 buff = in_file.read(BUFFER_SIZE)
                 while len(buff) > 0:
                     file.write(buff)
@@ -68,8 +72,6 @@ class MultiImage(AbstractImage):
                 height: int = int(video_stream["height"])
                 frames: int = int(video_stream["nb_frames"])
 
-                #input_args['s'] = f'{width}x{height}'
-
                 
         else:
             raise ValueError("wrong input type, dolt")
@@ -78,8 +80,8 @@ class MultiImage(AbstractImage):
         # want bgr32, rgb32 is wrong order and I guess we're just wrong everywhere else lolol
         input_process = (
             ffmpeg.input(**input_args)
-            .output("pipe:", format="rawvideo", pix_fmt="bgr32") #, vframes=frames)
-            .run_async(pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True)
+            .output("pipe:", format="rawvideo", pix_fmt="bgr32", s=f'{width}x{height}', framerate=30)
+            .run_async(pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True)#, cmd='/home/alex/ffmpeg-download/working/ffmpeg')
         )
 
         if isinstance(in_file, IOBase):
@@ -93,8 +95,13 @@ class MultiImage(AbstractImage):
                 input_process.stdin.write(buff)
                 buff = in_file.read(BUFFER_SIZE)
                 count += 1
+
+            # close stdin otherwise we wait on read    
+            input_process.stdin.flush()
             input_process.stdin.close()
-            input_process.wait()
+            # flushing will break?
+            
+            # waiting appears to break
 
         depth = RawDataFrame.DEFAULT_DEPTH
         while True:
@@ -107,10 +114,6 @@ class MultiImage(AbstractImage):
             rdf = RawDataFrame(in_frame)
             self.raw_data_frames.append(rdf)
 
-        # TODO - figure out what happens here more
-        # if I break loop too early, it will stall
-        # if isinstance(in_file, IOBase):
-        #     input_process.stdin.close()
         input_process.stdout.close()
         input_process.wait()
 
