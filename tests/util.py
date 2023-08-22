@@ -30,18 +30,6 @@ def compare_image_files(baseline_filepath: str, test_filepath: str) -> bool:
     assert test_filepath
     assert os.path.exists(test_filepath), "test_filepath does not exist"
 
-    # NO LONGER USING THIS - but keeping here just in case
-    # Using PIL/Pillow to compare
-    # Ran into issue using file hash since pillow will somtimes compress images when saving
-    # which makes the hashes different
-    # Hopefully PIL/Pillow is tested enough that this is a reasonable operation
-    # NOTE: deleting info dict removes icc_profile, unsure if that matters
-    # baseline_pimg = PillowImage.open(baseline_filepath)
-    # baseline_pimg.info = {}
-    # test_pimg = PillowImage.open(test_filepath)
-    # test_pimg.info = {}
-    # return baseline_pimg == test_pimg
-
     # Using PIL/Pillow to open images since that is indepdent of this project
     # Calculate MSE of each file
     # TODO - what is max dfference? don't really know much about this tbh
