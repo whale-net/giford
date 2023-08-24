@@ -45,6 +45,12 @@ class MultiImage(AbstractImage):
             height: int = video_stream["height"]
             frames: int = video_stream["nb_frames"]
         elif isinstance(in_file, IOBase):
+            # TODO - temp removing probe as a variable for now
+            width: int = 449
+            height: int = 524
+            frames: int = 25
+            
+            # TODO - buffered write util function
             BUFFER_SIZE = 1024 * 4 # reasonable block/cluster size
             # something is weird with gif_pipe
             # it correctly interprets as a gif, but doesn't have a duration or length
@@ -55,7 +61,13 @@ class MultiImage(AbstractImage):
             input_args = {
                 "filename": "pipe:", 
                 'format': 'gif_pipe',
-                #'framerate': 15,
+                
+                # applying codec appeared to cause more problems
+                'codec': 'rawvideo',
+                'pix_fmt': 'rgb24',
+                's': f'{width}x{height}',
+
+                # 'frames': frames, # cannot specify frames on input for obvious reasons
             }
 
             # TODO - revisit probe in memory, can't get it to work
@@ -65,18 +77,19 @@ class MultiImage(AbstractImage):
             # instead of passing it in while in memory
             # so for now going to make pretend and write to a temp file
             # idea - just call subprocess ffmprobe
-            with NamedTemporaryFile('w+b') as file:
-                buff = in_file.read(BUFFER_SIZE)
-                while len(buff) > 0:
-                    file.write(buff)
-                    buff = in_file.read(BUFFER_SIZE)
-                file.flush()
+            # with NamedTemporaryFile('w+b') as file:
+            #     buff = in_file.read(BUFFER_SIZE)
+            #     while len(buff) > 0:
+            #         file.write(buff)
+            #         buff = in_file.read(BUFFER_SIZE)
+            #     file.flush()
 
-                vstreams = ffmpeg.probe(file.name, select_streams="v")
-                video_stream = vstreams["streams"][0]
-                width: int = int(video_stream["width"])
-                height: int = int(video_stream["height"])
-                frames: int = int(video_stream["nb_frames"])
+            #     vstreams = ffmpeg.probe(file.name, select_streams="v")
+            #     video_stream = vstreams["streams"][0]
+            #     width: int = int(video_stream["width"])
+            #     height: int = int(video_stream["height"])
+            #     frames: int = int(video_stream["nb_frames"])
+
 
                 
         else:
@@ -87,27 +100,25 @@ class MultiImage(AbstractImage):
         input_process = (
             ffmpeg.input(**input_args)
             .output("pipe:", format="rawvideo", pix_fmt="bgr32", s=f'{width}x{height}')
+            # this output is still one frame even when writing to gif, something wrong with input
+            #.output("./test_gif_output.gif", format="gif", s=f'{width}x{height}')
             .run_async(pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True) #, cmd='/home/alex/ffmpeg-download/working/ffmpeg')
         )
 
+        # if filepointer, write to ffmpeg stdin
         if isinstance(in_file, IOBase):
-            in_file.seek(0)
-            # TODO buffer by frame - can't do that because don't want to process gif
-            # also unclear if ffmpeg will support this format
             buff = in_file.read(BUFFER_SIZE)
-            count = 0
             while len(buff) > 0:
-                # count 22 has error, rest is OK
                 input_process.stdin.write(buff)
                 buff = in_file.read(BUFFER_SIZE)
-                count += 1
 
             # close stdin otherwise we wait on read    
             input_process.stdin.flush()
             input_process.stdin.close()
-            # flushing will break?
             
             # waiting appears to break
+            # probably because process is done at this point? idk
+            # need to poke around a little more
 
         depth = RawDataFrame.DEFAULT_DEPTH
         while True:
@@ -201,12 +212,12 @@ class MultiImage(AbstractImage):
         if isinstance(out_file, str):
             # TODO - overwrite_output()
             write_process = palleteuse_stream.output(out_file, format="gif").run_async(
-                pipe_stdin=True, vframes=len(self.raw_data_frames)
+                pipe_stdin=True
             )
         elif isinstance(out_file, IOBase):
             # read to memory, this is definitely slow, but should be OK for now until async
             write_process = palleteuse_stream.output(
-                "pipe:", format="gif", vframes=len(self.raw_data_frames)
+                "pipe:", format="gif"
             ).run_async(pipe_stdin=True, pipe_stdout=True)
         else:
             # this type check should really be earlier

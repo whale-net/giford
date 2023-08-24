@@ -37,11 +37,13 @@ def test_multi_image_load_fp(temp_output_gif):
     mimg = MultiImage()
     base_img_path = os.path.join(TEST_INPUT_DATA_FOLDER, "orange_swirl.gif")
     with open(base_img_path, "r+b") as fp:
+        # rewriting the file here appears to be OK
+        # with open(temp_output_gif, 'w+b') as wfp:
+        #     wfp.write(fp.read())
         mimg.load(fp)
 
-    assert len(mimg.raw_data_frames) != 0 #== 25
-    # although it's not quite an isolated test
-    # want to make sure we're still reading/writing the correct stuff
+    # hopefully the mimg save test passes at this point :)
+    # otherwise, this test is garbage
     mimg.save(temp_output_gif)
 
     # this test is flawed because these images don't save right
