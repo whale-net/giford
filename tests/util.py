@@ -37,12 +37,24 @@ def compare_image_files(baseline_filepath: str, test_filepath: str) -> bool:
     baseline_pimg = PillowImage.open(baseline_filepath)
     test_pimg = PillowImage.open(test_filepath)
 
-    mse = np.square(
-        np.subtract(np.asarray(baseline_pimg), np.asarray(test_pimg))
-    ).mean()
+    assert baseline_pimg.n_frames == test_pimg.n_frames, 'different frame count'
 
-    # a MSE is acceptable for equality
-    return mse < 1.00
+    for frame_idx in range(0, baseline_pimg.n_frames):
+        # 1.00 was experimentally found to be ok
+        baseline_pimg.seek(frame_idx)
+        test_pimg.seek(frame_idx)
+
+        # Mean Square Error
+        # basically what is the max difference between the two pictures
+        # not a perfect comparison, but should handle PIL discrepancies
+        mse = np.square(
+            np.subtract(np.asarray(baseline_pimg), np.asarray(test_pimg))
+        ).mean()
+
+        assert mse < 1.00, f'frame_idx={frame_idx} is different'
+
+    # returning true since I initially set this function up stupidly
+    return True
 
 
 def save_batch_and_compare(
