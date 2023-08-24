@@ -35,20 +35,23 @@ class MultiImage(AbstractImage):
         self.format = MultiImageFormat.UNKNOWN
 
     def load(self, in_file: str | BinaryIO) -> None:
+        width: int
+        height: int
+        frames: int
         if isinstance(in_file, str):
             input_args = {"filename": in_file}
             # TODO - what happens if multiple streams? can we support multiple files???
             # for now assuming one input stream
             vstreams = ffmpeg.probe(in_file, select_streams="v")
             video_stream = vstreams["streams"][0]
-            width: int = video_stream["width"]
-            height: int = video_stream["height"]
-            frames: int = video_stream["nb_frames"]
+            width = video_stream["width"]
+            height = video_stream["height"]
+            frames = video_stream["nb_frames"]
         elif isinstance(in_file, IOBase):
             # TODO - temp removing probe as a variable for now
-            width: int = 449
-            height: int = 524
-            frames: int = 25
+            width = 449
+            height = 524
+            frames = 25
 
             # TODO - buffered write util function
             BUFFER_SIZE = 1024 * 4  # reasonable block/cluster size
@@ -62,9 +65,9 @@ class MultiImage(AbstractImage):
                 "filename": "pipe:",
                 "format": "gif_pipe",
                 # applying codec appeared to cause more problems
-                "codec": "rawvideo",
-                "pix_fmt": "rgb24",
-                "s": f"{width}x{height}",
+                # "codec": "rawvideo",
+                # "pix_fmt": "rgb24",
+                # "s": f"{width}x{height}",
                 # 'frames': frames, # cannot specify frames on input for obvious reasons
             }
 
