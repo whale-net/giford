@@ -49,9 +49,9 @@ class MultiImage(AbstractImage):
             width: int = 449
             height: int = 524
             frames: int = 25
-            
+
             # TODO - buffered write util function
-            BUFFER_SIZE = 1024 * 4 # reasonable block/cluster size
+            BUFFER_SIZE = 1024 * 4  # reasonable block/cluster size
             # something is weird with gif_pipe
             # it correctly interprets as a gif, but doesn't have a duration or length
             # it only picks up one frame worth of data
@@ -59,19 +59,17 @@ class MultiImage(AbstractImage):
             # searcing ffmpeg through github was not productive
             # need to dig deeper, but may give up on this for now
             input_args = {
-                "filename": "pipe:", 
-                'format': 'gif_pipe',
-                
+                "filename": "pipe:",
+                "format": "gif_pipe",
                 # applying codec appeared to cause more problems
-                'codec': 'rawvideo',
-                'pix_fmt': 'rgb24',
-                's': f'{width}x{height}',
-
+                "codec": "rawvideo",
+                "pix_fmt": "rgb24",
+                "s": f"{width}x{height}",
                 # 'frames': frames, # cannot specify frames on input for obvious reasons
             }
 
             # TODO - revisit probe in memory, can't get it to work
-            #vstreams = ffmpeg.probe(in_file, select_streams="v")
+            # vstreams = ffmpeg.probe(in_file, select_streams="v")
             # alternatively, could enforce width/height/frames as input
             # but that may be weird and force users to save file themselves
             # instead of passing it in while in memory
@@ -90,19 +88,20 @@ class MultiImage(AbstractImage):
             #     height: int = int(video_stream["height"])
             #     frames: int = int(video_stream["nb_frames"])
 
-
-                
         else:
             raise ValueError("wrong input type, dolt")
 
         # TODO - is always default depth?
         # want bgr32, rgb32 is wrong order and I guess we're just wrong everywhere else lolol
         input_process = (
-            ffmpeg.input(**input_args)
-            .output("pipe:", format="rawvideo", pix_fmt="bgr32", s=f'{width}x{height}')
+            ffmpeg.input(**input_args).output(
+                "pipe:", format="rawvideo", pix_fmt="bgr32", s=f"{width}x{height}"
+            )
             # this output is still one frame even when writing to gif, something wrong with input
-            #.output("./test_gif_output.gif", format="gif", s=f'{width}x{height}')
-            .run_async(pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True) #, cmd='/home/alex/ffmpeg-download/working/ffmpeg')
+            # .output("./test_gif_output.gif", format="gif", s=f'{width}x{height}')
+            .run_async(
+                pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True
+            )  # , cmd='/home/alex/ffmpeg-download/working/ffmpeg')
         )
 
         # if filepointer, write to ffmpeg stdin
@@ -112,10 +111,10 @@ class MultiImage(AbstractImage):
                 input_process.stdin.write(buff)
                 buff = in_file.read(BUFFER_SIZE)
 
-            # close stdin otherwise we wait on read    
+            # close stdin otherwise we wait on read
             input_process.stdin.flush()
             input_process.stdin.close()
-            
+
             # waiting appears to break
             # probably because process is done at this point? idk
             # need to poke around a little more
@@ -216,9 +215,9 @@ class MultiImage(AbstractImage):
             )
         elif isinstance(out_file, IOBase):
             # read to memory, this is definitely slow, but should be OK for now until async
-            write_process = palleteuse_stream.output(
-                "pipe:", format="gif"
-            ).run_async(pipe_stdin=True, pipe_stdout=True)
+            write_process = palleteuse_stream.output("pipe:", format="gif").run_async(
+                pipe_stdin=True, pipe_stdout=True
+            )
         else:
             # this type check should really be earlier
             # but to make mypy work better, I think it is bettr here
