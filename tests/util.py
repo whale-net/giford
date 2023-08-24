@@ -37,10 +37,11 @@ def compare_image_files(baseline_filepath: str, test_filepath: str) -> bool:
     baseline_pimg = PillowImage.open(baseline_filepath)
     test_pimg = PillowImage.open(test_filepath)
 
-    assert baseline_pimg.n_frames == test_pimg.n_frames, 'different frame count'
+    baseline_frame_count = baseline_pimg.n_frames 
+    test_frame_count = test_pimg.n_frames
+    assert baseline_frame_count == test_frame_count, f'different frame count {baseline_frame_count} <> {test_frame_count}'
 
     for frame_idx in range(0, baseline_pimg.n_frames):
-        # 1.00 was experimentally found to be ok
         baseline_pimg.seek(frame_idx)
         test_pimg.seek(frame_idx)
 
@@ -51,6 +52,7 @@ def compare_image_files(baseline_filepath: str, test_filepath: str) -> bool:
             np.subtract(np.asarray(baseline_pimg), np.asarray(test_pimg))
         ).mean()
 
+        # 1.00 was experimentally found to be ok
         assert mse < 1.00, f'frame_idx={frame_idx} is different'
 
     # returning true since I initially set this function up stupidly

@@ -201,7 +201,7 @@ class MultiImage(AbstractImage):
         if isinstance(out_file, str):
             # TODO - overwrite_output()
             write_process = palleteuse_stream.output(out_file, format="gif").run_async(
-                pipe_stdin=True
+                pipe_stdin=True, vframes=len(self.raw_data_frames)
             )
         elif isinstance(out_file, IOBase):
             # read to memory, this is definitely slow, but should be OK for now until async
@@ -213,19 +213,24 @@ class MultiImage(AbstractImage):
             # but to make mypy work better, I think it is bettr here
             raise ValueError("invalid input type")
 
+        count = 0
         for frame in self.raw_data_frames:
             # convert array, convert_data_arr is non-mutating so it's ok
             data_arr = RawDataFrame.convert_data_arr(
                 frame.get_data_arr(is_return_reference=True), np.uint8
             )
             write_process.stdin.write(data_arr.tobytes())
+            count += 1
 
+        write_process.stdin.flush()
         write_process.stdin.close()
 
         if isinstance(out_file, IOBase):
-            # 3 appears to be number of bands for output
-            t = write_process.stdout.read(width * height * 3)
-            out_file.write(t)
+            BUFFER_SIZE = 4096
+            buff: bytes = write_process.stdout.read(BUFFER_SIZE)
+            while len(buff) > 0:
+                out_file.write(buff)
+                buff = write_process.stdout.read(BUFFER_SIZE)
 
             # Close stdout after reading otherwise wait will hang
             write_process.stdout.close()
