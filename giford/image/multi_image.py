@@ -46,10 +46,16 @@ class MultiImage(AbstractImage):
             frames: int = video_stream["nb_frames"]
         elif isinstance(in_file, IOBase):
             BUFFER_SIZE = 1024 * 4 # reasonable block/cluster size
-            # giving up for now, no number of args help, need to rethink
+            # something is weird with gif_pipe
+            # it correctly interprets as a gif, but doesn't have a duration or length
+            # it only picks up one frame worth of data
+            # googling was not productive
+            # searcing ffmpeg through github was not productive
+            # need to dig deeper, but may give up on this for now
             input_args = {
                 "filename": "pipe:", 
                 'format': 'gif_pipe',
+                #'framerate': 15,
             }
 
             # TODO - revisit probe in memory, can't get it to work
@@ -80,8 +86,8 @@ class MultiImage(AbstractImage):
         # want bgr32, rgb32 is wrong order and I guess we're just wrong everywhere else lolol
         input_process = (
             ffmpeg.input(**input_args)
-            .output("pipe:", format="rawvideo", pix_fmt="bgr32", s=f'{width}x{height}', framerate=30)
-            .run_async(pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True)#, cmd='/home/alex/ffmpeg-download/working/ffmpeg')
+            .output("pipe:", format="rawvideo", pix_fmt="bgr32", s=f'{width}x{height}')
+            .run_async(pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True) #, cmd='/home/alex/ffmpeg-download/working/ffmpeg')
         )
 
         if isinstance(in_file, IOBase):
