@@ -61,9 +61,12 @@ class MultiImage(AbstractImage):
             # googling was not productive
             # searcing ffmpeg through github was not productive
             # need to dig deeper, but may give up on this for now
+            # I have a feeling that gif_pipe will only support 1 frame for some reason
+            # I think I may have to roll with my own gifdecoder
             input_args = {
                 "filename": "pipe:",
                 "format": "gif_pipe",
+                #"loop": False,
                 # applying codec appeared to cause more problems
                 # "codec": "rawvideo",
                 # "pix_fmt": "rgb24",
