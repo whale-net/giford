@@ -37,16 +37,12 @@ def test_multi_image_load_fp(temp_output_gif):
     mimg = MultiImage()
     base_img_path = os.path.join(TEST_INPUT_DATA_FOLDER, "orange_swirl.gif")
     with open(base_img_path, "r+b") as fp:
-        # rewriting the file here appears to be OK
-        # with open(temp_output_gif, 'w+b') as wfp:
-        #     wfp.write(fp.read())
         mimg.load(fp)
 
     # hopefully the mimg save test passes at this point :)
     # otherwise, this test is garbage
     mimg.save(temp_output_gif)
 
-    # this test is flawed because these images don't save right
     assert compare_image_files(base_img_path, temp_output_gif)
 
 

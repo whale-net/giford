@@ -1,5 +1,6 @@
 import enum
 import os
+import uuid
 from io import IOBase
 from typing import BinaryIO
 from tempfile import NamedTemporaryFile
@@ -38,23 +39,24 @@ class MultiImage(AbstractImage):
         width: int
         height: int
         frames: int
+
         if isinstance(in_file, str):
             input_args = {"filename": in_file}
             # TODO - what happens if multiple streams? can we support multiple files???
             # for now assuming one input stream
+            # TODO - helper function to probe?
             vstreams = ffmpeg.probe(in_file, select_streams="v")
             video_stream = vstreams["streams"][0]
             width = video_stream["width"]
             height = video_stream["height"]
             frames = video_stream["nb_frames"]
         elif isinstance(in_file, IOBase):
-            # TODO - temp removing probe as a variable for now
-            width = 449
-            height = 524
-            frames = 25
-
             # TODO - buffered write util function
             BUFFER_SIZE = 1024 * 4  # reasonable block/cluster size
+
+            # Not using ffmpeg gif_pipe. need to investigate it further
+            # going to patch this temporarily by passing in in-memory filename
+            """
             # something is weird with gif_pipe
             # it correctly interprets as a gif, but doesn't have a duration or length
             # it only picks up one frame worth of data
@@ -63,16 +65,16 @@ class MultiImage(AbstractImage):
             # need to dig deeper, but may give up on this for now
             # I have a feeling that gif_pipe will only support 1 frame for some reason
             # I think I may have to roll with my own gifdecoder
-            input_args = {
-                "filename": "pipe:",
-                "format": "gif_pipe",
-                #"loop": False,
-                # applying codec appeared to cause more problems
-                # "codec": "rawvideo",
-                # "pix_fmt": "rgb24",
-                # "s": f"{width}x{height}",
-                # 'frames': frames, # cannot specify frames on input for obvious reasons
-            }
+            # input_args = {
+            #     "filename": "pipe:",
+            #     "format": "gif_pipe",
+            #     #"loop": False,
+            #     # applying codec appeared to cause more problems
+            #     # "codec": "rawvideo",
+            #     # "pix_fmt": "rgb24",
+            #     # "s": f"{width}x{height}",
+            #     # 'frames': frames, # cannot specify frames on input for obvious reasons
+            # }
 
             # TODO - revisit probe in memory, can't get it to work
             # vstreams = ffmpeg.probe(in_file, select_streams="v")
@@ -93,6 +95,26 @@ class MultiImage(AbstractImage):
             #     width: int = int(video_stream["width"])
             #     height: int = int(video_stream["height"])
             #     frames: int = int(video_stream["nb_frames"])
+            """
+
+            # TODO - what in the world do these flags mean
+            
+            temp_gif_name = f'{uuid.uuid4()}.gif'
+            fd = os.memfd_create(temp_gif_name, os.MFD_CLOEXEC)
+
+            #temp_gif_path = f'/proc/{os.getpid()}/fd/{temp_gif_name}'
+            temp_gif_path = f'/proc/{os.getpid()}/fd/{fd}'
+            
+            with open(temp_gif_path, 'w+b') as f:
+                f.write(in_file.read())
+
+            input_args = {"filename": temp_gif_path}
+            vstreams = ffmpeg.probe(temp_gif_path, select_streams="v")
+            video_stream = vstreams["streams"][0]
+            width = video_stream["width"]
+            height = video_stream["height"]
+            frames = video_stream["nb_frames"]
+            
 
         else:
             raise ValueError("wrong input type, dolt")
@@ -106,24 +128,27 @@ class MultiImage(AbstractImage):
             # this output is still one frame even when writing to gif, something wrong with input
             # .output("./test_gif_output.gif", format="gif", s=f'{width}x{height}')
             .run_async(
-                pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True
+                #pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True
+                # TEMP change pipe always false
+                pipe_stdin=False, pipe_stdout=True
             )  # , cmd='/home/alex/ffmpeg-download/working/ffmpeg')
         )
 
-        # if filepointer, write to ffmpeg stdin
-        if isinstance(in_file, IOBase):
-            buff = in_file.read(BUFFER_SIZE)
-            while len(buff) > 0:
-                input_process.stdin.write(buff)
-                buff = in_file.read(BUFFER_SIZE)
+        # TEMP DISABLED
+        # # if filepointer, write to ffmpeg stdin
+        # if isinstance(in_file, IOBase):
+        #     buff = in_file.read(BUFFER_SIZE)
+        #     while len(buff) > 0:
+        #         input_process.stdin.write(buff)
+        #         buff = in_file.read(BUFFER_SIZE)
 
-            # close stdin otherwise we wait on read
-            input_process.stdin.flush()
-            input_process.stdin.close()
+        #     # close stdin otherwise we wait on read
+        #     input_process.stdin.flush()
+        #     input_process.stdin.close()
 
-            # waiting appears to break
-            # probably because process is done at this point? idk
-            # need to poke around a little more
+        #     # waiting appears to break
+        #     # probably because process is done at this point? idk
+        #     # need to poke around a little more
 
         depth = RawDataFrame.DEFAULT_DEPTH
         while True:
