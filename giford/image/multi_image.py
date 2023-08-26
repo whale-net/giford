@@ -98,14 +98,16 @@ class MultiImage(AbstractImage):
             """
 
             # TODO - what in the world do these flags mean
-            
-            temp_gif_name = f'{uuid.uuid4()}.gif'
+
+            # TBH, I don't know if I'm doing this right
+            # I think there is a fair chance I'm using the symbolic link to store my data...
+            temp_gif_name = f"{uuid.uuid4()}.gif"
             fd = os.memfd_create(temp_gif_name, os.MFD_CLOEXEC)
 
-            #temp_gif_path = f'/proc/{os.getpid()}/fd/{temp_gif_name}'
-            temp_gif_path = f'/proc/{os.getpid()}/fd/{fd}'
-            
-            with open(temp_gif_path, 'w+b') as f:
+            # temp_gif_path = f'/proc/{os.getpid()}/fd/{temp_gif_name}'
+            temp_gif_path = f"/proc/{os.getpid()}/fd/{fd}"
+
+            with open(temp_gif_path, "w+b") as f:
                 f.write(in_file.read())
 
             input_args = {"filename": temp_gif_path}
@@ -114,7 +116,6 @@ class MultiImage(AbstractImage):
             width = video_stream["width"]
             height = video_stream["height"]
             frames = video_stream["nb_frames"]
-            
 
         else:
             raise ValueError("wrong input type, dolt")
@@ -128,9 +129,10 @@ class MultiImage(AbstractImage):
             # this output is still one frame even when writing to gif, something wrong with input
             # .output("./test_gif_output.gif", format="gif", s=f'{width}x{height}')
             .run_async(
-                #pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True
+                # pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True
                 # TEMP change pipe always false
-                pipe_stdin=False, pipe_stdout=True
+                pipe_stdin=False,
+                pipe_stdout=True,
             )  # , cmd='/home/alex/ffmpeg-download/working/ffmpeg')
         )
 
