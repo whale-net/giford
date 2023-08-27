@@ -13,6 +13,7 @@ import numpy as np
 from giford.frame.frame_batch import FrameBatch
 from giford.frame.raw_data import RawDataFrame
 from giford.image.abstract_image import AbstractImage
+from giford.util.io_util import buffered_stream_copy
 
 
 class MultiImageFormat(enum.Enum):
@@ -51,9 +52,6 @@ class MultiImage(AbstractImage):
             height = video_stream["height"]
             frames = video_stream["nb_frames"]
         elif isinstance(in_file, IOBase):
-            # TODO - buffered write util function
-            BUFFER_SIZE = 1024 * 4  # reasonable block/cluster size
-
             # Not using ffmpeg gif_pipe. need to investigate it further
             # going to patch this temporarily by passing in in-memory filename
             """
@@ -99,16 +97,14 @@ class MultiImage(AbstractImage):
 
             # TODO - what in the world do these flags mean
 
-            # TBH, I don't know if I'm doing this right
-            # I think there is a fair chance I'm using the symbolic link to store my data...
+            # unsure what the name does
+            # I access it using a file descriptor anyways
             temp_gif_name = f"{uuid.uuid4()}.gif"
             fd = os.memfd_create(temp_gif_name, os.MFD_CLOEXEC)
-
-            # temp_gif_path = f'/proc/{os.getpid()}/fd/{temp_gif_name}'
             temp_gif_path = f"/proc/{os.getpid()}/fd/{fd}"
 
-            with open(temp_gif_path, "w+b") as f:
-                f.write(in_file.read())
+            with open(temp_gif_path, "w+b") as mem_file:
+                buffered_stream_copy(in_file, mem_file)
 
             input_args = {"filename": temp_gif_path}
             vstreams = ffmpeg.probe(temp_gif_path, select_streams="v")
@@ -120,14 +116,10 @@ class MultiImage(AbstractImage):
         else:
             raise ValueError("wrong input type, dolt")
 
-        # TODO - is always default depth?
         # want bgr32, rgb32 is wrong order and I guess we're just wrong everywhere else lolol
         input_process = (
-            ffmpeg.input(**input_args).output(
-                "pipe:", format="rawvideo", pix_fmt="bgr32", s=f"{width}x{height}"
-            )
-            # this output is still one frame even when writing to gif, something wrong with input
-            # .output("./test_gif_output.gif", format="gif", s=f'{width}x{height}')
+            ffmpeg.input(**input_args)
+            .output("pipe:", format="rawvideo", pix_fmt="bgr32", s=f"{width}x{height}")
             .run_async(
                 # pipe_stdin=isinstance(in_file, IOBase), pipe_stdout=True
                 # TEMP change pipe always false
@@ -152,8 +144,10 @@ class MultiImage(AbstractImage):
         #     # probably because process is done at this point? idk
         #     # need to poke around a little more
 
+        # always default depth because 4x8 bit bands = 32
         depth = RawDataFrame.DEFAULT_DEPTH
         while True:
+            # I don't think buffering further would help here
             buff = input_process.stdout.read(width * height * depth)
 
             if not buff or len(buff) == 0:
@@ -269,11 +263,7 @@ class MultiImage(AbstractImage):
         write_process.stdin.close()
 
         if isinstance(out_file, IOBase):
-            BUFFER_SIZE = 4096
-            buff: bytes = write_process.stdout.read(BUFFER_SIZE)
-            while len(buff) > 0:
-                out_file.write(buff)
-                buff = write_process.stdout.read(BUFFER_SIZE)
+            buffered_stream_copy(write_process.stdout, out_file)
 
             # Close stdout after reading otherwise wait will hang
             write_process.stdout.close()

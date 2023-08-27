@@ -2,6 +2,7 @@ from tempfile import TemporaryFile
 
 from giford.image import SingleImage
 from giford.frame import FrameBatch
+from giford.util import buffered_stream_copy
 from tests.util import compare_image_files, TEST_INPUT_ORANGE_IMAGE_FILEPATH
 
 
@@ -34,12 +35,8 @@ def test_single_image_save_fp(temp_output_png, single_orange_image: SingleImage)
         single_orange_image.save(fp)
 
         fp.seek(0)
-        BUFFER_SIZE = 4096
         with open(temp_output_png, "wb") as final_out:
-            buf: bytes = fp.read(BUFFER_SIZE)
-            while len(buf) > 0:
-                final_out.write(buf)
-                buf = fp.read(BUFFER_SIZE)
+            buffered_stream_copy(fp, final_out)
 
     assert compare_image_files(TEST_INPUT_ORANGE_IMAGE_FILEPATH, temp_output_png)
 

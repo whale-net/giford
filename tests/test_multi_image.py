@@ -5,6 +5,7 @@ import pytest
 
 from giford.image import MultiImage, SingleImage
 from giford.frame import FrameBatch
+from giford.util import buffered_stream_copy
 from tests.util import (
     compare_image_files,
     BASELINE_DIRECTORY,
@@ -62,12 +63,8 @@ def test_multi_image_save_fp(temp_output_gif: str, orange_swirl_batch: FrameBatc
         mimg.save(fp)
 
         fp.seek(0)
-        BUFFER_SIZE = 4096
         with open(temp_output_gif, "wb") as final_out:
-            buf: bytes = fp.read(BUFFER_SIZE)
-            while len(buf) > 0:
-                final_out.write(buf)
-                buf = fp.read(BUFFER_SIZE)
+            buffered_stream_copy(fp, final_out)
 
     baseline = os.path.join(BASELINE_DIRECTORY, "test_multi_image_save.gif")
     assert compare_image_files(baseline, temp_output_gif)
