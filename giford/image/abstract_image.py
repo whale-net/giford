@@ -1,4 +1,5 @@
 import abc
+from typing import BinaryIO
 
 from giford.frame.frame_batch import FrameBatch
 from giford.frame.raw_data import RawDataFrame
@@ -17,11 +18,16 @@ class AbstractImage(abc.ABC):
         self.raw_data_frames: list[RawDataFrame] = []
 
     @abc.abstractmethod
-    def load(self, path: str) -> None:
+    def load(self, in_file: str | BinaryIO) -> None:
         pass
 
     @abc.abstractmethod
-    def save(self, path: str) -> None:
+    def save(self, out_file: str | BinaryIO) -> None:
+        """
+        save image data to out_file
+
+        :param out_file: file path or file pointer
+        """
         pass
 
     @classmethod

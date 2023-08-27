@@ -30,18 +30,6 @@ def compare_image_files(baseline_filepath: str, test_filepath: str) -> bool:
     assert test_filepath
     assert os.path.exists(test_filepath), "test_filepath does not exist"
 
-    # NO LONGER USING THIS - but keeping here just in case
-    # Using PIL/Pillow to compare
-    # Ran into issue using file hash since pillow will somtimes compress images when saving
-    # which makes the hashes different
-    # Hopefully PIL/Pillow is tested enough that this is a reasonable operation
-    # NOTE: deleting info dict removes icc_profile, unsure if that matters
-    # baseline_pimg = PillowImage.open(baseline_filepath)
-    # baseline_pimg.info = {}
-    # test_pimg = PillowImage.open(test_filepath)
-    # test_pimg.info = {}
-    # return baseline_pimg == test_pimg
-
     # Using PIL/Pillow to open images since that is indepdent of this project
     # Calculate MSE of each file
     # TODO - what is max dfference? don't really know much about this tbh
@@ -49,12 +37,28 @@ def compare_image_files(baseline_filepath: str, test_filepath: str) -> bool:
     baseline_pimg = PillowImage.open(baseline_filepath)
     test_pimg = PillowImage.open(test_filepath)
 
-    mse = np.square(
-        np.subtract(np.asarray(baseline_pimg), np.asarray(test_pimg))
-    ).mean()
+    baseline_frame_count = baseline_pimg.n_frames
+    test_frame_count = test_pimg.n_frames
+    assert (
+        baseline_frame_count == test_frame_count
+    ), f"different frame count {baseline_frame_count} <> {test_frame_count}"
 
-    # a MSE is acceptable for equality
-    return mse < 1.00
+    for frame_idx in range(0, baseline_pimg.n_frames):
+        baseline_pimg.seek(frame_idx)
+        test_pimg.seek(frame_idx)
+
+        # Mean Square Error
+        # basically what is the max difference between the two pictures
+        # not a perfect comparison, but should handle PIL discrepancies
+        mse = np.square(
+            np.subtract(np.asarray(baseline_pimg), np.asarray(test_pimg))
+        ).mean()
+
+        # 1.00 was experimentally found to be ok
+        assert mse < 1.00, f"frame_idx={frame_idx} is different"
+
+    # returning true since I initially set this function up stupidly
+    return True
 
 
 def save_batch_and_compare(

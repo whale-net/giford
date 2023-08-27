@@ -1,8 +1,6 @@
 # giford
 [![Pytest](https://github.com/whale-net/giford/actions/workflows/pytest.yml/badge.svg)](https://github.com/whale-net/giford/actions/workflows/pytest.yml)
 [![codecov](https://codecov.io/gh/whale-net/giford/graph/badge.svg?token=QX182ZYMHN)](https://codecov.io/gh/whale-net/giford)
-[![coveragegraph](https://codecov.io/gh/whale-net/giford/graphs/sunburst.svg?token=QX182ZYMHN)](https://codecov.io/gh/whale-net/giford/graphs/sunburst.svg?token=QX182ZYMHN)
-
 
 ## about
 modify images and create gifs with unified toolkit
@@ -47,6 +45,9 @@ pip install setuptools-scm
 python -m build
 ```
 
+## coverage wheel
+[![coveragegraph](https://codecov.io/gh/whale-net/giford/graphs/sunburst.svg?token=QX182ZYMHN)](https://codecov.io/gh/whale-net/giford)
 
 ## sometimes things don't go right
 ![whoops](./whoops_example.gif)
+![whoops](./whoops_example2.gif)

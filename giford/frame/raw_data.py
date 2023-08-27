@@ -13,9 +13,12 @@ class RawDataFrame:
     """
 
     # ndarray.shape index
-    SHAPE_HEIGHT_IDX = 0
-    SHAPE_WIDTH_IDX = 1
-    SHAPE_DEPTH_IDX = 2
+    SHAPE_HEIGHT_IDX: int = 0
+    SHAPE_WIDTH_IDX: int = 1
+    SHAPE_DEPTH_IDX: int = 2
+
+    # RGBA (maybe bgra, but still, 4 bands)
+    DEFAULT_DEPTH: int = 4
 
     SUPPORTED_DATATYPES = (np.uint8, np.float32, np.float64)
 
@@ -133,21 +136,24 @@ class RawDataFrame:
 
         :param data_arr: numpy array containing data
         :param target_dtype: target numpy data type
-        :return: data_arr
+        :return: copy of data_arr as desired type
         """
+        # TODO - support non-copy?
+
+        # copy array, all other actions can be mutating
+        data_arr = data_arr.copy()
 
         current_dtype = data_arr.dtype
-        if target_dtype == np.uint8:
+        if current_dtype == target_dtype:
+            return data_arr
+        elif target_dtype == np.uint8:
             if current_dtype in (np.float32, np.float64):
                 # if max value is 1.0 then assume scaled [0, 1] and rescale
                 if data_arr.max() <= 1.0:
-                    data_arr = data_arr.copy()
                     data_arr *= 255
-
-            # we want to modify array
-            return data_arr.astype(target_dtype)
-        if target_dtype == np.float64:
-            data_arr = data_arr.astype(target_dtype)
+            return data_arr.astype(target_dtype, copy=False)
+        elif target_dtype == np.float64:
+            data_arr = data_arr.astype(target_dtype, copy=False)
 
             if current_dtype == np.uint8:
                 # 0 = 0, 1.0 = 255
@@ -156,56 +162,3 @@ class RawDataFrame:
             return data_arr
 
         raise Exception(f"unsupported target_dtype: [{target_dtype}]")
-
-
-class RawDataVideo:
-    """
-    acts as raw video
-    """
-
-    def __init__(self) -> None:
-        self._raw_data_frames: list[RawDataFrame] = []
-
-    @property
-    def frames(self) -> list[RawDataFrame]:
-        return self._raw_data_frames
-
-    def add_frame(self, raw_data_frame: RawDataFrame) -> Self:
-        # TODO - somehow validate all frames are same size. that'll break it
-        self.frames.append(raw_data_frame)
-        return self
-
-    def add_batch(self, batch: FrameBatch) -> Self:
-        for frame in batch.frames:
-            self.add_frame(frame)
-        return self
-
-    def as_ndarray(self, target_dtype: np_typing.DTypeLike | None = None) -> np.ndarray:
-        """
-        convert raw_data_frames to array of raw data arrays
-        # TODO currently 1d
-        """
-        num_frames = len(self.frames)
-        if num_frames == 0:
-            raise Exception("empty rawdatavideo")
-        first_frame = self.frames[0]
-
-        ###
-        # create video ndarray using iterators
-        # will copy memory, one day would like to avoid that, but I think it's needed anyways when
-        # piping to ffmpeg, unless there is a way to buffer stdin piping to ffmpeg. that's for another day though
-        ###
-
-        # get iterators for each frame into a list
-        flat_frame_iters = [f.flat_data(target_dtype=target_dtype) for f in self.frames]
-        # unpack list of iterators as parameters so chain can combine them correctly
-        chained_iter = itertools.chain(*flat_frame_iters)
-
-        video_arr: np.ndarray = np.fromiter(
-            chained_iter,
-            # first_frame.get_data_arr().dtype,
-            target_dtype,
-            first_frame.data_size * num_frames,
-        )
-
-        return video_arr
