@@ -1,4 +1,5 @@
 import enum
+from typing import Optional
 from skimage import transform
 
 from giford.action.abstract_frame_action import AbstractFrameAction
@@ -17,20 +18,32 @@ class Reshape(AbstractFrameAction):
     turns 120x120 into 60x60 or 240x240
     """
 
-    def __init__(self) -> None:
+    def __init__(
+        self, default_reshape_method: ReshapeMethod = ReshapeMethod.RESIZE
+    ) -> None:
         super().__init__()
+        self.default_reshape_method = default_reshape_method
 
     def process(
         self,
         input_batch: FrameBatch,
-        reshape_method: ReshapeMethod = ReshapeMethod.RESCALE,
         scale_factor: float = 1.0,
         enable_anti_aliasing: bool = True,
+        veritcal_resize_px: Optional[int] = None,
+        horiztonal_resize_px: Optional[int] = None,
+        reshape_method: Optional[ReshapeMethod] = None,
     ) -> FrameBatch:
         if scale_factor == 0:
             raise ZeroDivisionError("???????? what are you doing?")
-        if scale_factor == 1.0:
+        if (
+            scale_factor == 1.0
+            and horiztonal_resize_px is None
+            and veritcal_resize_px is None
+        ):
             return input_batch.clone()
+
+        if reshape_method is None:
+            reshape_method = self.default_reshape_method
 
         output_batch = FrameBatch()
         for frame in input_batch.cloned_frames():
@@ -38,14 +51,21 @@ class Reshape(AbstractFrameAction):
                 case ReshapeMethod.RESCALE:
                     frame = Reshape._rescale(frame, scale_factor, enable_anti_aliasing)
                 case ReshapeMethod.RESIZE:
-                    frame = Reshape._resize(frame, scale_factor, enable_anti_aliasing)
+                    size_divisor = 1 / scale_factor
+                    # when one of these is none, it will default to the same size
+                    if horiztonal_resize_px is None:
+                        horiztonal_resize_px = int(frame.width // size_divisor)
+                    if veritcal_resize_px is None:
+                        veritcal_resize_px = int(frame.height // size_divisor)
+
+                    frame = Reshape._resize(
+                        frame,
+                        veritcal_resize_px,
+                        horiztonal_resize_px,
+                        enable_anti_aliasing,
+                    )
                 case ReshapeMethod.DOWNSCALE:
                     frame = Reshape._downscale(frame)
-                case _:  # default case
-                    raise Exception(f"unsupported reshape method [{reshape_method}]")
-
-            if frame is None:
-                raise Exception("developer error, didn" "t set frame")
 
             output_batch.add_frame(frame)
 
@@ -65,12 +85,11 @@ class Reshape(AbstractFrameAction):
 
     @staticmethod
     def _resize(
-        frame: RawDataFrame, scale_factor: float, enable_anti_aliasing: bool
+        frame: RawDataFrame, height: int, width: int, enable_anti_aliasing: bool
     ) -> RawDataFrame:
-        size_divisor = 1 / scale_factor
         nd_arr = transform.resize(
             image=frame.get_data_arr(),
-            output_shape=(frame.height // size_divisor, frame.width // size_divisor),
+            output_shape=(height, width),
             anti_aliasing=enable_anti_aliasing,
         )
 

@@ -7,6 +7,7 @@ from .scroll import Scroll
 from .shake import Shake
 from .swirl import BasicSwirl, VariableSwirl, VaryingVariableSwirl
 from .translate import Translate
+from .zoom import Zoom, ZoomMany
 
 __all__ = [
     "AbstractFrameAction",
