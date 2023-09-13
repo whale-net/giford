@@ -47,14 +47,15 @@ def test_rotate_many(
     is_clockwise: bool,
     rotate_count: int,
 ):
-  
-
     r = RotateMany()
-    output_batch = r.process(orange_image_batch, is_clockwise=is_clockwise, rotate_count=rotate_count)
+    output_batch = r.process(
+        orange_image_batch, is_clockwise=is_clockwise, rotate_count=rotate_count
+    )
 
     for idx, frame in enumerate(output_batch.frames):
         baseline = os.path.join(
-            BASELINE_DIRECTORY, f"rotate_many/test_rotate_many_{is_clockwise}_{rotate_count}_{idx}.png"
+            BASELINE_DIRECTORY,
+            f"rotate_many/test_rotate_many_{is_clockwise}_{rotate_count}_{idx}.png",
         )
         temp_output_png = next(temp_out_png_generator)
         test_batch = FrameBatch.create_from_frame(frame)

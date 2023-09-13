@@ -1,5 +1,6 @@
 from .abstract_frame_action import AbstractFrameAction
 
+from .crop import Crop
 from .rotate import Rotate, RotateMany
 from .reshape import Reshape, ReshapeMethod
 from .scroll import Scroll
