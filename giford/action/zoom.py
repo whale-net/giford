@@ -23,7 +23,12 @@ class Zoom(AbstractFrameAction):
             temp_batch = crop_action.process(temp_batch, crop_px=zoom_step_size_px)
 
             # TODO aa  parameter
-            temp_batch = reshape_action.process(temp_batch, veritcal_resize_px=frame.height, horiztonal_resize_px=frame.width, enable_anti_aliasing=True)
+            temp_batch = reshape_action.process(
+                temp_batch,
+                veritcal_resize_px=frame.height,
+                horiztonal_resize_px=frame.width,
+                enable_anti_aliasing=True,
+            )
             output_batch.add_batch(temp_batch)
 
         return output_batch
