@@ -68,6 +68,9 @@ def save_batch_and_compare(
     is_force_multi_image: bool = False,
     target_format: SingleImageFormat = DEFAULT_TEST_SINGLE_IMAGE_FORMAT,
     is_overwrite_existing: bool = False,
+    is_create_baseline: bool = False,
+    # overwriting a baseline should be rare, and this will prevent accidents
+    yes_overwrite_confirmation: bool = False,
 ) -> bool:
     assert not batch.is_empty()
 
@@ -84,5 +87,10 @@ def save_batch_and_compare(
         )
 
     wrapper.save(test_filepath, overwrite_existing=is_overwrite_existing)
+
+    if is_create_baseline:
+        if not yes_overwrite_confirmation or os.path.exists(baseline_filepath):
+            raise FileExistsError("baseline exists dummyhead")
+        wrapper.save(baseline_filepath, overwrite_existing=yes_overwrite_confirmation)
 
     return compare_image_files(baseline_filepath, test_filepath)

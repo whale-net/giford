@@ -80,3 +80,9 @@ class FrameBatch:
         for rdf in img.raw_data_frames:
             batch.add_frame(rdf)
         return batch
+
+    @classmethod
+    def create_from_frame(cls, Frame: RawDataFrame) -> "FrameBatch":
+        batch = cls()
+        batch.add_frame(Frame)
+        return batch
