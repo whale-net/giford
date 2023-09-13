@@ -89,7 +89,7 @@ def save_batch_and_compare(
     wrapper.save(test_filepath, overwrite_existing=is_overwrite_existing)
 
     if is_create_baseline:
-        if not yes_overwrite_confirmation or os.path.exists(baseline_filepath):
+        if not yes_overwrite_confirmation and os.path.exists(baseline_filepath):
             raise FileExistsError("baseline exists dummyhead")
         wrapper.save(baseline_filepath, overwrite_existing=yes_overwrite_confirmation)
 
