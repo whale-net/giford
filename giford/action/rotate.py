@@ -37,13 +37,10 @@ class Rotate(AbstractFrameAction):
             rotate_degrees = Rotate.FULL_ROTATION_DEGREES - rotate_degrees
 
         output_batch = FrameBatch()
-        for frame in input_batch.frames:
-            # will clone data
-            rdf = RawDataFrame(frame.get_data_arr())
-
+        for frame in input_batch.cloned_frames():
             # cheating using pimg, but tbh idc they did a good job
             # use reference because already cloning data
-            pimg = PillowImage.fromarray(rdf.get_data_arr(is_return_reference=True))
+            pimg = PillowImage.fromarray(frame.get_data_arr(is_return_reference=True))
             pimg = pimg.rotate(rotate_degrees)
             output_batch.add_frame(RawDataFrame(np.asarray(pimg)))
 
