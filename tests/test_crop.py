@@ -38,3 +38,31 @@ def test_crop(
     )
 
     assert save_batch_and_compare(baseline, output_batch, temp_output_png)
+
+def test_crop_negative(
+    orange_image_batch: FrameBatch,
+):
+    c = Crop()
+    with pytest.raises(Exception):
+        output_batch = c.process(
+            orange_image_batch,
+            crop_px=-100
+        )
+
+def test_crop_zero_px(
+    temp_output_png,
+    orange_image_batch: FrameBatch,
+):
+    
+    baseline = os.path.join(
+        BASELINE_DIRECTORY,
+        f"test_crop/test_crop_zero_px.png",
+    )
+
+    c = Crop()
+    output_batch = c.process(
+        orange_image_batch,
+        crop_px=0
+    )
+
+    assert save_batch_and_compare(baseline, output_batch, temp_output_png)
