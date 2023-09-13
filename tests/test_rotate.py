@@ -57,4 +57,5 @@ def test_rotate_many(
             BASELINE_DIRECTORY, f"rotate_many/test_rotate_many_{is_clockwise}_{rotate_count}_{idx}.png"
         )
         temp_output_png = next(temp_out_png_generator)
-        save_batch_and_compare(baseline, output_batch, temp_output_png, is_create_baseline=True)
+        test_batch = FrameBatch.create_from_frame(frame)
+        assert save_batch_and_compare(baseline, test_batch, temp_output_png)
