@@ -57,7 +57,7 @@ class RotateMany(AbstractFrameAction):
     def process(
         self,
         input_batch: FrameBatch,
-        rotate_count: Optional[int] = 30,
+        rotate_count: int = 30,
         is_clockwise: bool = True,
     ) -> FrameBatch:
         """
@@ -80,7 +80,7 @@ class RotateMany(AbstractFrameAction):
 
                 temp_in_batch = FrameBatch.create_from_frame(frame)
                 temp_out_batch = r.process(
-                    temp_in_batch, degrees=rotate_step, is_clockwise=is_clockwise
+                    temp_in_batch, rotate_degrees=rotate_step, is_clockwise=is_clockwise
                 )
                 output_batch.add_batch(temp_out_batch)
 
